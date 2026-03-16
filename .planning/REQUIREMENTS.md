@@ -88,39 +88,39 @@
 
 ## Traceability
 
-Updated during roadmap creation.
+Updated during roadmap creation: 2026-03-16
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | AUTH-01 | Phase 1 | Pending |
 | AUTH-02 | Phase 1 | Pending |
 | AUTH-03 | Phase 1 | Pending |
-| DATA-01 | Phase 2 | Pending |
-| DATA-02 | Phase 2 | Pending |
-| DATA-03 | Phase 2 | Pending |
-| DATA-04 | Phase 2 | Pending |
-| SIG-01 | Phase 3 | Pending |
-| SIG-02 | Phase 3 | Pending |
-| SIG-03 | Phase 3 | Pending |
-| SIG-04 | Phase 3 | Pending |
-| SIG-05 | Phase 3 | Pending |
-| CHART-01 | Phase 4 | Pending |
-| CHART-02 | Phase 4 | Pending |
-| CHART-03 | Phase 4 | Pending |
-| CHART-04 | Phase 4 | Pending |
-| CHART-05 | Phase 4 | Pending |
-| BT-01 | Phase 4 | Pending |
-| BT-02 | Phase 4 | Pending |
-| BT-03 | Phase 4 | Pending |
-| BT-04 | Phase 4 | Pending |
-| PAPER-01 | Phase 3 | Pending |
-| PAPER-02 | Phase 3 | Pending |
-| PAPER-03 | Phase 3 | Pending |
+| DATA-01 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Pending |
+| DATA-03 | Phase 1 | Pending |
+| DATA-04 | Phase 1 | Pending |
 | ASSET-01 | Phase 1 | Pending |
 | ASSET-02 | Phase 1 | Pending |
-| ASSET-03 | Phase 3 | Pending |
-| DEPLOY-01 | Phase 5 | Pending |
-| DEPLOY-02 | Phase 5 | Pending |
+| SIG-01 | Phase 2 | Pending |
+| SIG-02 | Phase 2 | Pending |
+| SIG-03 | Phase 2 | Pending |
+| SIG-04 | Phase 2 | Pending |
+| SIG-05 | Phase 2 | Pending |
+| ASSET-03 | Phase 2 | Pending |
+| PAPER-01 | Phase 2 | Pending |
+| PAPER-02 | Phase 2 | Pending |
+| PAPER-03 | Phase 2 | Pending |
+| CHART-01 | Phase 3 | Pending |
+| CHART-02 | Phase 3 | Pending |
+| CHART-03 | Phase 3 | Pending |
+| CHART-04 | Phase 3 | Pending |
+| CHART-05 | Phase 3 | Pending |
+| BT-01 | Phase 3 | Pending |
+| BT-02 | Phase 3 | Pending |
+| BT-03 | Phase 3 | Pending |
+| BT-04 | Phase 3 | Pending |
+| DEPLOY-01 | Phase 3 | Pending |
+| DEPLOY-02 | Phase 3 | Pending |
 
 **Coverage:**
 - v1 requirements: 28 total
@@ -129,4 +129,4 @@ Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-16*
-*Last updated: 2026-03-16 after initial definition*
+*Last updated: 2026-03-16 — traceability updated after roadmap creation*
