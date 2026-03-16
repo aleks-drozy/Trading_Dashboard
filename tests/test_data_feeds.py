@@ -46,12 +46,13 @@ class TestFetchClosedBars:
     """Tests 3-5: fetch_closed_bars() yfinance helper"""
 
     def _make_df(self, n_rows: int, minutes_ago_start: int = 90) -> pd.DataFrame:
-        """Create a sample DataFrame with n_rows of 1-min bars in market hours."""
-        # Use current date but set to market hours (14:00 UTC = 09:00 ET approximately)
-        now_utc = datetime.now(timezone.utc).replace(tzinfo=timezone.utc)
-        # Put bars in NY market hours (14:30-20:00 UTC)
-        base = now_utc.replace(hour=14, minute=30, second=0, microsecond=0)
-        timestamps = [base + timedelta(minutes=i) for i in range(n_rows)]
+        """Create a sample DataFrame with n_rows of 1-min bars ending near now (market hours)."""
+        now_utc = datetime.now(timezone.utc)
+        # Build bars ending about 30 seconds ago so recency check passes
+        end = now_utc - timedelta(seconds=30)
+        # Go back n_rows minutes from end
+        start = end - timedelta(minutes=n_rows - 1)
+        timestamps = [start + timedelta(minutes=i) for i in range(n_rows)]
         df = pd.DataFrame(
             {
                 "Open": [100.0 + i for i in range(n_rows)],
@@ -71,7 +72,12 @@ class TestFetchClosedBars:
 
         df = self._make_df(5)
 
-        with patch("yfinance.Ticker") as mock_ticker:
+        # Patch yfinance and bypass the market-hours and recency filters
+        with patch("yfinance.Ticker") as mock_ticker, patch(
+            "backend.data.yfinance_feed._apply_market_hours_filter", return_value=df.iloc[:-1]
+        ), patch(
+            "backend.data.yfinance_feed._is_stale", return_value=False
+        ):
             mock_ticker.return_value.history.return_value = df
             bars = await fetch_closed_bars("SPY")
 
