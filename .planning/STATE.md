@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: "Checkpoint: waiting for TradingView CSV export (01-04 Task 2)"
-last_updated: "2026-03-16T21:19:54.107Z"
+stopped_at: Completed 01-foundation-strategy-engine/01-01-PLAN.md
+last_updated: "2026-03-16T21:23:49.287Z"
 last_activity: 2026-03-16 — Roadmap created, phase structure defined
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -50,6 +50,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: -
 
 *Updated after each plan completion*
+| Phase 01-foundation-strategy-engine P01 | 5 | 2 tasks | 18 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,10 @@ Recent decisions affecting current work:
 - [Pre-build]: Strategy engine must be validated bar-by-bar against TradingView output BEFORE any UI or WebSocket work begins
 - [Pre-build]: SQLite persistence decision needed before Phase 2 — three options: accept ephemeral, add export endpoint, or add Render Persistent Disk ($1/month)
 - [Phase 01-foundation-strategy-engine]: FYP_BOT_1_3.pine committed to docs/reference/ as read-only PineScript v6 strategy specification (542 lines)
+- [Phase 01-foundation-strategy-engine]: PyJWT 2.12.1 used — python-jose is abandoned and NOT used
+- [Phase 01-foundation-strategy-engine]: Lazy SQLite engine via get_engine() avoids import-time ValidationError without .env
+- [Phase 01-foundation-strategy-engine]: algorithms=['HS256'] explicit in jwt.decode (security requirement)
+- [Phase 01-foundation-strategy-engine]: Single-user auth via env vars — no users table in database
 
 ### Pending Todos
 
@@ -75,6 +80,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T21:19:50.947Z
-Stopped at: Checkpoint: waiting for TradingView CSV export (01-04 Task 2)
+Last session: 2026-03-16T21:23:49.282Z
+Stopped at: Completed 01-foundation-strategy-engine/01-01-PLAN.md
 Resume file: None

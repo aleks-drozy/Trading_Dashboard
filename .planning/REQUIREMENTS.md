@@ -7,9 +7,9 @@
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can log in with email and password
-- [ ] **AUTH-02**: User session persists across browser refresh (JWT)
-- [ ] **AUTH-03**: User can log out from any page
+- [x] **AUTH-01**: User can log in with email and password
+- [x] **AUTH-02**: User session persists across browser refresh (JWT)
+- [x] **AUTH-03**: User can log out from any page
 
 ### Signal Display
 
@@ -92,9 +92,9 @@ Updated during roadmap creation: 2026-03-16
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
-| AUTH-03 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
+| AUTH-03 | Phase 1 | Complete |
 | DATA-01 | Phase 1 | Complete |
 | DATA-02 | Phase 1 | Pending |
 | DATA-03 | Phase 1 | Pending |
