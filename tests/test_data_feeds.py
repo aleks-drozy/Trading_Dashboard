@@ -316,7 +316,13 @@ class TestLifespanFeedWiring:
 
         from backend.main import app
 
-        with patch("backend.main.asyncio.create_task", side_effect=mock_create_task):
+        with patch("backend.main.create_db_and_tables"), patch(
+            "backend.main.seed_defaults"
+        ), patch("backend.main.Session"), patch(
+            "backend.main.get_engine"
+        ), patch(
+            "backend.main.asyncio.create_task", side_effect=mock_create_task
+        ):
             async with app.router.lifespan_context(app):
                 pass
 
@@ -338,9 +344,13 @@ class TestLifespanFeedWiring:
 
         from backend.main import app
 
-        with patch("backend.main.asyncio.create_task", side_effect=mock_create_task), patch(
-            "asyncio.gather", new_callable=AsyncMock
-        ):
+        with patch("backend.main.create_db_and_tables"), patch(
+            "backend.main.seed_defaults"
+        ), patch("backend.main.Session"), patch(
+            "backend.main.get_engine"
+        ), patch(
+            "backend.main.asyncio.create_task", side_effect=mock_create_task
+        ), patch("backend.main.asyncio.gather", new_callable=AsyncMock):
             async with app.router.lifespan_context(app):
                 pass
 

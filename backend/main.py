@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -7,6 +8,8 @@ from backend.database import create_db_and_tables, get_engine
 from backend.auth.router import router as auth_router
 from backend.watchlist.router import router as watchlist_router
 from backend.watchlist.repository import WatchlistRepository
+from backend.data.binance_feed import binance_feed
+from backend.data.yfinance_feed import poll_yfinance_loop
 
 
 def seed_defaults(session: Session) -> None:
@@ -22,7 +25,22 @@ async def lifespan(app: FastAPI):
     create_db_and_tables()
     with Session(get_engine()) as session:
         seed_defaults(session)
+
+    # Build a callable that reads the current watchlist symbols on each call
+    def get_watchlist_symbols() -> list[str]:
+        with Session(get_engine()) as s:
+            return [w.symbol for w in WatchlistRepository(s).get_all()]
+
+    # Start data feed background tasks
+    binance_task = asyncio.create_task(binance_feed.run())
+    yfinance_task = asyncio.create_task(poll_yfinance_loop(get_watchlist_symbols))
+
     yield
+
+    # Graceful shutdown: cancel both feed tasks
+    binance_task.cancel()
+    yfinance_task.cancel()
+    await asyncio.gather(binance_task, yfinance_task, return_exceptions=True)
 
 
 app = FastAPI(title="Trading Dashboard", lifespan=lifespan)
