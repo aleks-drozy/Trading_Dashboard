@@ -22,9 +22,9 @@
 ### Market Data
 
 - [x] **DATA-01**: Backend fetches 1-minute OHLCV bars for US stock symbols via yfinance
-- [ ] **DATA-02**: Backend streams 1-minute crypto bars from Binance WebSocket
-- [ ] **DATA-03**: Data layer validates bar recency and handles stale/missing data gracefully
-- [ ] **DATA-04**: Backend auto-reconnects to Binance WebSocket on drop (including 24h forced disconnect)
+- [x] **DATA-02**: Backend streams 1-minute crypto bars from Binance WebSocket
+- [x] **DATA-03**: Data layer validates bar recency and handles stale/missing data gracefully
+- [x] **DATA-04**: Backend auto-reconnects to Binance WebSocket on drop (including 24h forced disconnect)
 
 ### Charts
 
@@ -96,9 +96,9 @@ Updated during roadmap creation: 2026-03-16
 | AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Complete |
 | DATA-01 | Phase 1 | Complete |
-| DATA-02 | Phase 1 | Pending |
-| DATA-03 | Phase 1 | Pending |
-| DATA-04 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Complete |
+| DATA-03 | Phase 1 | Complete |
+| DATA-04 | Phase 1 | Complete |
 | ASSET-01 | Phase 1 | Complete |
 | ASSET-02 | Phase 1 | Complete |
 | SIG-01 | Phase 2 | Pending |
