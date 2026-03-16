@@ -28,7 +28,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Strategy engine computes IFVG state (Bullish / Bearish / None / Expired), CISD state (Bullish / Bearish), and 20-EMA condition for a given symbol and produces output that matches TradingView Data Window values for the same date range (bar-by-bar diff passes)
   4. Binance WebSocket reconnects automatically on drop and on the proactive 23-hour schedule without manual intervention
   5. User can add and remove symbols from a watchlist via the API and the engine tracks state for all watchlist symbols
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — FastAPI scaffold, pydantic-settings config, SQLModel database, JWT auth endpoints with tests
+- [ ] 01-02-PLAN.md — WatchlistSymbol SQLModel model, repository layer, GET/POST/DELETE API with SPY+BTCUSDT seed
+- [ ] 01-03-PLAN.md — BarStore singleton, yfinance 60-s poller, BinanceFeed with 23-hour restart, lifespan wiring
+- [ ] 01-04-PLAN.md — Commit FYP_BOT_1_3.pine to docs/reference/, export TradingView reference CSVs to tests/fixtures/
+- [ ] 01-05-PLAN.md — TDD strategy engine: compute_ifvg, compute_cisd, compute_ema validated bar-by-bar vs TradingView fixtures
 
 ### Phase 2: Live Signal Dashboard + Paper Trading
 **Goal**: A trader opens the dashboard, logs in, and immediately sees live IFVG / CISD / EMA signal state for all watchlist symbols updating in real-time via WebSocket — and when a signal fires during the NY session the engine automatically places a paper trade and the trader can review the resulting positions and P&L
@@ -56,10 +63,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3
+Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Strategy Engine | 0/TBD | Not started | - |
+| 1. Foundation + Strategy Engine | 0/5 | Not started | - |
 | 2. Live Signal Dashboard + Paper Trading | 0/TBD | Not started | - |
 | 3. Charts, Backtest + Deployment | 0/TBD | Not started | - |
