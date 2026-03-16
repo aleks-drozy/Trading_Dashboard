@@ -12,7 +12,7 @@ Three phases that build the IFVG + CISD + 20-EMA trading signal dashboard from t
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation + Strategy Engine** - FastAPI scaffold, JWT auth, data feeds, and a validated Python IFVG/CISD/EMA engine unit-tested against TradingView output
+- [x] **Phase 1: Foundation + Strategy Engine** - FastAPI scaffold, JWT auth, data feeds, and a validated Python IFVG/CISD/EMA engine unit-tested against TradingView output (completed 2026-03-16)
 - [ ] **Phase 2: Live Signal Dashboard + Paper Trading** - WebSocket signal streaming to a React frontend with signal state display, asset switcher, and automated paper trading engine
 - [ ] **Phase 3: Charts, Backtest + Deployment** - Historical candlestick charts with strategy overlays, backtest P&L curve, and public production deployment on Render + Vercel
 
@@ -67,6 +67,6 @@ Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Strategy Engine | 4/5 | In Progress|  |
+| 1. Foundation + Strategy Engine | 5/5 | Complete   | 2026-03-16 |
 | 2. Live Signal Dashboard + Paper Trading | 0/TBD | Not started | - |
 | 3. Charts, Backtest + Deployment | 0/TBD | Not started | - |

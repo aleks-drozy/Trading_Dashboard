@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-foundation-strategy-engine/01-04-PLAN.md
-last_updated: "2026-03-16T21:41:52.734Z"
+stopped_at: Completed 01-foundation-strategy-engine/01-05-PLAN.md
+last_updated: "2026-03-16T21:49:50.030Z"
 last_activity: 2026-03-16 — Completed watchlist CRUD API (plan 01-02)
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
   percent: 60
 ---
 
@@ -54,6 +54,7 @@ Progress: [██████░░░░] 60%
 | Phase 01-foundation-strategy-engine P02 | 2 min | 2 tasks | 5 files |
 | Phase 01-foundation-strategy-engine P03 | 9min | 2 tasks | 5 files |
 | Phase 01-foundation-strategy-engine P04 | 5 | 2 tasks | 3 files |
+| Phase 01-foundation-strategy-engine P05 | 8min | 6 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation-strategy-engine]: Patchable yfinance helpers (_apply_market_hours_filter, _is_stale) make time-sensitive tests deterministic
 - [Phase 01-foundation-strategy-engine]: Placeholder CSV fixtures accepted — user will replace with real TradingView exports before bar-by-bar validation tests run
 - [Phase 01-foundation-strategy-engine]: Fixture column schema locked: timestamp,open,high,low,close,volume,ifvg_state,cisd_state,ema_20
+- [Phase 01-foundation-strategy-engine]: pandas-ta df.ta.ema(length=20, adjust=False) matches TradingView recursive EMA — no TA-Lib, no ewm(adjust=True)
+- [Phase 01-foundation-strategy-engine]: Lookahead guardrail structural: df.iloc[:-1] as first line of StrategyEngine.run() — lookahead bias test uses synthetic data and passes unconditionally
+- [Phase 01-foundation-strategy-engine]: Bar-by-bar fixture tests skip gracefully on placeholder CSVs — will auto-activate when user replaces with real TradingView exports
 
 ### Pending Todos
 
@@ -90,6 +94,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T21:41:52.729Z
-Stopped at: Completed 01-foundation-strategy-engine/01-04-PLAN.md
+Last session: 2026-03-16T21:49:50.026Z
+Stopped at: Completed 01-foundation-strategy-engine/01-05-PLAN.md
 Resume file: None
