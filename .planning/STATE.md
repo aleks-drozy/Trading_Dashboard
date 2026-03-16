@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Completed 01-foundation-strategy-engine/01-01-PLAN.md
-last_updated: "2026-03-16T21:23:49.287Z"
-last_activity: 2026-03-16 — Roadmap created, phase structure defined
+status: in-progress
+stopped_at: Completed 01-foundation-strategy-engine/01-02-PLAN.md
+last_updated: "2026-03-16T21:27:30Z"
+last_activity: 2026-03-16 — Completed watchlist CRUD API (plan 01-02)
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 5
-  completed_plans: 2
-  percent: 0
+  completed_plans: 3
+  percent: 60
 ---
 
 # Project State
@@ -26,31 +26,32 @@ See: .planning/PROJECT.md (updated 2026-03-16)
 ## Current Position
 
 Phase: 1 of 3 (Foundation + Strategy Engine)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-16 — Roadmap created, phase structure defined
+Plan: 2 of 5 in current phase (plans 01 and 02 complete)
+Status: In progress
+Last activity: 2026-03-16 — Completed watchlist CRUD API (plan 01-02)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 2
+- Average duration: ~4 min
+- Total execution time: ~8 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-foundation-strategy-engine | 2/5 | ~8 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: -
-- Trend: -
+- Last 5 plans: P01 (~5 min), P02 (~2 min)
+- Trend: Fast
 
 *Updated after each plan completion*
-| Phase 01-foundation-strategy-engine P01 | 5 | 2 tasks | 18 files |
+| Phase 01-foundation-strategy-engine P01 | 5 min | 2 tasks | 18 files |
+| Phase 01-foundation-strategy-engine P02 | 2 min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -68,6 +69,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation-strategy-engine]: Lazy SQLite engine via get_engine() avoids import-time ValidationError without .env
 - [Phase 01-foundation-strategy-engine]: algorithms=['HS256'] explicit in jwt.decode (security requirement)
 - [Phase 01-foundation-strategy-engine]: Single-user auth via env vars — no users table in database
+- [Phase 01-foundation-strategy-engine P02]: IntegrityError caught at router layer (not repository) — router owns HTTP semantics
+- [Phase 01-foundation-strategy-engine P02]: seed_defaults() is idempotent — checks get_all() before seeding
+- [Phase 01-foundation-strategy-engine P02]: symbol stored as .upper() in repository.add() for case-insensitive uniqueness
 
 ### Pending Todos
 
@@ -80,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T21:23:49.282Z
-Stopped at: Completed 01-foundation-strategy-engine/01-01-PLAN.md
+Last session: 2026-03-16T21:27:30Z
+Stopped at: Completed 01-foundation-strategy-engine/01-02-PLAN.md
 Resume file: None

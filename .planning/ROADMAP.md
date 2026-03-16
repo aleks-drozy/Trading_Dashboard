@@ -31,8 +31,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 5 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — FastAPI scaffold, pydantic-settings config, SQLModel database, JWT auth endpoints with tests
-- [ ] 01-02-PLAN.md — WatchlistSymbol SQLModel model, repository layer, GET/POST/DELETE API with SPY+BTCUSDT seed
+- [x] 01-01-PLAN.md — FastAPI scaffold, pydantic-settings config, SQLModel database, JWT auth endpoints with tests
+- [x] 01-02-PLAN.md — WatchlistSymbol SQLModel model, repository layer, GET/POST/DELETE API with SPY+BTCUSDT seed
 - [ ] 01-03-PLAN.md — BarStore singleton, yfinance 60-s poller, BinanceFeed with 23-hour restart, lifespan wiring
 - [ ] 01-04-PLAN.md — Commit FYP_BOT_1_3.pine to docs/reference/, export TradingView reference CSVs to tests/fixtures/
 - [ ] 01-05-PLAN.md — TDD strategy engine: compute_ifvg, compute_cisd, compute_ema validated bar-by-bar vs TradingView fixtures
@@ -67,6 +67,6 @@ Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Strategy Engine | 2/5 | In Progress|  |
+| 1. Foundation + Strategy Engine | 2/5 | In Progress | 2026-03-16 (ongoing) |
 | 2. Live Signal Dashboard + Paper Trading | 0/TBD | Not started | - |
 | 3. Charts, Backtest + Deployment | 0/TBD | Not started | - |

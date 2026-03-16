@@ -49,8 +49,8 @@
 
 ### Asset Management
 
-- [ ] **ASSET-01**: User can add symbols (stocks and crypto pairs) to their watchlist via the dashboard
-- [ ] **ASSET-02**: User can remove symbols from the watchlist
+- [x] **ASSET-01**: User can add symbols (stocks and crypto pairs) to their watchlist via the dashboard
+- [x] **ASSET-02**: User can remove symbols from the watchlist
 - [ ] **ASSET-03**: Dashboard streams and displays signal state for all watchlist symbols
 
 ### Deployment
@@ -99,8 +99,8 @@ Updated during roadmap creation: 2026-03-16
 | DATA-02 | Phase 1 | Pending |
 | DATA-03 | Phase 1 | Pending |
 | DATA-04 | Phase 1 | Pending |
-| ASSET-01 | Phase 1 | Pending |
-| ASSET-02 | Phase 1 | Pending |
+| ASSET-01 | Phase 1 | Complete |
+| ASSET-02 | Phase 1 | Complete |
 | SIG-01 | Phase 2 | Pending |
 | SIG-02 | Phase 2 | Pending |
 | SIG-03 | Phase 2 | Pending |
@@ -129,4 +129,4 @@ Updated during roadmap creation: 2026-03-16
 
 ---
 *Requirements defined: 2026-03-16*
-*Last updated: 2026-03-16 — traceability updated after roadmap creation*
+*Last updated: 2026-03-16 — ASSET-01 and ASSET-02 completed (plan 01-02)*
