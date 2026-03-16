@@ -33,9 +33,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — FastAPI scaffold, pydantic-settings config, SQLModel database, JWT auth endpoints with tests
 - [x] 01-02-PLAN.md — WatchlistSymbol SQLModel model, repository layer, GET/POST/DELETE API with SPY+BTCUSDT seed
-- [ ] 01-03-PLAN.md — BarStore singleton, yfinance 60-s poller, BinanceFeed with 23-hour restart, lifespan wiring
-- [ ] 01-04-PLAN.md — Commit FYP_BOT_1_3.pine to docs/reference/, export TradingView reference CSVs to tests/fixtures/
-- [ ] 01-05-PLAN.md — TDD strategy engine: compute_ifvg, compute_cisd, compute_ema validated bar-by-bar vs TradingView fixtures
+- [x] 01-03-PLAN.md — BarStore singleton, yfinance 60-s poller, BinanceFeed with 23-hour restart, lifespan wiring
+- [x] 01-04-PLAN.md — Commit FYP_BOT_1_3.pine to docs/reference/, export TradingView reference CSVs to tests/fixtures/
+- [x] 01-05-PLAN.md — TDD strategy engine: compute_ifvg, compute_cisd, compute_ema validated bar-by-bar vs TradingView fixtures
 
 ### Phase 2: Live Signal Dashboard + Paper Trading
 **Goal**: A trader opens the dashboard, logs in, and immediately sees live IFVG / CISD / EMA signal state for all watchlist symbols updating in real-time via WebSocket — and when a signal fires during the NY session the engine automatically places a paper trade and the trader can review the resulting positions and P&L
@@ -44,10 +44,16 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Dashboard displays live IFVG state, CISD state, and 20-EMA condition per asset, updating at 1-minute bar cadence via WebSocket without a page refresh
   2. Dashboard shows NY session status (active / inactive) and the asset switcher changes displayed signal state without a full page reload
-  3. When IFVG and CISD conditions align during the NY session (9:30–10:30 AM ET), the engine automatically records a paper trade at the open of the next bar
+  3. When IFVG and CISD conditions align during the NY session (9:30-10:30 AM ET), the engine automatically records a paper trade at the open of the next bar
   4. User can view a closed trades list showing entry price, exit price, stop, target, and win/loss outcome for each paper trade
   5. User can view overall portfolio value (starting balance + cumulative paper P&L) on the dashboard
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Backend WebSocket signal broadcaster: NY session utility, SignalBroadcaster class, /ws/signals endpoint, lifespan wiring
+- [ ] 02-02-PLAN.md — Frontend scaffold: Vite + React + TypeScript + Tailwind + shadcn/ui + login page with JWT auth
+- [ ] 02-03-PLAN.md — Backend paper trading engine: PaperTrade model, entry detection, stop/target auto-close, REST endpoints
+- [ ] 02-04-PLAN.md — Frontend dashboard: SignalTable, PortfolioCard, TradesTable, WebSocket hook, DashboardHeader
 
 ### Phase 3: Charts, Backtest + Deployment
 **Goal**: The dashboard has a live candlestick chart with IFVG zone and CISD level overlays, a backtest view showing where signals fired historically and the resulting P&L curve, and the application is deployed publicly on Render and Vercel with a keep-alive mechanism ensuring it is awake before the NY session open
@@ -68,5 +74,5 @@ Phases execute in numeric order: 1 -> 2 -> 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation + Strategy Engine | 5/5 | Complete   | 2026-03-16 |
-| 2. Live Signal Dashboard + Paper Trading | 0/TBD | Not started | - |
+| 2. Live Signal Dashboard + Paper Trading | 0/4 | Planning complete | - |
 | 3. Charts, Backtest + Deployment | 0/TBD | Not started | - |
