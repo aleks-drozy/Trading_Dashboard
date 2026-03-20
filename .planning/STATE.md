@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-04-PLAN.md tasks 1-2; awaiting human verification at checkpoint Task 3
-last_updated: "2026-03-20T21:36:12.984Z"
+stopped_at: Completed 02-04-PLAN.md — all 3 tasks done, visual verification approved
+last_updated: "2026-03-20T22:20:06.665Z"
 progress:
   total_phases: 3
   completed_phases: 2
@@ -55,6 +55,7 @@ Plan: 4 of 4
 | Phase 02-live-signal-dashboard-paper-trading P01 | 7min | 2 tasks | 7 files |
 | Phase 02-live-signal-dashboard-paper-trading P03 | 8 | 2 tasks | 8 files |
 | Phase 02-live-signal-dashboard-paper-trading P04 | 15min | 2 tasks | 14 files |
+| Phase 02-live-signal-dashboard-paper-trading P04 | 35 | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,9 @@ Recent decisions affecting current work:
 - [Phase 02-live-signal-dashboard-paper-trading]: try/except in check_and_close_open_trades() — DB not ready is valid transient state during test isolation; silently skip
 - [Phase 02-live-signal-dashboard-paper-trading]: _MockStrategyResult in tests to avoid numba import chain — mirrors real frozen dataclass
 - [Phase 02-live-signal-dashboard-paper-trading]: Sonner imported directly from 'sonner' package — shadcn generated sonner.tsx had circular self-import; fixed wrapper to use npm package directly
+- [Phase 02-live-signal-dashboard-paper-trading]: wasConnectedRef guards disconnect toast — only fires when established connection drops, not on initial connecting state
+- [Phase 02-live-signal-dashboard-paper-trading]: pandas ewm(adjust=False) replaces pandas_ta to fix llvmlite version mismatch; recursive EMA formula is mathematically identical
+- [Phase 02-live-signal-dashboard-paper-trading]: SignalTable empty state is session-aware — Awaiting market open / NY session 9:30-10:30 AM ET
 
 ### Pending Todos
 
@@ -103,6 +107,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T21:36:12.980Z
-Stopped at: Completed 02-04-PLAN.md tasks 1-2; awaiting human verification at checkpoint Task 3
+Last session: 2026-03-20T22:20:06.658Z
+Stopped at: Completed 02-04-PLAN.md — all 3 tasks done, visual verification approved
 Resume file: None

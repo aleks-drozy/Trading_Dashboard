@@ -51,11 +51,15 @@ key-files:
     - frontend/src/lib/api.ts
     - frontend/src/App.tsx
     - frontend/src/.gitignore
+    - backend/strategy/ema.py
 
 key-decisions:
   - "Sonner imported directly from 'sonner' package in DashboardPage — shadcn sonner.tsx wrapper had circular self-import bug"
   - "frontend/@/ added to .gitignore — shadcn CLI on Windows creates files in wrong path (known issue from Plan 02)"
   - "Toaster/toast from 'sonner' directly in DashboardPage — avoids next-themes dependency from shadcn wrapper"
+  - "wasConnectedRef guards disconnect toast — only fires when established connection drops, not on initial connecting state"
+  - "pandas ewm(adjust=False) replaces pandas_ta to fix llvmlite version mismatch; recursive EMA formula is mathematically identical"
+  - "SignalTable empty state is session-aware: Awaiting market open — signals appear during NY session (9:30-10:30 AM ET)"
 
 patterns-established:
   - "useSignalWebSocket: single hook owns connect/reconnect lifecycle, exposes {signals, nySessionActive, wsStatus}"
@@ -64,7 +68,7 @@ patterns-established:
 
 requirements-completed: [SIG-01, SIG-02, SIG-03, SIG-04, SIG-05, ASSET-03, PAPER-02, PAPER-03]
 
-duration: 15min
+duration: 35min
 completed: 2026-03-20
 ---
 
@@ -74,11 +78,11 @@ completed: 2026-03-20
 
 ## Performance
 
-- **Duration:** ~15 min
+- **Duration:** ~35 min (tasks 1-2 execution + visual verification checkpoint + fixes)
 - **Started:** 2026-03-20T21:30:00Z
-- **Completed:** 2026-03-20T21:45:00Z
-- **Tasks:** 2 of 3 complete (Task 3 = human verification checkpoint)
-- **Files modified:** 14
+- **Completed:** 2026-03-20T22:10:00Z
+- **Tasks:** 3 of 3 complete (including visual verification checkpoint, approved)
+- **Files modified:** 15
 
 ## Accomplishments
 
@@ -95,7 +99,8 @@ completed: 2026-03-20
 
 1. **Task 1: WebSocket hook, SignalPill, DashboardHeader, and SignalTable** - `2967bca` (feat)
 2. **Task 2: PortfolioCard, TradesTable, DashboardPage, and App wiring** - `577fd03` (feat)
-3. **Task 3: Visual verification checkpoint** — awaiting human verification
+3. **Task 3: Visual verification checkpoint** — approved by user
+4. **Verification fixes (post-approval)** - `fd2ab59` (fix)
 
 ## Files Created/Modified
 
@@ -113,6 +118,7 @@ completed: 2026-03-20
 - `frontend/src/components/ui/sonner.tsx` - shadcn Sonner wrapper (fixed circular import)
 - `frontend/src/lib/api.ts` - Added PaperTrade/Portfolio interfaces and fetch functions
 - `frontend/src/App.tsx` - Replaced dashboard placeholder with DashboardPage
+- `backend/strategy/ema.py` - Replaced pandas_ta with pandas ewm(adjust=False) to fix llvmlite mismatch
 
 ## Decisions Made
 
@@ -131,10 +137,34 @@ completed: 2026-03-20
 - **Verification:** `npm run build` passed with exit 0
 - **Committed in:** `577fd03` (Task 2 commit)
 
+**2. [Rule 1 - Bug] Fixed "Connection lost" toast firing on initial page load**
+- **Found during:** Task 3 (visual verification)
+- **Issue:** wsStatus starts as 'disconnected' before WS ever connects, causing the useEffect to fire the error toast immediately on mount
+- **Fix:** Added `wasConnectedRef = useRef(false)` — set to true on first 'connected' event; toast only fires when `wasConnectedRef.current === true && wsStatus === 'disconnected'`
+- **Files modified:** `frontend/src/pages/DashboardPage.tsx`
+- **Verification:** Dashboard loads without spurious toast; toast fires only on real connection drop
+- **Committed in:** `fd2ab59` (post-verification fix commit)
+
+**3. [Rule 1 - Bug] Replaced pandas_ta EMA with pandas ewm(adjust=False)**
+- **Found during:** Task 3 (visual verification — backend strategy import failed at runtime)
+- **Issue:** `pandas_ta` triggers `numba->llvmlite` import chain; llvmlite version mismatch on this machine caused an ImportError when the strategy engine was actually invoked (lazy import deferred the error to runtime)
+- **Fix:** Replaced `df.ta.ema(length=period, adjust=False)` with `df["close"].ewm(span=period, adjust=False).mean()` — mathematically identical recursive EMA formula, zero external dependencies
+- **Files modified:** `backend/strategy/ema.py`
+- **Verification:** Backend starts cleanly; strategy engine runs without ImportError
+- **Committed in:** `fd2ab59` (post-verification fix commit)
+
+**4. [Rule 2 - Missing Critical] Improved SignalTable empty state message**
+- **Found during:** Task 3 (visual verification)
+- **Issue:** "No symbols in watchlist. Add symbols to begin tracking signals." shown even when watchlist has symbols — empty state during NY session closed hours misled users into thinking no symbols were configured
+- **Fix:** Changed to "Awaiting market open — signals will appear during the NY session (9:30–10:30 AM ET)." — contextually accurate for session-gated signal delivery
+- **Files modified:** `frontend/src/components/SignalTable.tsx`
+- **Verification:** Empty state message is now session-aware and does not imply missing watchlist config
+- **Committed in:** `fd2ab59` (post-verification fix commit)
+
 ---
 
-**Total deviations:** 1 auto-fixed (Rule 1 - bug in shadcn-generated file)
-**Impact on plan:** Required for production build to succeed. No scope creep.
+**Total deviations:** 4 auto-fixed (2 Rule 1 bugs, 1 Rule 1 runtime bug, 1 Rule 2 UX clarity)
+**Impact on plan:** All fixes required for correct UX and reliable backend operation. No scope creep.
 
 ## Issues Encountered
 
@@ -172,3 +202,4 @@ Files verified:
 Commits verified:
 - 2967bca: FOUND (Task 1)
 - 577fd03: FOUND (Task 2)
+- fd2ab59: FOUND (verification fixes)
