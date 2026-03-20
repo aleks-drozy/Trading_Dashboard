@@ -33,6 +33,7 @@ from backend.database import get_engine
 from backend.data.bar_store import bar_store
 from backend.watchlist.repository import WatchlistRepository
 from backend.signals.session import is_ny_session_active
+from backend.paper.engine import paper_engine
 
 logger = logging.getLogger(__name__)
 
@@ -90,6 +91,9 @@ class SignalBroadcaster:
 
         signals: list[dict] = []
 
+        # Check open paper trades for stop/target hits before computing new signals
+        paper_engine.check_and_close_open_trades()
+
         for symbol in symbols:
             bars = bar_store.get(symbol)
             if len(bars) < _MIN_BARS:
@@ -112,6 +116,8 @@ class SignalBroadcaster:
             except Exception:
                 logger.exception("StrategyEngine.run() failed for %s", symbol)
                 continue
+
+            paper_engine.on_signal(symbol, result, bars)
 
             signals.append(
                 {

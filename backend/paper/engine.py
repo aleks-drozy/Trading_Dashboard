@@ -57,28 +57,31 @@ class PaperTradingEngine:
 
     def check_and_close_open_trades(self) -> None:
         """Check all open trades against current bar data for stop/target hits."""
-        with Session(get_engine()) as session:
-            repo = PaperTradeRepository(session)
-            open_trades = repo.get_open_trades()
-            for trade in open_trades:
-                bars = bar_store.get(trade.symbol)
-                if not bars:
-                    continue
-                latest_bar = bars[-1]
-                if trade.direction == "Long":
-                    if latest_bar.low <= trade.stop_price:
-                        repo.close_trade(trade, trade.stop_price, "Loss")
-                        logger.info(f"Paper trade CLOSED (stop): {trade.symbol} Long at {trade.stop_price}")
-                    elif latest_bar.high >= trade.target_price:
-                        repo.close_trade(trade, trade.target_price, "Win")
-                        logger.info(f"Paper trade CLOSED (target): {trade.symbol} Long at {trade.target_price}")
-                else:  # Short
-                    if latest_bar.high >= trade.stop_price:
-                        repo.close_trade(trade, trade.stop_price, "Loss")
-                        logger.info(f"Paper trade CLOSED (stop): {trade.symbol} Short at {trade.stop_price}")
-                    elif latest_bar.low <= trade.target_price:
-                        repo.close_trade(trade, trade.target_price, "Win")
-                        logger.info(f"Paper trade CLOSED (target): {trade.symbol} Short at {trade.target_price}")
+        try:
+            with Session(get_engine()) as session:
+                repo = PaperTradeRepository(session)
+                open_trades = repo.get_open_trades()
+                for trade in open_trades:
+                    bars = bar_store.get(trade.symbol)
+                    if not bars:
+                        continue
+                    latest_bar = bars[-1]
+                    if trade.direction == "Long":
+                        if latest_bar.low <= trade.stop_price:
+                            repo.close_trade(trade, trade.stop_price, "Loss")
+                            logger.info(f"Paper trade CLOSED (stop): {trade.symbol} Long at {trade.stop_price}")
+                        elif latest_bar.high >= trade.target_price:
+                            repo.close_trade(trade, trade.target_price, "Win")
+                            logger.info(f"Paper trade CLOSED (target): {trade.symbol} Long at {trade.target_price}")
+                    else:  # Short
+                        if latest_bar.high >= trade.stop_price:
+                            repo.close_trade(trade, trade.stop_price, "Loss")
+                            logger.info(f"Paper trade CLOSED (stop): {trade.symbol} Short at {trade.stop_price}")
+                        elif latest_bar.low <= trade.target_price:
+                            repo.close_trade(trade, trade.target_price, "Win")
+                            logger.info(f"Paper trade CLOSED (target): {trade.symbol} Short at {trade.target_price}")
+        except Exception:
+            logger.debug("check_and_close_open_trades skipped — DB not ready or table missing")
 
     def on_signal(self, symbol: str, result: "StrategyResult", bars: list[Bar]) -> PaperTrade | None:
         """

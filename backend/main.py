@@ -12,6 +12,7 @@ from backend.data.binance_feed import binance_feed
 from backend.data.yfinance_feed import poll_yfinance_loop
 from backend.signals.broadcaster import broadcaster
 from backend.signals.router import router as signals_router
+from backend.paper.router import router as paper_router
 
 
 def seed_defaults(session: Session) -> None:
@@ -51,3 +52,4 @@ app = FastAPI(title="Trading Dashboard", lifespan=lifespan)
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(watchlist_router, prefix="/watchlist", tags=["watchlist"])
 app.include_router(signals_router, tags=["signals"])
+app.include_router(paper_router, prefix="/paper", tags=["paper"])
