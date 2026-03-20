@@ -12,23 +12,25 @@ A trader can open the dashboard during the NY session (9:30–10:30 AM) and inst
 
 ### Validated
 
-(None yet — ship to validate)
+*Validated in Phase 1: Foundation & Strategy Engine (2026-03-16)*
+- [x] User can log in and access a private dashboard
+- [x] Dashboard supports US stocks/indices (Yahoo Finance) and crypto (Binance)
+- [x] Price data streams in real-time via WebSocket (1-minute bars)
+
+*Validated in Phase 2: Live Signal Dashboard + Paper Trading (2026-03-20)*
+- [x] Dashboard shows live IFVG state (Bullish / Bearish / None / Expired) per asset
+- [x] Dashboard shows live CISD state (Bullish / Bearish) per asset
+- [x] Dashboard shows whether 20-EMA condition is met (price above/below)
+- [x] User can place simulated paper trades (long/short) from the dashboard
+- [x] Paper trading engine tracks open positions with entry price, stop, and target
+- [x] Paper trading engine shows P&L per trade and cumulative portfolio value
 
 ### Active
 
-- [ ] User can log in and access a private dashboard
-- [ ] Dashboard shows live IFVG state (Bullish / Bearish / None / Expired) per asset
-- [ ] Dashboard shows live CISD state (Bullish / Bearish) per asset
-- [ ] Dashboard shows whether 20-EMA condition is met (price above/below)
 - [ ] Dashboard shows a combined signal indicator (Long / Short / No Signal)
-- [ ] Price data streams in real-time via WebSocket (1-minute bars)
 - [ ] Historical chart shows candlesticks with IFVG zones and CISD levels overlaid
 - [ ] Historical view shows where signals fired (entry markers on chart)
 - [ ] Backtest P&L curve shows cumulative performance over time
-- [ ] User can place simulated paper trades (long/short) from the dashboard
-- [ ] Paper trading engine tracks open positions with entry price, stop, and target
-- [ ] Paper trading engine shows P&L per trade and cumulative portfolio value
-- [ ] Dashboard supports US stocks/indices (Yahoo Finance) and crypto (Binance)
 - [ ] User can switch between assets on the dashboard
 - [ ] Application is deployed publicly with a shareable URL
 
@@ -68,4 +70,4 @@ A trader can open the dashboard during the NY session (9:30–10:30 AM) and inst
 | SQLite for v1 (paper trading data) | No infra cost, simple, sufficient for single user | — Pending |
 
 ---
-*Last updated: 2026-03-16 after initialization*
+*Last updated: 2026-03-20 — Phase 2 complete*
