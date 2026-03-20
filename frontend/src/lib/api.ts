@@ -25,3 +25,35 @@ export async function fetchWithAuth(url: string, init?: RequestInit): Promise<Re
     headers: { ...getAuthHeaders(), ...init?.headers },
   })
 }
+
+export interface PaperTrade {
+  id: number
+  symbol: string
+  direction: string
+  entry_price: number
+  exit_price: number | null
+  stop_price: number
+  target_price: number
+  pnl: number | null
+  outcome: string | null
+  closed_at: string | null
+}
+
+export interface Portfolio {
+  starting_balance: number
+  total_pnl: number
+  current_balance: number
+  pnl_percent: number
+}
+
+export async function fetchTrades(): Promise<PaperTrade[]> {
+  const res = await fetchWithAuth('/paper/trades')
+  if (!res.ok) throw new Error('Failed to fetch trades')
+  return res.json()
+}
+
+export async function fetchPortfolio(): Promise<Portfolio> {
+  const res = await fetchWithAuth('/paper/portfolio')
+  if (!res.ok) throw new Error('Failed to fetch portfolio')
+  return res.json()
+}
