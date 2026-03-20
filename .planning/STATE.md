@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-03-20T21:13:59.115Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-20T21:14:27.471Z"
 progress:
   total_phases: 3
   completed_phases: 1
@@ -52,6 +52,7 @@ Plan: 3 of 4
 | Phase 01-foundation-strategy-engine P04 | 5 | 2 tasks | 3 files |
 | Phase 01-foundation-strategy-engine P05 | 8min | 6 tasks | 9 files |
 | Phase 02-live-signal-dashboard-paper-trading P02 | 7 min | 2 tasks | 15 files |
+| Phase 02-live-signal-dashboard-paper-trading P01 | 7min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation-strategy-engine]: Bar-by-bar fixture tests skip gracefully on placeholder CSVs — will auto-activate when user replaces with real TradingView exports
 - [Phase 02-live-signal-dashboard-paper-trading]: Vite 6 used instead of Vite 8 — Node 21.7.1 is incompatible with rolldown bundler in Vite 8; Vite 6 supports Node 18+
 - [Phase 02-live-signal-dashboard-paper-trading]: shadcn/ui CLI creates components in literal @/ path on Windows — must be moved to src/components/ui/ after generation
+- [Phase 02-live-signal-dashboard-paper-trading]: StrategyEngine imported lazily inside _get_engine() to avoid pandas_ta->numba->llvmlite import chain at module load — keeps test suite importable in environments where native libs are mismatched
+- [Phase 02-live-signal-dashboard-paper-trading]: WebSocket auth uses ?token= query param (not Authorization header) — browsers do not support custom headers on WebSocket upgrade
+- [Phase 02-live-signal-dashboard-paper-trading]: SignalBroadcaster.broadcast() silently removes dead clients on exception — maintains loop stability when clients disconnect mid-broadcast
 
 ### Pending Todos
 
@@ -93,6 +97,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T21:13:38.021Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-03-20T21:14:27.466Z
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None
