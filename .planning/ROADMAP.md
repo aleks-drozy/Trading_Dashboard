@@ -13,7 +13,7 @@ Three phases that build the IFVG + CISD + 20-EMA trading signal dashboard from t
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation + Strategy Engine** - FastAPI scaffold, JWT auth, data feeds, and a validated Python IFVG/CISD/EMA engine unit-tested against TradingView output (completed 2026-03-16)
-- [ ] **Phase 2: Live Signal Dashboard + Paper Trading** - WebSocket signal streaming to a React frontend with signal state display, asset switcher, and automated paper trading engine
+- [x] **Phase 2: Live Signal Dashboard + Paper Trading** - WebSocket signal streaming to a React frontend with signal state display, asset switcher, and automated paper trading engine (completed 2026-03-20)
 - [ ] **Phase 3: Charts, Backtest + Deployment** - Historical candlestick charts with strategy overlays, backtest P&L curve, and public production deployment on Render + Vercel
 
 ## Phase Details
@@ -53,7 +53,7 @@ Plans:
 - [x] 02-01-PLAN.md — Backend WebSocket signal broadcaster: NY session utility, SignalBroadcaster class, /ws/signals endpoint, lifespan wiring
 - [x] 02-02-PLAN.md — Frontend scaffold: Vite + React + TypeScript + Tailwind + shadcn/ui + login page with JWT auth
 - [x] 02-03-PLAN.md — Backend paper trading engine: PaperTrade model, entry detection, stop/target auto-close, REST endpoints
-- [ ] 02-04-PLAN.md — Frontend dashboard: SignalTable, PortfolioCard, TradesTable, WebSocket hook, DashboardHeader
+- [x] 02-04-PLAN.md — Frontend dashboard: SignalTable, PortfolioCard, TradesTable, WebSocket hook, DashboardHeader
 
 ### Phase 3: Charts, Backtest + Deployment
 **Goal**: The dashboard has a live candlestick chart with IFVG zone and CISD level overlays, a backtest view showing where signals fired historically and the resulting P&L curve, and the application is deployed publicly on Render and Vercel with a keep-alive mechanism ensuring it is awake before the NY session open
@@ -74,5 +74,5 @@ Phases execute in numeric order: 1 -> 2 -> 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation + Strategy Engine | 5/5 | Complete   | 2026-03-16 |
-| 2. Live Signal Dashboard + Paper Trading | 3/4 | In Progress|  |
+| 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete   | 2026-03-20 |
 | 3. Charts, Backtest + Deployment | 0/TBD | Not started | - |

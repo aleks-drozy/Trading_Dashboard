@@ -43,9 +43,9 @@
 
 ### Paper Trading
 
-- [ ] **PAPER-01**: Strategy engine automatically places a paper trade when entry conditions are met during live session
-- [ ] **PAPER-02**: User can view a closed trades list with entry price, exit price, stop, target, and win/loss outcome
-- [ ] **PAPER-03**: User can view overall portfolio value (starting balance + cumulative paper P&L)
+- [x] **PAPER-01**: Strategy engine automatically places a paper trade when entry conditions are met during live session
+- [x] **PAPER-02**: User can view a closed trades list with entry price, exit price, stop, target, and win/loss outcome
+- [x] **PAPER-03**: User can view overall portfolio value (starting balance + cumulative paper P&L)
 
 ### Asset Management
 
@@ -107,9 +107,9 @@ Updated during roadmap creation: 2026-03-16
 | SIG-04 | Phase 2 | Complete |
 | SIG-05 | Phase 2 | Complete |
 | ASSET-03 | Phase 2 | Complete |
-| PAPER-01 | Phase 2 | Pending |
-| PAPER-02 | Phase 2 | Pending |
-| PAPER-03 | Phase 2 | Pending |
+| PAPER-01 | Phase 2 | Complete |
+| PAPER-02 | Phase 2 | Complete |
+| PAPER-03 | Phase 2 | Complete |
 | CHART-01 | Phase 3 | Pending |
 | CHART-02 | Phase 3 | Pending |
 | CHART-03 | Phase 3 | Pending |
