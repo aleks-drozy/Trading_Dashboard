@@ -14,10 +14,10 @@
 ### Signal Display
 
 - [x] **SIG-01**: Dashboard shows live IFVG state (Bullish / Bearish / None / Expired) per asset
-- [ ] **SIG-02**: Dashboard shows live CISD state (Bullish / Bearish) per asset
-- [ ] **SIG-03**: Dashboard shows 20-EMA condition (price above / below) per asset
+- [x] **SIG-02**: Dashboard shows live CISD state (Bullish / Bearish) per asset
+- [x] **SIG-03**: Dashboard shows 20-EMA condition (price above / below) per asset
 - [x] **SIG-04**: Signal state updates in real-time via WebSocket (1-minute bar cadence)
-- [ ] **SIG-05**: Dashboard shows NY session status (active / inactive)
+- [x] **SIG-05**: Dashboard shows NY session status (active / inactive)
 
 ### Market Data
 
@@ -51,7 +51,7 @@
 
 - [x] **ASSET-01**: User can add symbols (stocks and crypto pairs) to their watchlist via the dashboard
 - [x] **ASSET-02**: User can remove symbols from the watchlist
-- [ ] **ASSET-03**: Dashboard streams and displays signal state for all watchlist symbols
+- [x] **ASSET-03**: Dashboard streams and displays signal state for all watchlist symbols
 
 ### Deployment
 
@@ -102,11 +102,11 @@ Updated during roadmap creation: 2026-03-16
 | ASSET-01 | Phase 1 | Complete |
 | ASSET-02 | Phase 1 | Complete |
 | SIG-01 | Phase 2 | Complete |
-| SIG-02 | Phase 2 | Pending |
-| SIG-03 | Phase 2 | Pending |
+| SIG-02 | Phase 2 | Complete |
+| SIG-03 | Phase 2 | Complete |
 | SIG-04 | Phase 2 | Complete |
-| SIG-05 | Phase 2 | Pending |
-| ASSET-03 | Phase 2 | Pending |
+| SIG-05 | Phase 2 | Complete |
+| ASSET-03 | Phase 2 | Complete |
 | PAPER-01 | Phase 2 | Pending |
 | PAPER-02 | Phase 2 | Pending |
 | PAPER-03 | Phase 2 | Pending |
