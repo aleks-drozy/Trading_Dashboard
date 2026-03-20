@@ -50,8 +50,8 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Backend WebSocket signal broadcaster: NY session utility, SignalBroadcaster class, /ws/signals endpoint, lifespan wiring
-- [ ] 02-02-PLAN.md — Frontend scaffold: Vite + React + TypeScript + Tailwind + shadcn/ui + login page with JWT auth
+- [x] 02-01-PLAN.md — Backend WebSocket signal broadcaster: NY session utility, SignalBroadcaster class, /ws/signals endpoint, lifespan wiring
+- [x] 02-02-PLAN.md — Frontend scaffold: Vite + React + TypeScript + Tailwind + shadcn/ui + login page with JWT auth
 - [ ] 02-03-PLAN.md — Backend paper trading engine: PaperTrade model, entry detection, stop/target auto-close, REST endpoints
 - [ ] 02-04-PLAN.md — Frontend dashboard: SignalTable, PortfolioCard, TradesTable, WebSocket hook, DashboardHeader
 
@@ -74,5 +74,5 @@ Phases execute in numeric order: 1 -> 2 -> 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation + Strategy Engine | 5/5 | Complete   | 2026-03-16 |
-| 2. Live Signal Dashboard + Paper Trading | 0/4 | Planning complete | - |
+| 2. Live Signal Dashboard + Paper Trading | 2/4 | In Progress|  |
 | 3. Charts, Backtest + Deployment | 0/TBD | Not started | - |

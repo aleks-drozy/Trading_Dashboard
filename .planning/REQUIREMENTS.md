@@ -13,10 +13,10 @@
 
 ### Signal Display
 
-- [ ] **SIG-01**: Dashboard shows live IFVG state (Bullish / Bearish / None / Expired) per asset
+- [x] **SIG-01**: Dashboard shows live IFVG state (Bullish / Bearish / None / Expired) per asset
 - [ ] **SIG-02**: Dashboard shows live CISD state (Bullish / Bearish) per asset
 - [ ] **SIG-03**: Dashboard shows 20-EMA condition (price above / below) per asset
-- [ ] **SIG-04**: Signal state updates in real-time via WebSocket (1-minute bar cadence)
+- [x] **SIG-04**: Signal state updates in real-time via WebSocket (1-minute bar cadence)
 - [ ] **SIG-05**: Dashboard shows NY session status (active / inactive)
 
 ### Market Data
@@ -101,10 +101,10 @@ Updated during roadmap creation: 2026-03-16
 | DATA-04 | Phase 1 | Complete |
 | ASSET-01 | Phase 1 | Complete |
 | ASSET-02 | Phase 1 | Complete |
-| SIG-01 | Phase 2 | Pending |
+| SIG-01 | Phase 2 | Complete |
 | SIG-02 | Phase 2 | Pending |
 | SIG-03 | Phase 2 | Pending |
-| SIG-04 | Phase 2 | Pending |
+| SIG-04 | Phase 2 | Complete |
 | SIG-05 | Phase 2 | Pending |
 | ASSET-03 | Phase 2 | Pending |
 | PAPER-01 | Phase 2 | Pending |
