@@ -4,7 +4,7 @@ EMA (Exponential Moving Average) computation.
 Logic extracted from docs/reference/FYP_BOT_1_3.pine line 499:
     ema = ta.ema(emaSource, emaLength)   # emaLength = 20, emaSource = close
 
-pandas-ta with adjust=False matches TradingView's recursive EMA formula:
+pandas ewm(adjust=False) matches TradingView's recursive EMA formula exactly:
     EMA[t] = alpha * close[t] + (1 - alpha) * EMA[t-1]
     alpha = 2 / (length + 1)
 
@@ -15,7 +15,6 @@ Do NOT use:
 """
 
 import pandas as pd
-import pandas_ta as ta  # type: ignore
 
 
 def compute_ema(df: pd.DataFrame, period: int = 20) -> pd.Series:
@@ -35,8 +34,6 @@ def compute_ema(df: pd.DataFrame, period: int = 20) -> pd.Series:
         EMA values. Index matches df.index.
         First (period - 1) values will be NaN (insufficient history).
     """
-    result = df.ta.ema(close=df["close"], length=period, adjust=False)
-    if result is None:
-        raise ValueError(f"pandas-ta returned None for EMA(period={period}) — check DataFrame length")
+    result = df["close"].ewm(span=period, adjust=False).mean()
     result.name = "ema_20"
     return result

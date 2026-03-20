@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Toaster, toast } from 'sonner'
 import { DashboardHeader } from '@/components/DashboardHeader'
 import { SignalTable } from '@/components/SignalTable'
@@ -11,6 +11,7 @@ export default function DashboardPage() {
   const { signals, nySessionActive, wsStatus } = useSignalWebSocket()
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
   const [trades, setTrades] = useState<PaperTrade[]>([])
+  const wasConnectedRef = useRef(false)
 
   const loadData = useCallback(async () => {
     try {
@@ -28,9 +29,11 @@ export default function DashboardPage() {
     return () => clearInterval(interval)
   }, [loadData])
 
-  // Show toast on WS disconnect
+  // Show toast only when a previously established connection drops
   useEffect(() => {
-    if (wsStatus === 'disconnected') {
+    if (wsStatus === 'connected') {
+      wasConnectedRef.current = true
+    } else if (wsStatus === 'disconnected' && wasConnectedRef.current) {
       toast.error('Connection lost. Reconnecting...')
     }
   }, [wsStatus])

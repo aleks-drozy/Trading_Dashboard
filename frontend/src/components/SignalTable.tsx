@@ -21,7 +21,7 @@ export function SignalTable({ signals }: { signals: Signal[] }) {
   if (signals.length === 0) {
     return (
       <div className="py-12 text-center text-sm" style={{ color: '#6B7280' }}>
-        No symbols in watchlist. Add symbols to begin tracking signals.
+        Awaiting market open — signals will appear during the NY session (9:30–10:30 AM ET).
       </div>
     )
   }
