@@ -64,7 +64,13 @@ Plans:
   2. User can run a historical signal replay over a selected date range and see entry markers on the chart plus trade statistics (total trades, win rate, average R-multiple) and a cumulative P&L equity curve
   3. Application is accessible via a public shareable URL with the backend on Render and frontend on Vercel, both requiring login before any data is visible
   4. Backend wakes up before 9:30 AM ET via a keep-alive cron ping, confirmed by the health endpoint responding before session open
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Backend chart + backtest endpoints, health check, CORS middleware
+- [ ] 03-02-PLAN.md — Deployment configs (render.yaml, vercel.json) + frontend env var setup
+- [ ] 03-03-PLAN.md — Frontend candlestick chart page with EMA, IFVG zones, CISD level, entry markers
+- [ ] 03-04-PLAN.md — Frontend backtest page with equity curve and trade statistics
 
 ## Progress
 
@@ -75,4 +81,4 @@ Phases execute in numeric order: 1 -> 2 -> 3
 |-------|----------------|--------|-----------|
 | 1. Foundation + Strategy Engine | 5/5 | Complete   | 2026-03-16 |
 | 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete   | 2026-03-20 |
-| 3. Charts, Backtest + Deployment | 0/TBD | Not started | - |
+| 3. Charts, Backtest + Deployment | 0/4 | In progress | - |
