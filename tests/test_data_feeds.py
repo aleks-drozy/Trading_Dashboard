@@ -300,11 +300,11 @@ class TestBinanceFeedWatchdog:
 
 
 class TestLifespanFeedWiring:
-    """Tests 11-12: Lifespan starts and cancels both feed tasks"""
+    """Tests 11-12: Lifespan starts and cancels all background tasks (feeds + signal broadcaster)"""
 
     @pytest.mark.asyncio
-    async def test_lifespan_creates_two_tasks(self):
-        """Test 11: lifespan startup creates asyncio tasks for both feed coroutines"""
+    async def test_lifespan_creates_three_tasks(self):
+        """Test 11: lifespan startup creates asyncio tasks for binance feed, yfinance feed, and signal broadcaster"""
         created_tasks = []
 
         real_create_task = asyncio.create_task
@@ -326,11 +326,11 @@ class TestLifespanFeedWiring:
             async with app.router.lifespan_context(app):
                 pass
 
-        assert len(created_tasks) == 2
+        assert len(created_tasks) == 3
 
     @pytest.mark.asyncio
-    async def test_lifespan_cancels_both_tasks_on_shutdown(self):
-        """Test 12: lifespan shutdown calls cancel() on both tasks"""
+    async def test_lifespan_cancels_all_tasks_on_shutdown(self):
+        """Test 12: lifespan shutdown calls cancel() on all three background tasks"""
         mock_tasks = []
 
         def mock_create_task(coro, **kwargs):
@@ -354,6 +354,6 @@ class TestLifespanFeedWiring:
             async with app.router.lifespan_context(app):
                 pass
 
-        assert len(mock_tasks) == 2
+        assert len(mock_tasks) == 3
         for task in mock_tasks:
             task.cancel.assert_called_once()

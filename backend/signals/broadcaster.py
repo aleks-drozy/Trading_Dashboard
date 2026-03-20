@@ -31,7 +31,6 @@ from sqlmodel import Session
 
 from backend.database import get_engine
 from backend.data.bar_store import bar_store
-from backend.strategy.engine import StrategyEngine
 from backend.watchlist.repository import WatchlistRepository
 from backend.signals.session import is_ny_session_active
 
@@ -46,7 +45,19 @@ class SignalBroadcaster:
 
     def __init__(self) -> None:
         self._clients: list[WebSocket] = []
-        self._engine = StrategyEngine()
+        self._engine = None  # Lazy-initialized on first use (see _get_engine)
+
+    def _get_engine(self):
+        """Return the StrategyEngine, initialising it lazily on first access.
+
+        Lazy import avoids pulling in pandas_ta -> numba -> llvmlite at module
+        import time, which would break the test suite in environments where the
+        native library versions do not match.
+        """
+        if self._engine is None:
+            from backend.strategy.engine import StrategyEngine  # noqa: PLC0415
+            self._engine = StrategyEngine()
+        return self._engine
 
     def connect(self, ws: WebSocket) -> None:
         """Register a new WebSocket client."""
@@ -97,7 +108,7 @@ class SignalBroadcaster:
             )
 
             try:
-                result = self._engine.run(df)
+                result = self._get_engine().run(df)
             except Exception:
                 logger.exception("StrategyEngine.run() failed for %s", symbol)
                 continue
