@@ -53,16 +53,18 @@ Exceptions:
 
 ## Typography
 
+Two weights only: **400** (regular) and **600** (semibold). Labels maintain visual hierarchy through `uppercase + tracking-wider` treatment rather than a separate weight.
+
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
 | Body | 14px | 400 | 1.5 | Table cells, stat values, descriptions, chart tooltip labels |
-| Label | 12px | 500 | 1.4 | Table headers (`text-xs uppercase tracking-wider`), chart axis ticks, pill text |
+| Label | 12px | 400 | 1.4 | Table headers (`text-xs uppercase tracking-wider`), chart axis ticks, pill text |
 | Heading | 20px | 600 | 1.3 | Section headings (`text-xl font-semibold`), card titles |
-| Display | 28px | 700 | 1.2 | Portfolio balance value (`text-[28px] font-bold`) |
+| Display | 28px | 600 | 1.2 | Portfolio balance value (`text-[28px] font-semibold`) |
 
 Font: `Inter` loaded via system stack `'Inter', sans-serif`.
 
-No additional font sizes may be introduced. Stat values in the backtest summary panel (total trades, win rate, avg R-multiple) use body (14px / 400). Their numeric values use heading (20px / 600).
+No additional font sizes or weights may be introduced. Stat values in the backtest summary panel (total trades, win rate, avg R-multiple) use body (14px / 400). Their numeric values use heading (20px / 600).
 
 ---
 
@@ -92,6 +94,17 @@ IFVG zone overlay colors (on chart canvas, not DOM):
 - Bearish IFVG zone: `rgba(239, 68, 68, 0.20)` fill (red-500 at 20% opacity)
 
 CISD horizontal level line: `#F1C40F` (yellow-400), 1px dashed — distinct from all other semantic colors to avoid confusion with P&L.
+
+---
+
+## Focal Points
+
+One primary visual anchor is declared per route. All layout decisions must support drawing the eye to this anchor first.
+
+| Route | Primary Focal Point |
+|-------|---------------------|
+| `/chart` (ChartPage) | The CandlestickChart canvas (400px tall, full content width). All surrounding elements — symbol selector, timeframe controls — are secondary chrome that must not compete for visual weight. |
+| `/backtest` (BacktestPage) | The "Run Backtest" CTA button (accent fill, full-width on mobile / right-aligned on desktop) until results are present. Once a backtest completes, the focal point shifts to the EquityCurve panel, which should appear immediately below the form without scroll. |
 
 ---
 
