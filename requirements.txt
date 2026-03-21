@@ -2,7 +2,8 @@ fastapi>=0.115
 uvicorn[standard]>=0.30
 sqlmodel>=0.0.21
 PyJWT>=2.12.1
-bcrypt>=4.2
+bcrypt==4.0.1
+passlib>=1.7.4
 pydantic-settings>=2.0
 python-dotenv>=1.0
 python-binance==1.0.35
