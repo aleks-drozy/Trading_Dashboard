@@ -1,30 +1,32 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: unknown
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-03-21T02:35:33.080Z"
+milestone: v1.1
+milestone_name: Real-time Feed + Multi-Timeframe Charts
+status: defining_requirements
+stopped_at: ""
+last_updated: "2026-03-21T00:00:00.000Z"
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 13
-  completed_plans: 13
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-16)
+See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Open the dashboard during the NY session and instantly see whether IFVG + CISD + EMA conditions align for a trade — without TradingView open.
-**Current focus:** Phase 03 — charts-backtest-deployment
+**Current focus:** Defining requirements for v1.1
 
 ## Current Position
 
-Phase: 03
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-21 — Milestone v1.1 started
 
 ## Performance Metrics
 

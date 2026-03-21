@@ -25,14 +25,19 @@ A trader can open the dashboard during the NY session (9:30–10:30 AM) and inst
 - [x] Paper trading engine tracks open positions with entry price, stop, and target
 - [x] Paper trading engine shows P&L per trade and cumulative portfolio value
 
+*Validated in Phase 3: Charts, Backtest + Deployment (2026-03-21)*
+- [x] Dashboard shows a combined signal indicator (Long / Short / No Signal)
+- [x] Historical chart shows candlesticks with IFVG zones and CISD levels overlaid
+- [x] Historical view shows where signals fired (entry markers on chart)
+- [x] Backtest P&L curve shows cumulative performance over time
+- [x] User can switch between assets on the dashboard
+- [x] Application is deployed publicly with a shareable URL
+
 ### Active
 
-- [ ] Dashboard shows a combined signal indicator (Long / Short / No Signal)
-- [ ] Historical chart shows candlesticks with IFVG zones and CISD levels overlaid
-- [ ] Historical view shows where signals fired (entry markers on chart)
-- [ ] Backtest P&L curve shows cumulative performance over time
-- [ ] User can switch between assets on the dashboard
-- [ ] Application is deployed publicly with a shareable URL
+- [ ] US stock data streams via Alpaca WebSocket (real-time, replaces yfinance polling)
+- [ ] Chart page has a timeframe switcher (1m / 5m / 15m / 1h) with overlays recomputed per TF
+- [ ] User can add and remove watchlist symbols from the dashboard UI (no API access needed)
 
 ### Out of Scope
 
@@ -49,7 +54,7 @@ A trader can open the dashboard during the NY session (9:30–10:30 AM) and inst
 - **Entry signal**: IFVG state + CISD state must align (both bullish = Long signal, both bearish = Short signal), confirmed by price above/below 20-EMA
 - **Session filter**: NY session only, 9:30–10:30 AM ET, weekdays
 - **Risk management**: swing high/low stops, 1.5:1 R:R, max 1 trade per day
-- Stock data: Yahoo Finance (free, no API key needed via `yfinance`)
+- Stock data: Alpaca WebSocket API (free tier, requires API key; replaces yfinance 60s polling from v1.1)
 - Crypto data: Binance WebSocket API (free, no key needed for public market data)
 
 ## Constraints
@@ -69,5 +74,31 @@ A trader can open the dashboard during the NY session (9:30–10:30 AM) and inst
 | Re-implement strategy in Python | Can't run PineScript server-side; Python logic mirrors Pine logic | — Pending |
 | SQLite for v1 (paper trading data) | No infra cost, simple, sufficient for single user | — Pending |
 
+## Current Milestone: v1.1 Real-time Feed + Multi-Timeframe Charts
+
+**Goal:** Replace yfinance polling with Alpaca WebSocket for real-time stock data, add multi-timeframe chart views (1m/5m/15m/1h), and give the dashboard a watchlist management UI.
+
+**Target features:**
+- Alpaca WebSocket real-time stock feed (replaces yfinance 60s polling)
+- Multi-timeframe chart switcher with IFVG/CISD overlays recomputed per timeframe
+- Watchlist management UI in the dashboard sidebar (add/remove symbols without API access)
+
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
 ---
-*Last updated: 2026-03-20 — Phase 2 complete*
+*Last updated: 2026-03-21 — Milestone v1.1 started*
