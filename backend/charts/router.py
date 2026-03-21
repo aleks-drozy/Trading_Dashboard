@@ -26,6 +26,35 @@ RISK_PER_TRADE = 1000.0
 SWING_LOOKBACK = 8
 RISK_REWARD_RATIO = 1.5
 
+VALID_TIMEFRAMES = {1, 5, 15, 60}
+MIN_BARS_REQUIRED = 22  # 20 for EMA warm-up + 2 for IFVG detection window
+
+RESAMPLE_RULES = {
+    "open":   "first",
+    "high":   "max",
+    "low":    "min",
+    "close":  "last",
+    "volume": "sum",
+}
+
+
+def resample_bars(df: pd.DataFrame, minutes: int) -> pd.DataFrame:
+    """
+    Resample a 1-minute OHLCV DataFrame to a higher timeframe.
+
+    For timeframe=1: returns df.iloc[:-1] (drops in-progress bar only).
+    For timeframe>1: resamples using pandas resample(), drops empty buckets
+    via dropna(), then drops the last in-progress aggregated bar via iloc[:-1].
+
+    Raises ValueError for unsupported timeframes (not in VALID_TIMEFRAMES).
+    """
+    if minutes not in VALID_TIMEFRAMES:
+        raise ValueError(f"Invalid timeframe: {minutes}")
+    if minutes == 1:
+        return df.iloc[:-1].copy()
+    resampled = df.resample(f"{minutes}min").agg(RESAMPLE_RULES).dropna()
+    return resampled.iloc[:-1]
+
 
 def extract_ifvg_zones(df: pd.DataFrame) -> list[dict]:
     """
@@ -299,13 +328,20 @@ def extract_entry_markers(
 @router.get("/chart/bars/{symbol}")
 async def get_chart_bars(
     symbol: str,
+    timeframe: int = 1,
     _user: str = Depends(get_current_user),
 ) -> dict:
     """
     Return OHLCV bars, EMA, IFVG zones, CISD level, and entry markers for a symbol.
 
+    Optional query param:
+        timeframe (int): bar resolution in minutes. Must be 1, 5, 15, or 60. Default 1.
+
     All timestamps are Unix epoch seconds (required by lightweight-charts).
     """
+    if timeframe not in VALID_TIMEFRAMES:
+        raise HTTPException(status_code=422, detail="timeframe must be 1, 5, 15, or 60")
+
     bars = bar_store.get(symbol.upper())
     if not bars:
         raise HTTPException(status_code=404, detail=f"No bars available for symbol {symbol.upper()}")
@@ -313,7 +349,7 @@ async def get_chart_bars(
     # Build DataFrame
     df = pd.DataFrame([
         {
-            "timestamp": pd.to_datetime(b.timestamp),
+            "timestamp": pd.to_datetime(b.timestamp, utc=True),
             "open": b.open,
             "high": b.high,
             "low": b.low,
@@ -323,6 +359,14 @@ async def get_chart_bars(
         for b in bars
     ])
     df.set_index("timestamp", inplace=True)
+
+    # Resample to requested timeframe and drop in-progress bar
+    df = resample_bars(df, timeframe)
+    if len(df) < MIN_BARS_REQUIRED:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Insufficient bars for {timeframe}m timeframe — need {MIN_BARS_REQUIRED}, got {len(df)}"
+        )
 
     # Compute strategy overlays
     ema_series = compute_ema(df, period=20)

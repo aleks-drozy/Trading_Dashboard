@@ -52,6 +52,7 @@ async def lifespan(app: FastAPI):
             settings.alpaca_secret_key,
             stock_symbols,
             bar_store,
+            n_bars=500,
         )
 
     tasks = [
