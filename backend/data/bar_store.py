@@ -32,6 +32,11 @@ class BarStore:
         with self._lock:
             return self._data.get(symbol, [])
 
+    def remove(self, symbol: str) -> None:
+        """Remove all bars for symbol from the store (no-op if absent)."""
+        with self._lock:
+            self._data.pop(symbol, None)
+
     def symbols(self) -> list[str]:
         with self._lock:
             return list(self._data.keys())

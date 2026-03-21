@@ -2,6 +2,7 @@
 import asyncio
 import logging
 from datetime import datetime, timezone, timedelta
+from typing import Callable
 
 from alpaca.data.live import StockDataStream
 from alpaca.data.historical import StockHistoricalDataClient
@@ -17,6 +18,9 @@ WATCHDOG_TIMEOUT_SECONDS = 180  # 3 minutes
 BASE_BACKOFF_SECONDS = 5
 MAX_BACKOFF_SECONDS = 60
 
+# Module-level singleton — imported by watchlist router and main.py
+feed_restart_event = asyncio.Event()
+
 
 class AlpacaFeed:
     """
@@ -28,6 +32,8 @@ class AlpacaFeed:
         symbols: List of stock symbols to subscribe to (e.g. ["SPY", "QQQ"])
         bar_store: BarStore instance (defaults to module-level singleton; injectable for tests)
         feed: DataFeed enum — DataFeed.IEX for free/paper accounts (default)
+        get_symbols: Optional callable returning fresh symbol list on each restart
+        restart_event: Optional asyncio.Event that triggers early stream restart
     """
 
     def __init__(
@@ -37,12 +43,16 @@ class AlpacaFeed:
         symbols: list[str] | None = None,
         bar_store: BarStore | None = None,
         feed: DataFeed = DataFeed.IEX,
+        get_symbols: Callable[[], list[str]] | None = None,
+        restart_event: asyncio.Event | None = None,
     ):
         self._api_key = api_key
         self._secret_key = secret_key
         self.symbols = symbols or []
         self._bar_store = bar_store if bar_store is not None else _default_bar_store
         self._feed = feed
+        self._get_symbols = get_symbols
+        self._restart_event = restart_event or asyncio.Event()
         self._last_bar_time: dict[str, datetime] = {}
 
     def _on_bar(self, bar) -> None:
@@ -89,30 +99,87 @@ class AlpacaFeed:
         """
         Outer loop: exponential backoff reconnect on stream failure.
 
-        Uses asyncio.create_task(stream._run_forever()) — NOT stream.run() — to
-        avoid RuntimeError when run inside FastAPI's existing event loop (alpaca-py #476).
+        When get_symbols callable is provided, refreshes symbol list on each iteration,
+        backfills newly added symbols, and removes bars for deleted symbols.
+        Races the stream task against the restart event using asyncio.wait FIRST_COMPLETED.
         """
         backoff = BASE_BACKOFF_SECONDS
         while True:
             stream = None
             try:
+                # Refresh symbol list from DB if callable provided
+                if self._get_symbols is not None:
+                    fresh_symbols = self._get_symbols()
+                    old_set = set(self.symbols)
+                    new_set = set(fresh_symbols)
+                    added = new_set - old_set
+                    removed = old_set - new_set
+                    for sym in removed:
+                        self._bar_store.remove(sym)
+                    # Backfill newly added symbols before stream starts
+                    if added and self._api_key:
+                        await backfill_bars(
+                            self._api_key,
+                            self._secret_key,
+                            list(added),
+                            self._bar_store,
+                        )
+                    self.symbols = fresh_symbols
+
+                if not self.symbols:
+                    logger.info("AlpacaFeed: no symbols to stream, waiting for restart event")
+                    await self._restart_event.wait()
+                    self._restart_event.clear()
+                    continue
+
                 stream = StockDataStream(
                     api_key=self._api_key,
                     secret_key=self._secret_key,
                     feed=self._feed,
                 )
                 stream.subscribe_bars(self._on_bar, *self.symbols)
-                await asyncio.create_task(stream._run_forever())
-                backoff = BASE_BACKOFF_SECONDS  # reset on clean exit
+                stream_task = asyncio.create_task(stream._run_forever())
+                restart_task = asyncio.create_task(self._wait_for_restart())
+
+                done, pending = await asyncio.wait(
+                    {stream_task, restart_task},
+                    return_when=asyncio.FIRST_COMPLETED,
+                )
+                for t in pending:
+                    t.cancel()
+                    await asyncio.gather(t, return_exceptions=True)
+
+                stream.stop()
+                await asyncio.sleep(1)  # teardown safety margin
+
+                self._restart_event.clear()
+
+                if stream_task in done and restart_task not in done:
+                    # Stream crashed -- apply backoff
+                    exc = stream_task.exception()
+                    if exc:
+                        logger.error("AlpacaFeed error: %s -- retrying in %ds", exc, backoff)
+                    await asyncio.sleep(backoff)
+                    backoff = min(backoff * 2, MAX_BACKOFF_SECONDS)
+                else:
+                    # Triggered restart -- no backoff, reset counter
+                    logger.info("AlpacaFeed: restart event received, reconnecting with updated symbols")
+                    backoff = BASE_BACKOFF_SECONDS
+
             except asyncio.CancelledError:
-                logger.info("AlpacaFeed cancelled — shutting down")
+                logger.info("AlpacaFeed cancelled -- shutting down")
                 if stream is not None:
                     stream.stop()
                 raise
             except Exception as exc:
-                logger.error("AlpacaFeed error: %s — retrying in %ds", exc, backoff)
+                logger.error("AlpacaFeed error: %s -- retrying in %ds", exc, backoff)
+                if stream is not None:
+                    stream.stop()
                 await asyncio.sleep(backoff)
                 backoff = min(backoff * 2, MAX_BACKOFF_SECONDS)
+
+    async def _wait_for_restart(self):
+        await self._restart_event.wait()
 
 
 async def backfill_bars(
