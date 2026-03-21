@@ -9,16 +9,20 @@ All timestamps are Unix epoch SECONDS (not milliseconds) — required by
 lightweight-charts on the frontend.
 """
 
+import asyncio
+import logging
 import math
 import numpy as np
 import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException
 
-from backend.data.bar_store import bar_store
+from backend.data.bar_store import bar_store, Bar
 from backend.dependencies import get_current_user
 from backend.strategy.ema import compute_ema
 from backend.strategy.ifvg import compute_ifvg, IFVG_LOOKBACK
 from backend.strategy.cisd import compute_cisd
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -36,6 +40,62 @@ RESAMPLE_RULES = {
     "close":  "last",
     "volume": "sum",
 }
+
+
+async def _fetch_bars_from_yfinance(symbol: str) -> list[Bar]:
+    """
+    Fallback: fetch recent 1-minute bars from yfinance when bar_store is empty.
+    Uses a 5-day window so data is available on weekends and after market close.
+    No recency gate — historical bars are fine for chart display.
+    """
+    try:
+        import yfinance as yf
+        from datetime import timezone
+
+        df = await asyncio.to_thread(
+            lambda: yf.Ticker(symbol).history(period="5d", interval="1m")
+        )
+    except Exception as exc:
+        logger.warning("yfinance fallback failed for %s: %s", symbol, exc)
+        return []
+
+    if df is None or df.empty:
+        return []
+
+    # Drop the last row — may be an open/incomplete bar
+    df = df.iloc[:-1]
+    if df.empty:
+        return []
+
+    # Normalise timezone to UTC
+    if df.index.tz is None:
+        df.index = df.index.tz_localize("UTC")
+    else:
+        df.index = df.index.tz_convert("UTC")
+
+    # Market-hours filter: 09:30–16:00 US/Eastern
+    try:
+        df_et = df.copy()
+        df_et.index = df_et.index.tz_convert("US/Eastern")
+        filtered_index = df_et.between_time("09:30", "16:00").index.tz_convert("UTC")
+        df = df.loc[df.index.isin(filtered_index)]
+    except Exception:
+        pass
+
+    if df.empty:
+        return []
+
+    return [
+        Bar(
+            timestamp=row.Index.to_pydatetime(),
+            open=float(row.Open),
+            high=float(row.High),
+            low=float(row.Low),
+            close=float(row.Close),
+            volume=float(row.Volume),
+        )
+        for row in df.itertuples()
+    ]
 
 
 def resample_bars(df: pd.DataFrame, minutes: int) -> pd.DataFrame:
@@ -343,6 +403,8 @@ async def get_chart_bars(
         raise HTTPException(status_code=422, detail="timeframe must be 1, 5, 15, or 60")
 
     bars = bar_store.get(symbol.upper())
+    if not bars:
+        bars = await _fetch_bars_from_yfinance(symbol.upper())
     if not bars:
         raise HTTPException(status_code=404, detail=f"No bars available for symbol {symbol.upper()}")
 

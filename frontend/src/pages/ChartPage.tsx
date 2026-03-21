@@ -152,9 +152,8 @@ export default function ChartPage() {
             }}
           >
             {timeframe > 1
-              ? 'Not enough data for the 1h timeframe. Switch to a shorter timeframe or wait for more bars to accumulate.'
-                .replace('1h', TIMEFRAMES.find(tf => tf.value === timeframe)?.label ?? `${timeframe}m`)
-              : 'No chart data available. Add a symbol to your watchlist and wait for the first bar.'}
+              ? `Not enough data for the ${TIMEFRAMES.find(tf => tf.value === timeframe)?.label ?? `${timeframe}m`} timeframe. Switch to a shorter timeframe.`
+              : `No chart data available for ${selectedSymbol}.`}
           </div>
         ) : (
           <CandlestickChart
