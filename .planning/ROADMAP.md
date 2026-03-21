@@ -113,7 +113,11 @@ Plans:
   1. Dashboard sidebar shows all current watchlist symbols with an add field and a remove button per symbol; adding a valid symbol or removing an existing one updates the list immediately with optimistic UI and shows an inline error on failure (duplicate, invalid format, or network error)
   2. Within 30 seconds of adding a new stock symbol via the sidebar, the dashboard starts displaying signal state for that symbol — without restarting the backend
   3. Within 30 seconds of removing a symbol via the sidebar, the dashboard stops displaying signal state for that symbol and BarStore no longer holds bars for it
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Backend: BarStore.remove(), AlpacaFeed dynamic restart with asyncio.Event, async watchlist router, lifespan wiring
+- [ ] 06-02-PLAN.md — Frontend: WatchlistSidebar component with optimistic add/remove, DashboardPage layout integration
 
 ## Progress
 
@@ -127,4 +131,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Charts, Backtest + Deployment | 4/4 | Complete | 2026-03-21 |
 | 4. Alpaca Real-time Feed | 2/2 | Complete   | 2026-03-21 |
 | 5. Multi-Timeframe Chart Aggregation | 2/2 | Complete   | 2026-03-21 |
-| 6. Watchlist Management UI + Dynamic Feed Subscription | 0/? | Not started | - |
+| 6. Watchlist Management UI + Dynamic Feed Subscription | 0/2 | Not started | - |
