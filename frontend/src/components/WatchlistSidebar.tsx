@@ -32,7 +32,7 @@ export function WatchlistSidebar({ signalSymbols }: { signalSymbols: string[] })
       setAddError('Already in watchlist')
       return
     }
-    if (!/^[A-Z0-9.]{1,10}$/.test(sym)) {
+    if (!/^[A-Z][A-Z0-9.]{0,9}$/.test(sym)) {
       setAddError('Invalid ticker format')
       return
     }
