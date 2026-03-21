@@ -99,7 +99,11 @@ Plans:
   1. Chart page shows a pill group switcher with four options (1m / 5m / 15m / 1h); clicking a pill immediately reloads the chart at the selected bar resolution without a full page reload
   2. When the timeframe is 5m, 15m, or 1h, the IFVG zones, CISD level lines, and 20-EMA overlay on the chart match what would be computed by running the strategy engine on bars aggregated to that resolution — not the 1m computation repainted at a higher resolution
   3. After switching the active symbol, the timeframe stays on the last-selected pill (does not reset to 1m)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Backend resample_bars helper, timeframe query param on chart endpoint, backfill depth increase to 500, unit tests
+- [ ] 05-02-PLAN.md — Frontend timeframe pill switcher in ChartPage with state persistence and insufficient-data empty state
 
 ### Phase 6: Watchlist Management UI + Dynamic Feed Subscription
 **Goal**: The trader can add and remove watchlist symbols directly in the dashboard sidebar without touching the API, and AlpacaFeed automatically adjusts which symbols it streams within 30 seconds of any watchlist change — no backend restart required
@@ -122,5 +126,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete | 2026-03-20 |
 | 3. Charts, Backtest + Deployment | 4/4 | Complete | 2026-03-21 |
 | 4. Alpaca Real-time Feed | 2/2 | Complete   | 2026-03-21 |
-| 5. Multi-Timeframe Chart Aggregation | 0/? | Not started | - |
+| 5. Multi-Timeframe Chart Aggregation | 0/2 | Planned | - |
 | 6. Watchlist Management UI + Dynamic Feed Subscription | 0/? | Not started | - |
