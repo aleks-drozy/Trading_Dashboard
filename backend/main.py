@@ -19,6 +19,7 @@ from backend.charts.router import router as charts_router
 from backend.backtest.router import router as backtest_router
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+_ALLOWED_ORIGINS = [FRONTEND_URL, "http://localhost:5173", "http://localhost:5174"]
 
 
 def seed_defaults(session: Session) -> None:
@@ -63,7 +64,7 @@ app = FastAPI(title="Trading Dashboard", lifespan=lifespan)
 # CORS middleware — must be added before router includes
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL],
+    allow_origins=_ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
