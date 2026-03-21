@@ -357,3 +357,225 @@ class TestLifespanFeedWiring:
         assert len(mock_tasks) == 3
         for task in mock_tasks:
             task.cancel.assert_called_once()
+
+
+# ---------------------------------------------------------------------------
+# Tests 13-20: AlpacaFeed WebSocket feed and backfill
+# ---------------------------------------------------------------------------
+
+
+def _make_alpaca_bar(
+    symbol: str = "SPY",
+    timestamp: datetime | None = None,
+    open: float = 400.0,
+    high: float = 401.0,
+    low: float = 399.0,
+    close: float = 400.5,
+    volume: float = 5000.0,
+) -> MagicMock:
+    """Helper: create a mock AlpacaBar with the required fields."""
+    bar = MagicMock()
+    bar.symbol = symbol
+    bar.timestamp = timestamp or datetime.now(timezone.utc)
+    bar.open = open
+    bar.high = high
+    bar.low = low
+    bar.close = close
+    bar.volume = volume
+    return bar
+
+
+class TestAlpacaFeed:
+    """Tests 13-20: AlpacaFeed class and backfill_bars function."""
+
+    def test_on_bar_converts_and_stores(self):
+        """Test 13: _on_bar converts AlpacaBar to project Bar and stores in BarStore."""
+        from backend.data.alpaca_feed import AlpacaFeed
+        from backend.data.bar_store import BarStore
+
+        store = BarStore()
+        feed = AlpacaFeed(api_key="k", secret_key="s", symbols=["SPY"], bar_store=store)
+
+        ts = datetime(2026, 3, 21, 14, 30, tzinfo=timezone.utc)
+        alpaca_bar = _make_alpaca_bar(symbol="SPY", timestamp=ts, close=401.5)
+        feed._on_bar(alpaca_bar)
+
+        bars = store.get("SPY")
+        assert len(bars) == 1
+        assert bars[0].close == 401.5
+        assert bars[0].timestamp == ts
+        assert bars[0].open == 400.0
+
+    def test_on_bar_deduplicates_by_timestamp(self):
+        """Test 14: _on_bar deduplicates by timestamp — calling _on_bar twice with same timestamp gives 1 bar."""
+        from backend.data.alpaca_feed import AlpacaFeed
+        from backend.data.bar_store import BarStore
+
+        store = BarStore()
+        feed = AlpacaFeed(api_key="k", secret_key="s", symbols=["SPY"], bar_store=store)
+
+        ts = datetime(2026, 3, 21, 14, 30, tzinfo=timezone.utc)
+        bar1 = _make_alpaca_bar(symbol="SPY", timestamp=ts, close=400.0)
+        bar2 = _make_alpaca_bar(symbol="SPY", timestamp=ts, close=401.0)
+
+        feed._on_bar(bar1)
+        feed._on_bar(bar2)
+
+        bars = store.get("SPY")
+        assert len(bars) == 1
+        # Second call overwrites the first (latest value wins)
+        assert bars[0].close == 401.0
+
+    def test_on_bar_caps_at_500(self):
+        """Test 15: _on_bar caps BarStore at 500 bars — pre-fill 500, add 1, assert len==500 and newest is the added one."""
+        from backend.data.alpaca_feed import AlpacaFeed
+        from backend.data.bar_store import BarStore, Bar
+
+        store = BarStore()
+        feed = AlpacaFeed(api_key="k", secret_key="s", symbols=["SPY"], bar_store=store)
+
+        # Pre-fill with 500 bars at different timestamps
+        base_ts = datetime(2026, 3, 21, 9, 0, tzinfo=timezone.utc)
+        existing_bars = [
+            Bar(
+                timestamp=base_ts + timedelta(minutes=i),
+                open=100.0,
+                high=101.0,
+                low=99.0,
+                close=100.0,
+                volume=1000.0,
+            )
+            for i in range(500)
+        ]
+        store.update("SPY", existing_bars)
+
+        # Add one new bar with a timestamp after all existing bars
+        new_ts = base_ts + timedelta(minutes=500)
+        new_alpaca_bar = _make_alpaca_bar(symbol="SPY", timestamp=new_ts, close=555.0)
+        feed._on_bar(new_alpaca_bar)
+
+        bars = store.get("SPY")
+        assert len(bars) == 500
+        assert bars[-1].close == 555.0
+        assert bars[-1].timestamp == new_ts
+
+    @pytest.mark.asyncio
+    async def test_backfill_bars_seeds_bar_store(self):
+        """Test 16: backfill_bars seeds BarStore from mocked StockHistoricalDataClient response."""
+        from backend.data.alpaca_feed import backfill_bars
+        from backend.data.bar_store import BarStore
+
+        store = BarStore()
+        ts = datetime(2026, 3, 21, 14, 30, tzinfo=timezone.utc)
+        mock_alpaca_bar = _make_alpaca_bar(symbol="SPY", timestamp=ts)
+
+        mock_bar_set = MagicMock()
+        mock_bar_set.data = {"SPY": [mock_alpaca_bar]}
+
+        with patch("backend.data.alpaca_feed.StockHistoricalDataClient") as mock_client_cls, \
+             patch("asyncio.to_thread") as mock_to_thread:
+            mock_client = MagicMock()
+            mock_client_cls.return_value = mock_client
+            mock_to_thread.return_value = mock_bar_set
+
+            await backfill_bars("key", "secret", ["SPY"], store)
+
+        bars = store.get("SPY")
+        assert len(bars) == 1
+        assert bars[0].close == 400.5
+
+    @pytest.mark.asyncio
+    async def test_backfill_bars_empty_response_logs_warning(self, caplog):
+        """Test 17: backfill_bars with empty response logs WARNING and leaves BarStore empty."""
+        from backend.data.alpaca_feed import backfill_bars
+        from backend.data.bar_store import BarStore
+
+        store = BarStore()
+        mock_bar_set = MagicMock()
+        mock_bar_set.data = {"SPY": []}
+
+        with patch("backend.data.alpaca_feed.StockHistoricalDataClient") as mock_client_cls, \
+             patch("asyncio.to_thread") as mock_to_thread:
+            mock_client = MagicMock()
+            mock_client_cls.return_value = mock_client
+            mock_to_thread.return_value = mock_bar_set
+
+            with caplog.at_level(logging.WARNING, logger="backend.data.alpaca_feed"):
+                await backfill_bars("key", "secret", ["SPY"], store)
+
+        bars = store.get("SPY")
+        assert bars == []
+        assert any("no bars" in record.message.lower() for record in caplog.records)
+
+    def test_check_watchdog_logs_error_when_stale(self, caplog):
+        """Test 18: _check_watchdog logs ERROR when last_bar_time > 3 minutes ago."""
+        from backend.data.alpaca_feed import AlpacaFeed
+        from backend.data.bar_store import BarStore
+
+        store = BarStore()
+        feed = AlpacaFeed(api_key="k", secret_key="s", symbols=["SPY"], bar_store=store)
+
+        stale_time = datetime.now(timezone.utc) - timedelta(minutes=4)
+        feed._last_bar_time["SPY"] = stale_time
+
+        with caplog.at_level(logging.ERROR, logger="backend.data.alpaca_feed"):
+            feed._check_watchdog("SPY")
+
+        assert any("watchdog" in record.message.lower() for record in caplog.records)
+
+    def test_check_watchdog_no_error_when_fresh(self, caplog):
+        """Test 19: _check_watchdog does NOT log error when last_bar_time is recent."""
+        from backend.data.alpaca_feed import AlpacaFeed
+        from backend.data.bar_store import BarStore
+
+        store = BarStore()
+        feed = AlpacaFeed(api_key="k", secret_key="s", symbols=["SPY"], bar_store=store)
+
+        fresh_time = datetime.now(timezone.utc) - timedelta(minutes=1)
+        feed._last_bar_time["SPY"] = fresh_time
+
+        with caplog.at_level(logging.ERROR, logger="backend.data.alpaca_feed"):
+            feed._check_watchdog("SPY")
+
+        error_records = [r for r in caplog.records if r.levelno >= logging.ERROR]
+        assert len(error_records) == 0
+
+    @pytest.mark.asyncio
+    async def test_run_retries_with_exponential_backoff(self):
+        """Test 20: AlpacaFeed.run() retries with exponential backoff when _run_forever raises.
+
+        First call raises Exception -> sleep(5), second call raises Exception -> sleep(10),
+        third call raises CancelledError to exit.
+        """
+        from backend.data.alpaca_feed import AlpacaFeed
+        from backend.data.bar_store import BarStore
+
+        store = BarStore()
+        feed = AlpacaFeed(api_key="k", secret_key="s", symbols=["SPY"], bar_store=store)
+
+        call_count = [0]
+        sleep_args = []
+
+        async def fake_run_forever():
+            call_count[0] += 1
+            if call_count[0] <= 2:
+                raise Exception("test stream error")
+            raise asyncio.CancelledError()
+
+        async def fake_sleep(seconds):
+            sleep_args.append(seconds)
+
+        mock_stream = MagicMock()
+        mock_stream._run_forever = fake_run_forever
+        mock_stream.stop = MagicMock()
+
+        with patch("backend.data.alpaca_feed.StockDataStream", return_value=mock_stream), \
+             patch("asyncio.sleep", side_effect=fake_sleep), \
+             patch("asyncio.create_task", side_effect=lambda coro: asyncio.ensure_future(coro)):
+            try:
+                await feed.run()
+            except asyncio.CancelledError:
+                pass
+
+        assert sleep_args[0] == 5
+        assert sleep_args[1] == 10
