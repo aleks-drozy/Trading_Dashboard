@@ -28,18 +28,18 @@
 
 ### Charts
 
-- [ ] **CHART-01**: User can view a candlestick chart (1-min bars) for a selected asset
-- [ ] **CHART-02**: Chart displays 20-EMA line overlay
-- [ ] **CHART-03**: Chart displays active IFVG zones as coloured rectangles
-- [ ] **CHART-04**: Chart displays CISD level lines as horizontal lines
-- [ ] **CHART-05**: Chart displays Long/Short signal entry markers at the bar where signals fired
+- [x] **CHART-01**: User can view a candlestick chart (1-min bars) for a selected asset
+- [x] **CHART-02**: Chart displays 20-EMA line overlay
+- [x] **CHART-03**: Chart displays active IFVG zones as coloured rectangles
+- [x] **CHART-04**: Chart displays CISD level lines as horizontal lines
+- [x] **CHART-05**: Chart displays Long/Short signal entry markers at the bar where signals fired
 
 ### Backtest
 
-- [ ] **BT-01**: User can run a historical signal replay over a selected date range for an asset
-- [ ] **BT-02**: Backtest chart shows entry markers where signals fired historically
-- [ ] **BT-03**: Backtest displays a cumulative P&L equity curve
-- [ ] **BT-04**: Backtest displays trade statistics: total trades, win rate, average R-multiple
+- [x] **BT-01**: User can run a historical signal replay over a selected date range for an asset
+- [x] **BT-02**: Backtest chart shows entry markers where signals fired historically
+- [x] **BT-03**: Backtest displays a cumulative P&L equity curve
+- [x] **BT-04**: Backtest displays trade statistics: total trades, win rate, average R-multiple
 
 ### Paper Trading
 
@@ -110,15 +110,15 @@ Updated during roadmap creation: 2026-03-16
 | PAPER-01 | Phase 2 | Complete |
 | PAPER-02 | Phase 2 | Complete |
 | PAPER-03 | Phase 2 | Complete |
-| CHART-01 | Phase 3 | Pending |
-| CHART-02 | Phase 3 | Pending |
-| CHART-03 | Phase 3 | Pending |
-| CHART-04 | Phase 3 | Pending |
-| CHART-05 | Phase 3 | Pending |
-| BT-01 | Phase 3 | Pending |
-| BT-02 | Phase 3 | Pending |
-| BT-03 | Phase 3 | Pending |
-| BT-04 | Phase 3 | Pending |
+| CHART-01 | Phase 3 | Complete |
+| CHART-02 | Phase 3 | Complete |
+| CHART-03 | Phase 3 | Complete |
+| CHART-04 | Phase 3 | Complete |
+| CHART-05 | Phase 3 | Complete |
+| BT-01 | Phase 3 | Complete |
+| BT-02 | Phase 3 | Complete |
+| BT-03 | Phase 3 | Complete |
+| BT-04 | Phase 3 | Complete |
 | DEPLOY-01 | Phase 3 | Complete |
 | DEPLOY-02 | Phase 3 | Complete |
 

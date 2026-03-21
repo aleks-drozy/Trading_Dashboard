@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 03-02-PLAN.md
-last_updated: "2026-03-21T01:05:32.257Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-21T01:07:41.364Z"
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 13
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-16)
 ## Current Position
 
 Phase: 03 (charts-backtest-deployment) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Plan: 2 of 4
 | Phase 02-live-signal-dashboard-paper-trading P04 | 15min | 2 tasks | 14 files |
 | Phase 02-live-signal-dashboard-paper-trading P04 | 35 | 3 tasks | 15 files |
 | Phase 03-charts-backtest-deployment P02 | 1min | 2 tasks | 5 files |
+| Phase 03-charts-backtest-deployment P01 | 3 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,9 @@ Recent decisions affecting current work:
 - [Phase 03-charts-backtest-deployment]: API_BASE uses VITE_API_URL ?? '' — empty in dev preserves Vite proxy behavior, full URL in production enables cross-origin requests to Render
 - [Phase 03-charts-backtest-deployment]: render.yaml keep-alive cron at 20 13 * * 1-5 (9:20 AM ET) pings /health to prevent Render free tier sleep before NY session
 - [Phase 03-charts-backtest-deployment]: C:/Program Files/Git/health endpoint added to backend/main.py — required by render.yaml healthCheckPath
+- [Phase 03-charts-backtest-deployment]: extract_ifvg_zones() replicates compute_ifvg loop to return top/bottom/startTime/endTime/type zone geometry for chart overlays
+- [Phase 03-charts-backtest-deployment]: All chart/backtest timestamps returned as Unix epoch SECONDS (not milliseconds) — lightweight-charts API requirement
+- [Phase 03-charts-backtest-deployment]: CORS configured via FRONTEND_URL env var with http://localhost:5173 default for dev/prod parity
 
 ### Pending Todos
 
@@ -111,6 +115,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-21T01:05:32.250Z
-Stopped at: Completed 03-02-PLAN.md
+Last session: 2026-03-21T01:07:41.358Z
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None
