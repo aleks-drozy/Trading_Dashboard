@@ -41,7 +41,9 @@ A trader can open the dashboard during the NY session (9:30–10:30 AM) and inst
 *Validated in Phase 5: Multi-Timeframe Chart Aggregation (2026-03-21)*
 - [x] Chart page has a timeframe switcher (1m / 5m / 15m / 1h) with overlays recomputed per TF
 
-- [ ] User can add and remove watchlist symbols from the dashboard UI (no API access needed)
+*Validated in Phase 6: Watchlist Management UI + Dynamic Feed Subscription (2026-03-21)*
+- [x] User can add and remove watchlist symbols from the dashboard UI (no API access needed)
+- [x] AlpacaFeed dynamically restarts with updated symbol list within 30 seconds — no backend restart required
 
 ### Out of Scope
 
