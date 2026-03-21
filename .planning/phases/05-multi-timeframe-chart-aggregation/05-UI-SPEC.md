@@ -43,7 +43,7 @@ Declared values (must be multiples of 4):
 | 3xl | 64px | Bottom padding of main content area (`pb-16`) |
 
 Exceptions:
-- Pill touch target: `px-3 py-1` (12px horizontal, 4px vertical) — consistent with existing symbol pills in ChartPage.tsx. No 44px override needed (desktop-only dashboard, no mobile requirement in scope).
+- Pill touch target: `px-2 py-1` (8px horizontal, 4px vertical) — consistent with existing symbol pills in ChartPage.tsx. No 44px override needed (desktop-only dashboard, no mobile requirement in scope).
 
 ---
 
@@ -52,11 +52,11 @@ Exceptions:
 | Role | Size | Weight | Line Height | Source |
 |------|------|--------|-------------|--------|
 | Page heading ("Live Chart") | 20px (text-xl) | 600 (font-semibold) | 1.2 | ChartPage.tsx line 91 |
-| Pill label (timeframe + symbol) | 14px (text-sm) | 500 (font-medium) | 1.0 (single line) | ChartPage.tsx line 102 |
+| Pill label (timeframe + symbol) | 14px (text-sm) | 400 (normal) | 1.0 (single line) | ChartPage.tsx line 102 |
 | Body / table / description | 14px (text-sm) | 400 (normal) | 1.5 | Established project convention |
 | Empty / error state message | 14px (text-sm) | 400 (normal) | 1.5 | ChartPage.tsx line 126 |
 
-**Constraint:** Maximum 4 sizes in use on this page. No new sizes introduced. All text uses Inter.
+**Constraint:** Maximum 2 weights in use — 400 (normal) for all pill labels, body, and state text; 600 (semibold) for the page heading only. Maximum 4 sizes on this page. No new sizes introduced. All text uses Inter.
 
 ---
 
@@ -96,7 +96,7 @@ Rendered inside `ChartPage.tsx` as a `<div className="flex items-center gap-2 mb
 
 Pill element spec:
 ```
-className="px-3 py-1 rounded text-sm font-medium transition-colors"
+className="px-2 py-1 rounded text-sm transition-colors"
 ```
 Labels: `1m` | `5m` | `15m` | `1h` (exactly these strings, no other variants).
 
