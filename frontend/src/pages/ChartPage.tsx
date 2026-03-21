@@ -37,12 +37,22 @@ interface ChartResponse {
   markers: EntryMarker[]
 }
 
+const TIMEFRAMES = [
+  { label: '1m',  value: 1  },
+  { label: '5m',  value: 5  },
+  { label: '15m', value: 15 },
+  { label: '1h',  value: 60 },
+] as const
+
+type Timeframe = typeof TIMEFRAMES[number]['value']
+
 export default function ChartPage() {
   const [watchlist, setWatchlist] = useState<string[]>([])
   const [selectedSymbol, setSelectedSymbol] = useState<string>('SPY')
   const [chartData, setChartData] = useState<ChartResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [timeframe, setTimeframe] = useState<Timeframe>(1)
 
   // Fetch watchlist on mount
   useEffect(() => {
@@ -60,12 +70,12 @@ export default function ChartPage() {
       })
   }, [])
 
-  // Fetch chart data when selectedSymbol changes
+  // Fetch chart data when selectedSymbol or timeframe changes
   useEffect(() => {
     if (!selectedSymbol) return
     setLoading(true)
     setError(null)
-    fetchWithAuth(`/chart/bars/${selectedSymbol}`)
+    fetchWithAuth(`/chart/bars/${selectedSymbol}?timeframe=${timeframe}`)
       .then(res => {
         if (res.status === 404) return null
         if (!res.ok) return Promise.reject(res)
@@ -79,7 +89,7 @@ export default function ChartPage() {
         setError('Chart data failed to load. Check your connection and try again.')
         setLoading(false)
       })
-  }, [selectedSymbol])
+  }, [selectedSymbol, timeframe])
 
   const hasData = chartData && chartData.bars.length > 0
 
@@ -112,6 +122,24 @@ export default function ChartPage() {
           </div>
         )}
 
+        {/* Timeframe selector */}
+        <div className="flex items-center gap-2 mb-6">
+          {TIMEFRAMES.map(tf => (
+            <button
+              key={tf.value}
+              onClick={() => setTimeframe(tf.value)}
+              className="px-2 py-1 rounded text-sm transition-colors"
+              style={{
+                backgroundColor: timeframe === tf.value ? '#3B82F6' : 'transparent',
+                color: timeframe === tf.value ? '#FFFFFF' : '#6B7280',
+                border: `1px solid ${timeframe === tf.value ? '#3B82F6' : '#2D3148'}`,
+              }}
+            >
+              {tf.label}
+            </button>
+          ))}
+        </div>
+
         {/* Chart or empty state */}
         {!loading && !error && !hasData ? (
           <div
@@ -123,7 +151,10 @@ export default function ChartPage() {
               color: '#6B7280',
             }}
           >
-            No chart data available. Add a symbol to your watchlist and wait for the first bar.
+            {timeframe > 1
+              ? 'Not enough data for the 1h timeframe. Switch to a shorter timeframe or wait for more bars to accumulate.'
+                .replace('1h', TIMEFRAMES.find(tf => tf.value === timeframe)?.label ?? `${timeframe}m`)
+              : 'No chart data available. Add a symbol to your watchlist and wait for the first bar.'}
           </div>
         ) : (
           <CandlestickChart
