@@ -5,6 +5,7 @@ Tests 7-12: BinanceFeed WebSocket and lifespan wiring
 """
 import asyncio
 import logging
+import os
 from datetime import datetime, timezone, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 import pandas as pd
@@ -302,9 +303,30 @@ class TestBinanceFeedWatchdog:
 class TestLifespanFeedWiring:
     """Tests 11-12: Lifespan starts and cancels all background tasks (feeds + signal broadcaster)"""
 
+    def _make_settings_mock(self):
+        """Return a mock Settings with alpaca credentials set."""
+        settings = MagicMock()
+        settings.alpaca_api_key = "test-api-key"
+        settings.alpaca_secret_key = "test-secret-key"
+        settings.alpaca_data_feed = "iex"
+        return settings
+
+    def _make_session_mock(self):
+        """Return a mock Session context manager that yields a mock with WatchlistRepository support."""
+        mock_watchlist_item = MagicMock()
+        mock_watchlist_item.symbol = "SPY"
+        mock_repo = MagicMock()
+        mock_repo.get_all.return_value = [mock_watchlist_item]
+        mock_session = MagicMock()
+        mock_session_ctx = MagicMock()
+        mock_session_ctx.__enter__ = MagicMock(return_value=mock_session)
+        mock_session_ctx.__exit__ = MagicMock(return_value=False)
+        mock_session_constructor = MagicMock(return_value=mock_session_ctx)
+        return mock_session_constructor, mock_repo
+
     @pytest.mark.asyncio
     async def test_lifespan_creates_three_tasks(self):
-        """Test 11: lifespan startup creates asyncio tasks for binance feed, yfinance feed, and signal broadcaster"""
+        """Test 11: lifespan startup creates 3 asyncio tasks: broadcaster + alpaca_feed + binance_feed (when both keys and ENABLE_BINANCE_FEED are set)"""
         created_tasks = []
 
         real_create_task = asyncio.create_task
@@ -316,12 +338,22 @@ class TestLifespanFeedWiring:
 
         from backend.main import app
 
+        mock_session_cls, mock_repo = self._make_session_mock()
+
         with patch("backend.main.create_db_and_tables"), patch(
             "backend.main.seed_defaults"
-        ), patch("backend.main.Session"), patch(
+        ), patch("backend.main.Session", mock_session_cls), patch(
             "backend.main.get_engine"
         ), patch(
+            "backend.main.WatchlistRepository", return_value=mock_repo
+        ), patch(
+            "backend.main.get_settings", return_value=self._make_settings_mock()
+        ), patch(
+            "backend.main.backfill_bars", new_callable=AsyncMock
+        ), patch(
             "backend.main.asyncio.create_task", side_effect=mock_create_task
+        ), patch.dict(
+            os.environ, {"ENABLE_BINANCE_FEED": "true"}
         ):
             async with app.router.lifespan_context(app):
                 pass
@@ -330,7 +362,7 @@ class TestLifespanFeedWiring:
 
     @pytest.mark.asyncio
     async def test_lifespan_cancels_all_tasks_on_shutdown(self):
-        """Test 12: lifespan shutdown calls cancel() on all three background tasks"""
+        """Test 12: lifespan shutdown calls cancel() on all background tasks (broadcaster + alpaca_feed + binance_feed)"""
         mock_tasks = []
 
         def mock_create_task(coro, **kwargs):
@@ -344,13 +376,25 @@ class TestLifespanFeedWiring:
 
         from backend.main import app
 
+        mock_session_cls, mock_repo = self._make_session_mock()
+
         with patch("backend.main.create_db_and_tables"), patch(
             "backend.main.seed_defaults"
-        ), patch("backend.main.Session"), patch(
+        ), patch("backend.main.Session", mock_session_cls), patch(
             "backend.main.get_engine"
         ), patch(
+            "backend.main.WatchlistRepository", return_value=mock_repo
+        ), patch(
+            "backend.main.get_settings", return_value=self._make_settings_mock()
+        ), patch(
+            "backend.main.backfill_bars", new_callable=AsyncMock
+        ), patch(
             "backend.main.asyncio.create_task", side_effect=mock_create_task
-        ), patch("backend.main.asyncio.gather", new_callable=AsyncMock):
+        ), patch(
+            "backend.main.asyncio.gather", new_callable=AsyncMock
+        ), patch.dict(
+            os.environ, {"ENABLE_BINANCE_FEED": "true"}
+        ):
             async with app.router.lifespan_context(app):
                 pass
 
