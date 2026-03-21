@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-21T17:13:11.177Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-03-21T17:17:40.189Z"
 progress:
   total_phases: 6
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 15
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -61,6 +61,7 @@ Plan: 2 of 2
 | Phase 03-charts-backtest-deployment P03 | 2min | 2 tasks | 4 files |
 | Phase 03-charts-backtest-deployment P04 | 2min | 2 tasks | 6 files |
 | Phase 04-alpaca-real-time-feed P01 | 3min | 2 tasks | 4 files |
+| Phase 04-alpaca-real-time-feed P02 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -116,6 +117,8 @@ Recent decisions affecting current work:
 - [v1.1 roadmap]: Phase 6 depends on Phase 4 (not Phase 5) — watchlist sidebar UI is frontend-only against existing REST API; stream restart diff-check requires only AlpacaFeed to exist
 - [Phase 04-alpaca-real-time-feed]: asyncio.create_task(stream._run_forever()) avoids RuntimeError in FastAPI event loop (alpaca-py #476)
 - [Phase 04-alpaca-real-time-feed]: bar_set.data.get(symbol, []) preferred over bar_set.get() for safe BarSet access
+- [Phase 04-alpaca-real-time-feed]: backfill_bars awaited before AlpacaFeed.run() task — ensures BarStore has historical data before live bars arrive
+- [Phase 04-alpaca-real-time-feed]: AlpacaFeed task guarded by settings.alpaca_api_key — app starts cleanly without Alpaca credentials configured
 
 ### Pending Todos
 
@@ -129,6 +132,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T17:13:11.172Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-03-21T17:17:40.184Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None

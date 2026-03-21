@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation + Strategy Engine** - FastAPI scaffold, JWT auth, data feeds, and a validated Python IFVG/CISD/EMA engine unit-tested against TradingView output (completed 2026-03-16)
 - [x] **Phase 2: Live Signal Dashboard + Paper Trading** - WebSocket signal streaming to a React frontend with signal state display, asset switcher, and automated paper trading engine (completed 2026-03-20)
 - [x] **Phase 3: Charts, Backtest + Deployment** - Historical candlestick charts with strategy overlays, backtest P&L curve, and public production deployment on Render + Vercel (completed 2026-03-21)
-- [ ] **Phase 4: Alpaca Real-time Feed** - Replace yfinance 60s polling with Alpaca WebSocket for real-time US stock bars, seed BarStore via REST backfill on startup, and auto-reconnect with exponential backoff
+- [x] **Phase 4: Alpaca Real-time Feed** - Replace yfinance 60s polling with Alpaca WebSocket for real-time US stock bars, seed BarStore via REST backfill on startup, and auto-reconnect with exponential backoff (completed 2026-03-21)
 - [ ] **Phase 5: Multi-Timeframe Chart Aggregation** - Add a timeframe switcher (1m / 5m / 15m / 1h) to the chart page with IFVG/CISD overlays recomputed per timeframe using server-side pandas resample
 - [ ] **Phase 6: Watchlist Management UI + Dynamic Feed Subscription** - Watchlist sidebar UI for adding and removing symbols, with AlpacaFeed automatically restarting its stream to track watchlist changes
 
@@ -89,7 +89,7 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md — AlpacaFeed class, backfill_bars function, config settings, alpaca-py dependency, tests 13-20
-- [ ] 04-02-PLAN.md — Lifespan wiring: replace poll_yfinance_loop with backfill_bars + AlpacaFeed.run(), update lifespan tests
+- [x] 04-02-PLAN.md — Lifespan wiring: replace poll_yfinance_loop with backfill_bars + AlpacaFeed.run(), update lifespan tests
 
 ### Phase 5: Multi-Timeframe Chart Aggregation
 **Goal**: The chart page lets the trader switch between 1m, 5m, 15m, and 1h bar resolutions, with IFVG zones, CISD levels, and EMA recomputed for the selected timeframe on every switch, and the chosen timeframe persists when the trader selects a different symbol
@@ -121,6 +121,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Foundation + Strategy Engine | 5/5 | Complete | 2026-03-16 |
 | 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete | 2026-03-20 |
 | 3. Charts, Backtest + Deployment | 4/4 | Complete | 2026-03-21 |
-| 4. Alpaca Real-time Feed | 1/2 | In Progress|  |
+| 4. Alpaca Real-time Feed | 2/2 | Complete   | 2026-03-21 |
 | 5. Multi-Timeframe Chart Aggregation | 0/? | Not started | - |
 | 6. Watchlist Management UI + Dynamic Feed Subscription | 0/? | Not started | - |
