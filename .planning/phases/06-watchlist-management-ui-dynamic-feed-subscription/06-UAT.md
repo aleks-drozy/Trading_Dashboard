@@ -1,5 +1,5 @@
 ---
-status: partial
+status: complete
 phase: 06-watchlist-management-ui-dynamic-feed-subscription
 source: [06-01-SUMMARY.md, 06-02-SUMMARY.md]
 started: 2026-03-21T22:00:00Z
@@ -32,9 +32,8 @@ result: pass
 
 ### 5. Invalid ticker format validation
 expected: Type something like "123" or "ab!cd" and try to add it. The sidebar should show an inline error: "Invalid ticker format" — no API call should be made.
-result: issue
-reported: "123 worked and add to the side bar"
-severity: major
+result: pass
+note: "Fixed regex to require first char to be a letter — confirmed by user after fix"
 
 ### 6. Remove a symbol from the watchlist
 expected: Click the remove button next to a symbol. It should disappear from the sidebar immediately (optimistic). The backend removes it and the feed stops streaming bars for that symbol.
@@ -49,20 +48,12 @@ reason: "No ALPACA_API_KEY or ALPACA_SECRET_KEY in .env — feed stream cannot c
 ## Summary
 
 total: 7
-passed: 5
-issues: 1
+passed: 6
+issues: 0
 pending: 0
 skipped: 0
 blocked: 1
 
 ## Gaps
 
-- truth: "Typing '123' or other all-numeric strings should show 'Invalid ticker format' inline error with no API call made"
-  status: failed
-  reason: "User reported: 123 worked and add to the side bar"
-  severity: major
-  test: 5
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+[none]
