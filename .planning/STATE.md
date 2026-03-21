@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 06-02-PLAN.md
-last_updated: "2026-03-21T21:21:02.161Z"
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-03-21T21:21:45.121Z"
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 19
-  completed_plans: 18
+  completed_plans: 19
 ---
 
 # Project State
@@ -66,6 +66,7 @@ Plan: 2 of 2
 | Phase 05-multi-timeframe-chart-aggregation P02 | 1min | 1 tasks | 1 files |
 | Phase 05-multi-timeframe-chart-aggregation P02 | 5min | 2 tasks | 1 files |
 | Phase 06-watchlist-management-ui-dynamic-feed-subscription P02 | 3min | 2 tasks | 3 files |
+| Phase 06-watchlist-management-ui-dynamic-feed-subscription P01 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -130,6 +131,9 @@ Recent decisions affecting current work:
 - [Phase 05-multi-timeframe-chart-aggregation]: Timeframe state uses useState not useRef — component stays mounted across symbol switches so useState already persists
 - [Phase 05-multi-timeframe-chart-aggregation]: Empty state copy uses .replace('1h', label) on a single template string to produce per-timeframe messages without duplication
 - [Phase 06-watchlist-management-ui-dynamic-feed-subscription]: WatchlistSidebar is a 240px sticky panel with same background as page (no elevation); signalSymbols derived from WebSocket signals in DashboardPage and passed as prop for awaiting-data detection
+- [Phase 06-watchlist-management-ui-dynamic-feed-subscription]: Watchlist router converted to async def — asyncio.Event.set() from sync thread-pool routes silently fails to wake event.wait() waiters
+- [Phase 06-watchlist-management-ui-dynamic-feed-subscription]: feed_restart_event as module-level singleton in alpaca_feed.py — mirrors existing bar_store pattern; watchlist router imports and calls event.set() directly
+- [Phase 06-watchlist-management-ui-dynamic-feed-subscription]: get_symbols callable injected into AlpacaFeed — decouples feed from startup-time symbol snapshot; symbols refreshed from DB on every restart iteration
 
 ### Pending Todos
 
@@ -143,6 +147,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T21:21:02.140Z
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-03-21T21:21:45.104Z
+Stopped at: Completed 06-01-PLAN.md
 Resume file: None

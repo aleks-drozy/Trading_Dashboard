@@ -73,9 +73,9 @@
 
 ### Asset Management
 
-- [ ] **ASSET-04**: User can add symbols to the watchlist from the dashboard sidebar UI
-- [ ] **ASSET-05**: User can remove symbols from the watchlist using the dashboard sidebar UI
-- [ ] **ASSET-06**: Alpaca feed automatically picks up watchlist changes and streams data for newly added symbols without a backend restart
+- [x] **ASSET-04**: User can add symbols to the watchlist from the dashboard sidebar UI
+- [x] **ASSET-05**: User can remove symbols from the watchlist using the dashboard sidebar UI
+- [x] **ASSET-06**: Alpaca feed automatically picks up watchlist changes and streams data for newly added symbols without a backend restart
 
 ## v2 Requirements
 
@@ -145,9 +145,9 @@ Updated during roadmap creation: 2026-03-16; v1.1 phases added: 2026-03-21
 | DATA-07 | Phase 4 | Complete |
 | CHART-06 | Phase 5 | Complete |
 | CHART-07 | Phase 5 | Complete |
-| ASSET-04 | Phase 6 | Pending |
-| ASSET-05 | Phase 6 | Pending |
-| ASSET-06 | Phase 6 | Pending |
+| ASSET-04 | Phase 6 | Complete |
+| ASSET-05 | Phase 6 | Complete |
+| ASSET-06 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 28 total — mapped to phases: 28 ✓
