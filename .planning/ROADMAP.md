@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Charts, Backtest + Deployment** - Historical candlestick charts with strategy overlays, backtest P&L curve, and public production deployment on Render + Vercel (completed 2026-03-21)
 - [x] **Phase 4: Alpaca Real-time Feed** - Replace yfinance 60s polling with Alpaca WebSocket for real-time US stock bars, seed BarStore via REST backfill on startup, and auto-reconnect with exponential backoff (completed 2026-03-21)
 - [x] **Phase 5: Multi-Timeframe Chart Aggregation** - Add a timeframe switcher (1m / 5m / 15m / 1h) to the chart page with IFVG/CISD overlays recomputed per timeframe using server-side pandas resample (completed 2026-03-21)
-- [ ] **Phase 6: Watchlist Management UI + Dynamic Feed Subscription** - Watchlist sidebar UI for adding and removing symbols, with AlpacaFeed automatically restarting its stream to track watchlist changes
+- [x] **Phase 6: Watchlist Management UI + Dynamic Feed Subscription** - Watchlist sidebar UI for adding and removing symbols, with AlpacaFeed automatically restarting its stream to track watchlist changes (completed 2026-03-21)
 
 ## Phase Details
 
@@ -116,8 +116,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Backend: BarStore.remove(), AlpacaFeed dynamic restart with asyncio.Event, async watchlist router, lifespan wiring
-- [ ] 06-02-PLAN.md — Frontend: WatchlistSidebar component with optimistic add/remove, DashboardPage layout integration
+- [x] 06-01-PLAN.md — Backend: BarStore.remove(), AlpacaFeed dynamic restart with asyncio.Event, async watchlist router, lifespan wiring
+- [x] 06-02-PLAN.md — Frontend: WatchlistSidebar component with optimistic add/remove, DashboardPage layout integration
 
 ## Progress
 
@@ -131,4 +131,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Charts, Backtest + Deployment | 4/4 | Complete | 2026-03-21 |
 | 4. Alpaca Real-time Feed | 2/2 | Complete   | 2026-03-21 |
 | 5. Multi-Timeframe Chart Aggregation | 2/2 | Complete   | 2026-03-21 |
-| 6. Watchlist Management UI + Dynamic Feed Subscription | 0/2 | Not started | - |
+| 6. Watchlist Management UI + Dynamic Feed Subscription | 2/2 | Complete   | 2026-03-21 |
