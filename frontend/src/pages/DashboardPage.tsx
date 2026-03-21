@@ -4,11 +4,13 @@ import { DashboardHeader } from '@/components/DashboardHeader'
 import { SignalTable } from '@/components/SignalTable'
 import { PortfolioCard } from '@/components/PortfolioCard'
 import { TradesTable } from '@/components/TradesTable'
+import { WatchlistSidebar } from '@/components/WatchlistSidebar'
 import { useSignalWebSocket } from '@/hooks/useSignalWebSocket'
 import { fetchPortfolio, fetchTrades, type Portfolio, type PaperTrade } from '@/lib/api'
 
 export default function DashboardPage() {
   const { signals, nySessionActive, wsStatus } = useSignalWebSocket()
+  const signalSymbols = signals.map(s => s.symbol)
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
   const [trades, setTrades] = useState<PaperTrade[]>([])
   const wasConnectedRef = useRef(false)
@@ -43,25 +45,28 @@ export default function DashboardPage() {
       <DashboardHeader nySessionActive={nySessionActive} wsStatus={wsStatus} />
       <Toaster position="top-right" theme="dark" />
 
-      <main className="max-w-[1280px] mx-auto px-6 pt-6">
-        {/* Signal Table */}
-        <section>
-          <SignalTable signals={signals} />
-        </section>
+      <div className="flex">
+        <WatchlistSidebar signalSymbols={signalSymbols} />
+        <main className="flex-1 max-w-[1280px] mx-auto px-6 pt-6">
+          {/* Signal Table */}
+          <section>
+            <SignalTable signals={signals} />
+          </section>
 
-        {/* Portfolio Value */}
-        <section className="pt-12">
-          <PortfolioCard portfolio={portfolio} />
-        </section>
+          {/* Portfolio Value */}
+          <section className="pt-12">
+            <PortfolioCard portfolio={portfolio} />
+          </section>
 
-        {/* Closed Trades */}
-        <section className="pt-12 pb-16">
-          <h2 className="text-xl font-semibold mb-4" style={{ color: '#F1F5F9' }}>
-            Closed Trades
-          </h2>
-          <TradesTable trades={trades} />
-        </section>
-      </main>
+          {/* Closed Trades */}
+          <section className="pt-12 pb-16">
+            <h2 className="text-xl font-semibold mb-4" style={{ color: '#F1F5F9' }}>
+              Closed Trades
+            </h2>
+            <TradesTable trades={trades} />
+          </section>
+        </main>
+      </div>
     </div>
   )
 }
