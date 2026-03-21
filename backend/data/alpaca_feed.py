@@ -55,7 +55,7 @@ class AlpacaFeed:
         self._restart_event = restart_event or asyncio.Event()
         self._last_bar_time: dict[str, datetime] = {}
 
-    def _on_bar(self, bar) -> None:
+    async def _on_bar(self, bar) -> None:
         """
         Convert an Alpaca bar to project Bar and append to BarStore.
 
