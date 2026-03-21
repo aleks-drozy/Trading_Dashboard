@@ -55,8 +55,8 @@
 
 ### Deployment
 
-- [ ] **DEPLOY-01**: Backend deployed on Render, frontend on Vercel, both accessible via public URL
-- [ ] **DEPLOY-02**: Backend has a keep-alive mechanism (cron ping) to prevent sleep before NY session open (9:20 AM ET)
+- [x] **DEPLOY-01**: Backend deployed on Render, frontend on Vercel, both accessible via public URL
+- [x] **DEPLOY-02**: Backend has a keep-alive mechanism (cron ping) to prevent sleep before NY session open (9:20 AM ET)
 
 ## v2 Requirements
 
@@ -119,8 +119,8 @@ Updated during roadmap creation: 2026-03-16
 | BT-02 | Phase 3 | Pending |
 | BT-03 | Phase 3 | Pending |
 | BT-04 | Phase 3 | Pending |
-| DEPLOY-01 | Phase 3 | Pending |
-| DEPLOY-02 | Phase 3 | Pending |
+| DEPLOY-01 | Phase 3 | Complete |
+| DEPLOY-02 | Phase 3 | Complete |
 
 **Coverage:**
 - v1 requirements: 28 total
