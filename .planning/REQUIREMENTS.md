@@ -58,6 +58,25 @@
 - [x] **DEPLOY-01**: Backend deployed on Render, frontend on Vercel, both accessible via public URL
 - [x] **DEPLOY-02**: Backend has a keep-alive mechanism (cron ping) to prevent sleep before NY session open (9:20 AM ET)
 
+## v1.1 Requirements
+
+### Market Data
+
+- [ ] **DATA-05**: Backend streams 1-minute OHLCV bars for US stocks via Alpaca WebSocket (replaces yfinance polling)
+- [ ] **DATA-06**: Backend seeds BarStore with 100+ historical bars via Alpaca REST API on startup (EMA warm-up — prevents 50-min signal blind spot after Render cold start)
+- [ ] **DATA-07**: Backend auto-reconnects to Alpaca WebSocket with exponential backoff on connection loss
+
+### Charts
+
+- [ ] **CHART-06**: Chart page has a timeframe switcher (1m / 5m / 15m / 1h) that changes the bar resolution displayed
+- [ ] **CHART-07**: Chart overlays (IFVG zones, CISD levels, entry markers) are recomputed for the selected timeframe
+
+### Asset Management
+
+- [ ] **ASSET-04**: User can add symbols to the watchlist from the dashboard sidebar UI
+- [ ] **ASSET-05**: User can remove symbols from the watchlist using the dashboard sidebar UI
+- [ ] **ASSET-06**: Alpaca feed automatically picks up watchlist changes and streams data for newly added symbols without a backend restart
+
 ## v2 Requirements
 
 ### Signal Display
@@ -129,4 +148,4 @@ Updated during roadmap creation: 2026-03-16
 
 ---
 *Requirements defined: 2026-03-16*
-*Last updated: 2026-03-16 — ASSET-01 and ASSET-02 completed (plan 01-02)*
+*Last updated: 2026-03-21 — v1.1 requirements added (DATA-05..07, CHART-06..07, ASSET-04..06)*
