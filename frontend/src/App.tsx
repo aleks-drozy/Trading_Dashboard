@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import LoginPage from '@/pages/LoginPage'
 import DashboardPage from '@/pages/DashboardPage'
 import ChartPage from '@/pages/ChartPage'
+import BacktestPage from '@/pages/BacktestPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth()
@@ -22,6 +23,11 @@ function AppRoutes() {
       <Route path="/chart" element={
         <ProtectedRoute>
           <ChartPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/backtest" element={
+        <ProtectedRoute>
+          <BacktestPage />
         </ProtectedRoute>
       } />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
