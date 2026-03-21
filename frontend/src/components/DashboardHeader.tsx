@@ -7,7 +7,7 @@ import { WSStatusDot } from './WSStatusDot'
 
 interface DashboardHeaderProps {
   nySessionActive: boolean
-  wsStatus: 'connecting' | 'connected' | 'disconnected'
+  wsStatus?: 'connecting' | 'connected' | 'disconnected'
 }
 
 const navLinks = [
@@ -45,7 +45,7 @@ export function DashboardHeader({ nySessionActive, wsStatus }: DashboardHeaderPr
         </div>
         <div className="flex items-center gap-4">
           <SessionIndicator active={nySessionActive} />
-          <WSStatusDot status={wsStatus} />
+          {wsStatus !== undefined && <WSStatusDot status={wsStatus} />}
           <Button variant="ghost" size="sm" onClick={logout} className="text-[#6B7280] hover:text-[#F1F5F9]">
             <LogOut className="w-4 h-4 mr-1" />
             Out

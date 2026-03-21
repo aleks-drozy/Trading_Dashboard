@@ -85,7 +85,7 @@ export default function ChartPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#0F1117' }}>
-      <DashboardHeader nySessionActive={false} wsStatus="disconnected" />
+      <DashboardHeader nySessionActive={false} />
 
       <main className="w-full max-w-[1280px] mx-auto px-6 pt-12 pb-16">
         <h2 className="text-xl font-semibold mb-6" style={{ color: '#F1F5F9' }}>

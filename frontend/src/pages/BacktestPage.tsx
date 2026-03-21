@@ -66,8 +66,8 @@ export default function BacktestPage() {
   useEffect(() => {
     fetchWithAuth('/watchlist')
       .then(res => (res.ok ? res.json() : Promise.reject(res)))
-      .then((data: { symbols: string[] }) => {
-        const symbols = data.symbols ?? []
+      .then((data: { symbol: string }[]) => {
+        const symbols = data.map(item => item.symbol)
         setWatchlist(symbols)
         if (symbols.length > 0) {
           setSymbol(symbols[0])
@@ -108,7 +108,7 @@ export default function BacktestPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#0F1117' }}>
-      <DashboardHeader nySessionActive={false} wsStatus="disconnected" />
+      <DashboardHeader nySessionActive={false} />
 
       <main className="w-full max-w-[1280px] mx-auto px-6 pt-12 pb-16">
         <h2 className="text-xl font-semibold mb-6" style={{ color: '#F1F5F9' }}>
@@ -140,6 +140,9 @@ export default function BacktestPage() {
           className="rounded-lg p-6 mb-6"
           style={{ backgroundColor: '#1A1D27', border: '1px solid #2D3148' }}
         >
+          <p className="text-xs mb-4 font-medium" style={{ color: '#6B7280' }}>
+            Symbol: <span style={{ color: '#F1F5F9' }}>{symbol}</span>
+          </p>
           <div className="flex flex-col md:flex-row gap-4 mb-4">
             <div className="flex flex-col gap-1">
               <Label htmlFor="start-date" style={{ color: '#F1F5F9' }}>
