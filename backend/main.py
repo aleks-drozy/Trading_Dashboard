@@ -53,3 +53,9 @@ app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(watchlist_router, prefix="/watchlist", tags=["watchlist"])
 app.include_router(signals_router, tags=["signals"])
 app.include_router(paper_router, prefix="/paper", tags=["paper"])
+
+
+@app.get("/health", tags=["health"])
+async def health_check() -> dict:
+    """Health check endpoint used by Render and the keep-alive cron job."""
+    return {"status": "ok"}
