@@ -158,7 +158,7 @@ class AlpacaFeed:
                     # Stream crashed -- apply backoff
                     exc = stream_task.exception()
                     if exc:
-                        logger.error("AlpacaFeed error: %s -- retrying in %ds", exc, backoff)
+                        logger.error("AlpacaFeed error [%s]: %s -- retrying in %ds", type(exc).__name__, exc, backoff)
                     await asyncio.sleep(backoff)
                     backoff = min(backoff * 2, MAX_BACKOFF_SECONDS)
                 else:
@@ -172,7 +172,7 @@ class AlpacaFeed:
                     stream.stop()
                 raise
             except Exception as exc:
-                logger.error("AlpacaFeed error: %s -- retrying in %ds", exc, backoff)
+                logger.error("AlpacaFeed error [%s]: %s -- retrying in %ds", type(exc).__name__, exc, backoff)
                 if stream is not None:
                     stream.stop()
                 await asyncio.sleep(backoff)
@@ -207,23 +207,26 @@ async def backfill_bars(
             feed="iex",
         )
 
-        bar_set = await asyncio.to_thread(lambda: client.get_stock_bars(request))
-        symbol_bars = bar_set.data.get(symbol, [])
+        try:
+            bar_set = await asyncio.to_thread(lambda: client.get_stock_bars(request))
+            symbol_bars = bar_set.data.get(symbol, [])
 
-        bars = [
-            Bar(
-                timestamp=b.timestamp,
-                open=float(b.open),
-                high=float(b.high),
-                low=float(b.low),
-                close=float(b.close),
-                volume=float(b.volume),
-            )
-            for b in sorted(symbol_bars, key=lambda b: b.timestamp)
-        ]
+            bars = [
+                Bar(
+                    timestamp=b.timestamp,
+                    open=float(b.open),
+                    high=float(b.high),
+                    low=float(b.low),
+                    close=float(b.close),
+                    volume=float(b.volume),
+                )
+                for b in sorted(symbol_bars, key=lambda b: b.timestamp)
+            ]
 
-        if bars:
-            bar_store.update(symbol, bars[-500:])
-            logger.info("Backfilled %d bars for %s", len(bars), symbol)
-        else:
-            logger.warning("Backfill returned no bars for %s", symbol)
+            if bars:
+                bar_store.update(symbol, bars[-500:])
+                logger.info("Backfilled %d bars for %s", len(bars), symbol)
+            else:
+                logger.warning("Backfill returned no bars for %s", symbol)
+        except Exception as exc:
+            logger.warning("Backfill skipped for %s: %s", symbol, exc)
