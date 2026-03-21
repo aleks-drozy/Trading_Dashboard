@@ -62,14 +62,14 @@
 
 ### Market Data
 
-- [ ] **DATA-05**: Backend streams 1-minute OHLCV bars for US stocks via Alpaca WebSocket (replaces yfinance polling)
-- [ ] **DATA-06**: Backend seeds BarStore with 100+ historical bars via Alpaca REST API on startup (EMA warm-up — prevents 50-min signal blind spot after Render cold start)
-- [ ] **DATA-07**: Backend auto-reconnects to Alpaca WebSocket with exponential backoff on connection loss
+- [x] **DATA-05**: Backend streams 1-minute OHLCV bars for US stocks via Alpaca WebSocket (replaces yfinance polling)
+- [x] **DATA-06**: Backend seeds BarStore with 100+ historical bars via Alpaca REST API on startup (EMA warm-up — prevents 50-min signal blind spot after Render cold start)
+- [x] **DATA-07**: Backend auto-reconnects to Alpaca WebSocket with exponential backoff on connection loss
 
 ### Charts
 
 - [ ] **CHART-06**: Chart page has a timeframe switcher (1m / 5m / 15m / 1h) that changes the bar resolution displayed
-- [ ] **CHART-07**: Chart overlays (IFVG zones, CISD levels, entry markers) are recomputed for the selected timeframe
+- [x] **CHART-07**: Chart overlays (IFVG zones, CISD levels, entry markers) are recomputed for the selected timeframe
 
 ### Asset Management
 
@@ -140,11 +140,11 @@ Updated during roadmap creation: 2026-03-16; v1.1 phases added: 2026-03-21
 | BT-04 | Phase 3 | Complete |
 | DEPLOY-01 | Phase 3 | Complete |
 | DEPLOY-02 | Phase 3 | Complete |
-| DATA-05 | Phase 4 | Pending |
-| DATA-06 | Phase 4 | Pending |
-| DATA-07 | Phase 4 | Pending |
+| DATA-05 | Phase 4 | Complete |
+| DATA-06 | Phase 4 | Complete |
+| DATA-07 | Phase 4 | Complete |
 | CHART-06 | Phase 5 | Pending |
-| CHART-07 | Phase 5 | Pending |
+| CHART-07 | Phase 5 | Complete |
 | ASSET-04 | Phase 6 | Pending |
 | ASSET-05 | Phase 6 | Pending |
 | ASSET-06 | Phase 6 | Pending |

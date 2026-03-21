@@ -102,7 +102,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Backend resample_bars helper, timeframe query param on chart endpoint, backfill depth increase to 500, unit tests
+- [x] 05-01-PLAN.md — Backend resample_bars helper, timeframe query param on chart endpoint, backfill depth increase to 500, unit tests
 - [ ] 05-02-PLAN.md — Frontend timeframe pill switcher in ChartPage with state persistence and insufficient-data empty state
 
 ### Phase 6: Watchlist Management UI + Dynamic Feed Subscription
@@ -126,5 +126,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete | 2026-03-20 |
 | 3. Charts, Backtest + Deployment | 4/4 | Complete | 2026-03-21 |
 | 4. Alpaca Real-time Feed | 2/2 | Complete   | 2026-03-21 |
-| 5. Multi-Timeframe Chart Aggregation | 0/2 | Planned | - |
+| 5. Multi-Timeframe Chart Aggregation | 1/2 | In Progress|  |
 | 6. Watchlist Management UI + Dynamic Feed Subscription | 0/? | Not started | - |
