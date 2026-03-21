@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     admin_password_hash: str
     secret_key: str
     database_url: str = "sqlite:///./trading.db"
+    alpaca_api_key: str = ""
+    alpaca_secret_key: str = ""
+    alpaca_data_feed: str = "iex"
 
     model_config = SettingsConfigDict(env_file=".env")
 
