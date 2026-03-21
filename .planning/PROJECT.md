@@ -35,7 +35,8 @@ A trader can open the dashboard during the NY session (9:30–10:30 AM) and inst
 
 ### Active
 
-- [ ] US stock data streams via Alpaca WebSocket (real-time, replaces yfinance polling)
+*Validated in Phase 4: Alpaca Real-time Feed (2026-03-21)*
+- [x] US stock data streams via Alpaca WebSocket (real-time, replaces yfinance polling)
 - [ ] Chart page has a timeframe switcher (1m / 5m / 15m / 1h) with overlays recomputed per TF
 - [ ] User can add and remove watchlist symbols from the dashboard UI (no API access needed)
 
