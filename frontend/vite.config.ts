@@ -17,7 +17,7 @@ export default defineConfig({
       '/ws': { target: 'ws://localhost:8000', ws: true },
       '/paper': 'http://localhost:8000',
       '/chart': 'http://localhost:8000',
-      '/backtest': 'http://localhost:8000',
+      '/backtest/run': 'http://localhost:8000',
       '/health': 'http://localhost:8000',
     },
   },
