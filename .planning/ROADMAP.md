@@ -4,6 +4,8 @@
 
 Three phases that build the IFVG + CISD + 20-EMA trading signal dashboard from the ground up. Phase 1 establishes the backend, auth, data feeds, and — most critically — a validated Python strategy engine that mirrors the PineScript source bar-by-bar before any UI work begins. Phase 2 wires the engine to a live React dashboard with WebSocket signal streaming and the paper trading loop, delivering the core value of the product. Phase 3 adds historical charts, backtest P&L curves, and production deployment.
 
+Milestone v1.1 extends the roadmap with three further phases: Phase 4 replaces yfinance polling with a real-time Alpaca WebSocket feed, Phase 5 adds multi-timeframe chart aggregation, and Phase 6 delivers watchlist management in the dashboard UI with live feed synchronisation.
+
 ## Phases
 
 **Phase Numbering:**
@@ -15,6 +17,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation + Strategy Engine** - FastAPI scaffold, JWT auth, data feeds, and a validated Python IFVG/CISD/EMA engine unit-tested against TradingView output (completed 2026-03-16)
 - [x] **Phase 2: Live Signal Dashboard + Paper Trading** - WebSocket signal streaming to a React frontend with signal state display, asset switcher, and automated paper trading engine (completed 2026-03-20)
 - [x] **Phase 3: Charts, Backtest + Deployment** - Historical candlestick charts with strategy overlays, backtest P&L curve, and public production deployment on Render + Vercel (completed 2026-03-21)
+- [ ] **Phase 4: Alpaca Real-time Feed** - Replace yfinance 60s polling with Alpaca WebSocket for real-time US stock bars, seed BarStore via REST backfill on startup, and auto-reconnect with exponential backoff
+- [ ] **Phase 5: Multi-Timeframe Chart Aggregation** - Add a timeframe switcher (1m / 5m / 15m / 1h) to the chart page with IFVG/CISD overlays recomputed per timeframe using server-side pandas resample
+- [ ] **Phase 6: Watchlist Management UI + Dynamic Feed Subscription** - Watchlist sidebar UI for adding and removing symbols, with AlpacaFeed automatically restarting its stream to track watchlist changes
 
 ## Phase Details
 
@@ -72,13 +77,46 @@ Plans:
 - [x] 03-03-PLAN.md — Frontend candlestick chart page with EMA, IFVG zones, CISD level, entry markers
 - [x] 03-04-PLAN.md — Frontend backtest page with equity curve and trade statistics
 
+### Phase 4: Alpaca Real-time Feed
+**Goal**: US stock bars arrive in BarStore in real time from Alpaca WebSocket instead of yfinance polling, BarStore is pre-seeded with 100+ historical bars on every backend startup so signals compute immediately, and the feed recovers from connection loss without manual intervention
+**Depends on**: Phase 3
+**Requirements**: DATA-05, DATA-06, DATA-07
+**Success Criteria** (what must be TRUE):
+  1. After backend startup, BarStore contains at least 100 bars per watchlist stock symbol sourced from Alpaca REST backfill — signal state is computed and visible in the dashboard within 2 minutes of cold start without waiting for live bars to accumulate
+  2. During market hours, new 1-minute stock bars appear in the dashboard at the close of each bar (within ~2 seconds), replacing the previous 60-second yfinance polling cadence
+  3. When the Alpaca WebSocket connection drops, the backend reconnects automatically with exponential backoff and resumes delivering bars — no manual restart required and no alert is shown to the user unless the feed remains stale for more than 3 minutes
+**Plans**: TBD
+
+### Phase 5: Multi-Timeframe Chart Aggregation
+**Goal**: The chart page lets the trader switch between 1m, 5m, 15m, and 1h bar resolutions, with IFVG zones, CISD levels, and EMA recomputed for the selected timeframe on every switch, and the chosen timeframe persists when the trader selects a different symbol
+**Depends on**: Phase 4
+**Requirements**: CHART-06, CHART-07
+**Success Criteria** (what must be TRUE):
+  1. Chart page shows a pill group switcher with four options (1m / 5m / 15m / 1h); clicking a pill immediately reloads the chart at the selected bar resolution without a full page reload
+  2. When the timeframe is 5m, 15m, or 1h, the IFVG zones, CISD level lines, and 20-EMA overlay on the chart match what would be computed by running the strategy engine on bars aggregated to that resolution — not the 1m computation repainted at a higher resolution
+  3. After switching the active symbol, the timeframe stays on the last-selected pill (does not reset to 1m)
+**Plans**: TBD
+
+### Phase 6: Watchlist Management UI + Dynamic Feed Subscription
+**Goal**: The trader can add and remove watchlist symbols directly in the dashboard sidebar without touching the API, and AlpacaFeed automatically adjusts which symbols it streams within 30 seconds of any watchlist change — no backend restart required
+**Depends on**: Phase 4
+**Requirements**: ASSET-04, ASSET-05, ASSET-06
+**Success Criteria** (what must be TRUE):
+  1. Dashboard sidebar shows all current watchlist symbols with an add field and a remove button per symbol; adding a valid symbol or removing an existing one updates the list immediately with optimistic UI and shows an inline error on failure (duplicate, invalid format, or network error)
+  2. Within 30 seconds of adding a new stock symbol via the sidebar, the dashboard starts displaying signal state for that symbol — without restarting the backend
+  3. Within 30 seconds of removing a symbol via the sidebar, the dashboard stops displaying signal state for that symbol and BarStore no longer holds bars for it
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Strategy Engine | 5/5 | Complete   | 2026-03-16 |
-| 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete   | 2026-03-20 |
-| 3. Charts, Backtest + Deployment | 4/4 | Complete   | 2026-03-21 |
+| 1. Foundation + Strategy Engine | 5/5 | Complete | 2026-03-16 |
+| 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete | 2026-03-20 |
+| 3. Charts, Backtest + Deployment | 4/4 | Complete | 2026-03-21 |
+| 4. Alpaca Real-time Feed | 0/? | Not started | - |
+| 5. Multi-Timeframe Chart Aggregation | 0/? | Not started | - |
+| 6. Watchlist Management UI + Dynamic Feed Subscription | 0/? | Not started | - |

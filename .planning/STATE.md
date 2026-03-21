@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Real-time Feed + Multi-Timeframe Charts
-status: defining_requirements
+status: roadmap_ready
 stopped_at: ""
 last_updated: "2026-03-21T00:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,14 +19,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Open the dashboard during the NY session and instantly see whether IFVG + CISD + EMA conditions align for a trade — without TradingView open.
-**Current focus:** Defining requirements for v1.1
+**Current focus:** Phase 4 — Alpaca Real-time Feed (starting next)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-21 — Milestone v1.1 started
+Phase: 4 — Alpaca Real-time Feed
+Plan: Not started
+Status: Roadmap created, ready for planning
+Last activity: 2026-03-21 — v1.1 roadmap created (Phases 4–6)
+
+Progress: [          ] 0% (0/3 phases complete)
 
 ## Performance Metrics
 
@@ -111,18 +113,23 @@ Recent decisions affecting current work:
 - [Phase 03-charts-backtest-deployment]: ChartPage defaults wsStatus=disconnected and nySessionActive=false — chart page has no WebSocket connection
 - [Phase 03-charts-backtest-deployment]: recharts AreaChart for equity curve — declarative React, no imperative canvas API
 - [Phase 03-charts-backtest-deployment]: Native date inputs with min/max for 7-day constraint enforcement on backtest form
+- [v1.1 roadmap]: AlpacaFeed uses asyncio.create_task(stream._run_forever()) — StockDataStream.run() calls asyncio.run() internally and raises RuntimeError in FastAPI's event loop (alpaca-py issue #476)
+- [v1.1 roadmap]: Dynamic watchlist subscription uses stream cancel + restart pattern — stream.subscribe_bars() on a live connection has a confirmed hang bug (alpaca-py issue #491)
+- [v1.1 roadmap]: Multi-timeframe aggregation is on-demand pandas resample in charts/router.py — no pre-computed per-TF BarStore entries; resampled.iloc[:-1] guard before strategy computation
+- [v1.1 roadmap]: Phase 6 depends on Phase 4 (not Phase 5) — watchlist sidebar UI is frontend-only against existing REST API; stream restart diff-check requires only AlpacaFeed to exist
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
-- [Phase 1 — critical]: PineScript source (`FYP_BOT_1_3.pine`) must be read line-by-line to extract exact IFVG expiry condition, CISD structure-flip definition, and bar-indexing boundaries before any strategy engine code is written. Treat Pine source as specification.
-- [Phase 1 — critical]: Lookahead bias risk — strategy must only run on closed bars (`df.iloc[:-1]`); unit tests must confirm this before Phase 2 begins.
+- [Phase 4 — critical]: alpaca-py _run_forever() is a private API — pin to >=0.40.0,<0.50.0 and add integration test asserting bars flow within 2 minutes of startup
+- [Phase 4 — critical]: REST backfill timestamp deduplication edge case — a bar may exist in both the Alpaca REST response and the live WebSocket stream at the session join point; deduplicate by timestamp (take last) and cover with a unit test before Phase 4 is complete
+- [Phase 6 — watch]: asyncio.Task.cancel() interaction with alpaca-py WebSocket teardown is undocumented — confirm old connection fully closes before new stream connects to avoid 406 errors on dynamic subscription changes
 
 ## Session Continuity
 
-Last session: 2026-03-21T01:15:47.362Z
-Stopped at: Completed 03-04-PLAN.md
+Last session: 2026-03-21T00:00:00.000Z
+Stopped at: v1.1 roadmap created
 Resume file: None

@@ -107,7 +107,7 @@
 
 ## Traceability
 
-Updated during roadmap creation: 2026-03-16
+Updated during roadmap creation: 2026-03-16; v1.1 phases added: 2026-03-21
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
@@ -140,12 +140,20 @@ Updated during roadmap creation: 2026-03-16
 | BT-04 | Phase 3 | Complete |
 | DEPLOY-01 | Phase 3 | Complete |
 | DEPLOY-02 | Phase 3 | Complete |
+| DATA-05 | Phase 4 | Pending |
+| DATA-06 | Phase 4 | Pending |
+| DATA-07 | Phase 4 | Pending |
+| CHART-06 | Phase 5 | Pending |
+| CHART-07 | Phase 5 | Pending |
+| ASSET-04 | Phase 6 | Pending |
+| ASSET-05 | Phase 6 | Pending |
+| ASSET-06 | Phase 6 | Pending |
 
 **Coverage:**
-- v1 requirements: 28 total
-- Mapped to phases: 28
+- v1 requirements: 28 total — mapped to phases: 28 ✓
+- v1.1 requirements: 8 total — mapped to phases: 8 ✓
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-16*
-*Last updated: 2026-03-21 — v1.1 requirements added (DATA-05..07, CHART-06..07, ASSET-04..06)*
+*Last updated: 2026-03-21 — v1.1 requirements added (DATA-05..07, CHART-06..07, ASSET-04..06); Phases 4–6 assigned*
