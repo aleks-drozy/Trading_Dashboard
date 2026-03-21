@@ -1,7 +1,9 @@
 import asyncio
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
 
 from backend.database import create_db_and_tables, get_engine
@@ -13,6 +15,10 @@ from backend.data.yfinance_feed import poll_yfinance_loop
 from backend.signals.broadcaster import broadcaster
 from backend.signals.router import router as signals_router
 from backend.paper.router import router as paper_router
+from backend.charts.router import router as charts_router
+from backend.backtest.router import router as backtest_router
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 
 def seed_defaults(session: Session) -> None:
@@ -49,10 +55,22 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Trading Dashboard", lifespan=lifespan)
+
+# CORS middleware — must be added before router includes
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[FRONTEND_URL],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(watchlist_router, prefix="/watchlist", tags=["watchlist"])
 app.include_router(signals_router, tags=["signals"])
 app.include_router(paper_router, prefix="/paper", tags=["paper"])
+app.include_router(charts_router, tags=["charts"])
+app.include_router(backtest_router, tags=["backtest"])
 
 
 @app.get("/health", tags=["health"])
