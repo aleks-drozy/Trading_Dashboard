@@ -69,16 +69,18 @@ All values are from `src/index.css`. The executor must not modify these.
 
 ## 3. Typography (existing — no change)
 
+Two font weights only: **400 (regular)** and **600 (semibold)**.
+
 | Role | Size | Weight | Line-height | Color | Element |
 |------|------|--------|-------------|-------|---------|
 | Page title | 20px (text-xl) | 600 (semibold) | 1.2 | `#F1F5F9` | `DashboardHeader` h1 |
 | Section heading | 20px (text-xl) | 600 (semibold) | 1.2 | `#F1F5F9` | "Closed Trades" h2 |
-| Nav link | 14px (text-sm) | 500 (medium) | — | `#3B82F6` active / `#6B7280` inactive | `<Link>` |
+| Nav link | 14px (text-sm) | 400 (regular) | — | `#3B82F6` active / `#6B7280` inactive | `<Link>` |
 | Table cell — symbol | 14px (text-sm) | 600 (semibold) | 1.5 | `#F1F5F9` | `TableCell` |
 | Table cell — body | 14px (text-sm) | 400 (regular) | 1.5 | `#F1F5F9` | `TableCell` |
-| Table header | 12px (text-xs) | 500 (medium) | — | `#6B7280` | `TableHead` uppercase tracking-wider |
+| Table header | 12px (text-xs) | 400 (regular) | — | `#6B7280` | `TableHead` uppercase tracking-wider |
 | Timestamp / meta | 12px (text-xs) | 400 (regular) | — | `#6B7280` | Updated column, session label |
-| Signal pill | 12px (text-xs) | 500 (medium) | — | per state | `SignalPill` |
+| Signal pill | 12px (text-xs) | 400 (regular) | — | per state | `SignalPill` |
 | Body base | 16px | 400 (regular) | 1.5 | `#F1F5F9` | `body` (Inter) |
 
 Font family: **Inter** (loaded externally; fallback: `sans-serif`).
@@ -96,7 +98,7 @@ Font family: **Inter** (loaded externally; fallback: `sans-serif`).
 | 16px | 16 | `gap-4` in nav and header right cluster; `px-6` page gutters |
 | 24px | 24 | `pt-6` main content top padding |
 | 48px | 48 | `pt-12` between Dashboard sections |
-| 56px | 56 | `h-14` header height |
+| 56px | 56 | `h-14` sticky header height — **structural layout constraint, not a content spacing value** |
 | 64px | 64 | `pb-16` last section bottom padding |
 | 1280px | — | `max-w-[1280px]` content column max-width |
 
