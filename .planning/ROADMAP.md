@@ -88,7 +88,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — AlpacaFeed class, backfill_bars function, config settings, alpaca-py dependency, tests 13-20
+- [x] 04-01-PLAN.md — AlpacaFeed class, backfill_bars function, config settings, alpaca-py dependency, tests 13-20
 - [ ] 04-02-PLAN.md — Lifespan wiring: replace poll_yfinance_loop with backfill_bars + AlpacaFeed.run(), update lifespan tests
 
 ### Phase 5: Multi-Timeframe Chart Aggregation
@@ -121,6 +121,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Foundation + Strategy Engine | 5/5 | Complete | 2026-03-16 |
 | 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete | 2026-03-20 |
 | 3. Charts, Backtest + Deployment | 4/4 | Complete | 2026-03-21 |
-| 4. Alpaca Real-time Feed | 0/2 | Not started | - |
+| 4. Alpaca Real-time Feed | 1/2 | In Progress|  |
 | 5. Multi-Timeframe Chart Aggregation | 0/? | Not started | - |
 | 6. Watchlist Management UI + Dynamic Feed Subscription | 0/? | Not started | - |
