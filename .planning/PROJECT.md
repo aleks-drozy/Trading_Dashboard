@@ -37,7 +37,10 @@ A trader can open the dashboard during the NY session (9:30–10:30 AM) and inst
 
 *Validated in Phase 4: Alpaca Real-time Feed (2026-03-21)*
 - [x] US stock data streams via Alpaca WebSocket (real-time, replaces yfinance polling)
-- [ ] Chart page has a timeframe switcher (1m / 5m / 15m / 1h) with overlays recomputed per TF
+
+*Validated in Phase 5: Multi-Timeframe Chart Aggregation (2026-03-21)*
+- [x] Chart page has a timeframe switcher (1m / 5m / 15m / 1h) with overlays recomputed per TF
+
 - [ ] User can add and remove watchlist symbols from the dashboard UI (no API access needed)
 
 ### Out of Scope
@@ -102,4 +105,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-21 — Milestone v1.1 started*
+*Last updated: 2026-03-21 — Phase 5 complete*
