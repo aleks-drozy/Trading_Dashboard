@@ -10,7 +10,7 @@ from backend.database import create_db_and_tables, get_engine
 from backend.auth.router import router as auth_router
 from backend.watchlist.router import router as watchlist_router
 from backend.watchlist.repository import WatchlistRepository
-from backend.data.alpaca_feed import AlpacaFeed, backfill_bars
+from backend.data.alpaca_feed import AlpacaFeed, backfill_bars, feed_restart_event
 from backend.data.bar_store import bar_store
 from backend.data.binance_feed import binance_feed
 from backend.config import get_settings
@@ -39,11 +39,11 @@ async def lifespan(app: FastAPI):
 
     settings = get_settings()
 
-    def get_watchlist_symbols() -> list[str]:
+    def get_stock_symbols() -> list[str]:
         with Session(get_engine()) as s:
-            return [w.symbol for w in WatchlistRepository(s).get_all()]
+            return [w.symbol for w in WatchlistRepository(s).get_all() if not w.symbol.endswith("USDT")]
 
-    stock_symbols = [s for s in get_watchlist_symbols() if not s.endswith("USDT")]
+    stock_symbols = get_stock_symbols()
 
     # REST backfill: seed BarStore with historical bars before stream starts
     if stock_symbols and settings.alpaca_api_key:
@@ -64,7 +64,8 @@ async def lifespan(app: FastAPI):
         alpaca_feed = AlpacaFeed(
             api_key=settings.alpaca_api_key,
             secret_key=settings.alpaca_secret_key,
-            symbols=stock_symbols,
+            get_symbols=get_stock_symbols,
+            restart_event=feed_restart_event,
         )
         tasks.append(asyncio.create_task(alpaca_feed.run()))
 

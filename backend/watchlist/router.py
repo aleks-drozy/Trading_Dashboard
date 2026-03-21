@@ -8,6 +8,8 @@ from sqlmodel import Session
 from backend.database import get_session
 from backend.dependencies import get_current_user
 from backend.watchlist.repository import WatchlistRepository
+from backend.data.alpaca_feed import feed_restart_event
+from backend.data.bar_store import bar_store
 
 router = APIRouter()
 
@@ -18,7 +20,7 @@ class WatchlistAddRequest(BaseModel):
 
 
 @router.get("")
-def list_watchlist(
+async def list_watchlist(
     session: Session = Depends(get_session),
     current_user: str = Depends(get_current_user),
 ):
@@ -27,7 +29,7 @@ def list_watchlist(
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
-def add_to_watchlist(
+async def add_to_watchlist(
     body: WatchlistAddRequest,
     session: Session = Depends(get_session),
     current_user: str = Depends(get_current_user),
@@ -40,11 +42,13 @@ def add_to_watchlist(
             status_code=status.HTTP_409_CONFLICT,
             detail="Symbol already in watchlist",
         )
+    if body.asset_type == "stock":
+        feed_restart_event.set()
     return item
 
 
 @router.delete("/{symbol}", status_code=status.HTTP_200_OK)
-def remove_from_watchlist(
+async def remove_from_watchlist(
     symbol: str,
     session: Session = Depends(get_session),
     current_user: str = Depends(get_current_user),
@@ -56,4 +60,6 @@ def remove_from_watchlist(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Symbol not found",
         )
+    bar_store.remove(symbol.upper())
+    feed_restart_event.set()
     return {"detail": "Symbol removed"}
