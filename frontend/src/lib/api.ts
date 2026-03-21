@@ -60,3 +60,34 @@ export async function fetchPortfolio(): Promise<Portfolio> {
   if (!res.ok) throw new Error('Failed to fetch portfolio')
   return res.json()
 }
+
+export interface WatchlistItem {
+  symbol: string
+  asset_type: string
+}
+
+export async function fetchWatchlist(): Promise<WatchlistItem[]> {
+  const res = await fetchWithAuth('/watchlist')
+  if (!res.ok) throw new Error('Failed to fetch watchlist')
+  return res.json()
+}
+
+export async function addWatchlistSymbol(symbol: string, assetType: string = 'stock'): Promise<void> {
+  const res = await fetchWithAuth('/watchlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ symbol, asset_type: assetType }),
+  })
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to add symbol')
+  }
+}
+
+export async function removeWatchlistSymbol(symbol: string): Promise<void> {
+  const res = await fetchWithAuth(`/watchlist/${symbol}`, { method: 'DELETE' })
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    throw new Error(data.detail || 'Failed to remove symbol')
+  }
+}
