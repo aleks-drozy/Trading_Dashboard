@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
 
     def get_stock_symbols() -> list[str]:
         with Session(get_engine()) as s:
-            return [w.symbol for w in WatchlistRepository(s).get_all() if not w.symbol.endswith("USDT")]
+            return [w.symbol for w in WatchlistRepository(s).get_all() if w.asset_type == "stock"]
 
     stock_symbols = get_stock_symbols()
 
