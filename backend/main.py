@@ -10,8 +10,10 @@ from backend.database import create_db_and_tables, get_engine
 from backend.auth.router import router as auth_router
 from backend.watchlist.router import router as watchlist_router
 from backend.watchlist.repository import WatchlistRepository
+from backend.data.alpaca_feed import AlpacaFeed, backfill_bars
+from backend.data.bar_store import bar_store
 from backend.data.binance_feed import binance_feed
-from backend.data.yfinance_feed import poll_yfinance_loop
+from backend.config import get_settings
 from backend.signals.broadcaster import broadcaster
 from backend.signals.router import router as signals_router
 from backend.paper.router import router as paper_router
@@ -35,18 +37,38 @@ async def lifespan(app: FastAPI):
     with Session(get_engine()) as session:
         seed_defaults(session)
 
-    # Build a callable that reads the current watchlist symbols on each call
+    settings = get_settings()
+
     def get_watchlist_symbols() -> list[str]:
         with Session(get_engine()) as s:
             return [w.symbol for w in WatchlistRepository(s).get_all()]
 
-    # Start data feed background tasks
-    # Binance feed is opt-in — set ENABLE_BINANCE_FEED=true to activate.
-    # Disabled by default because Binance.com is geo-blocked on US servers (Render).
+    stock_symbols = [s for s in get_watchlist_symbols() if not s.endswith("USDT")]
+
+    # REST backfill: seed BarStore with historical bars before stream starts
+    if stock_symbols and settings.alpaca_api_key:
+        await backfill_bars(
+            settings.alpaca_api_key,
+            settings.alpaca_secret_key,
+            stock_symbols,
+            bar_store,
+        )
+
     tasks = [
-        asyncio.create_task(poll_yfinance_loop(get_watchlist_symbols)),
         asyncio.create_task(broadcaster.run()),
     ]
+
+    # Alpaca feed for US stocks (replaces yfinance polling)
+    if settings.alpaca_api_key:
+        alpaca_feed = AlpacaFeed(
+            api_key=settings.alpaca_api_key,
+            secret_key=settings.alpaca_secret_key,
+            symbols=stock_symbols,
+        )
+        tasks.append(asyncio.create_task(alpaca_feed.run()))
+
+    # Binance feed is opt-in — set ENABLE_BINANCE_FEED=true to activate.
+    # Disabled by default because Binance.com is geo-blocked on US servers (Render).
     if os.getenv("ENABLE_BINANCE_FEED", "").lower() == "true":
         tasks.append(asyncio.create_task(binance_feed.run()))
 
