@@ -1,14 +1,181 @@
 # Stack Research
 
 **Project:** Trading Signal Dashboard (IFVG + CISD + 20-EMA)
-**Researched:** 2026-03-16
+**Researched:** 2026-03-16 (v1.0) / 2026-03-21 (v1.1 additions)
 **Overall confidence:** HIGH (core stack verified via official docs and multiple 2025 sources)
 
 ---
 
-## Backend
+## v1.1 Stack Additions
 
-### Core Framework: FastAPI 0.115+
+> This section covers ONLY what is new or changed for the v1.1 milestone. The full v1.0 stack is preserved below. Do not re-research what is already validated.
+
+### NEW: Alpaca WebSocket Feed — `alpaca-py 0.43.x`
+
+**Use:** `alpaca-py>=0.40.0`
+
+**Why alpaca-py and not the old alpaca-trade-api:**
+`alpaca-trade-api-python` is deprecated. Alpaca's official documentation explicitly says to migrate to `alpaca-py`. The new SDK is the only one receiving active maintenance and new features as of 2025.
+
+**Current version:** 0.43.2 (released November 4, 2025). Pin to `>=0.40.0` for stability without locking to a patch.
+
+**Key class:** `StockDataStream` from `alpaca.data.live`.
+
+**Free-tier feed:** Must pass `feed="iex"` when instantiating `StockDataStream`. Free Alpaca accounts connect to the IEX data source only — attempting SIP feed will result in an auth error. IEX provides real-time data during market hours (9:30–16:00 ET).
+
+**Critical asyncio integration detail:**
+`StockDataStream.run()` calls `asyncio.run()` internally — it is a **blocking, synchronous method**. It cannot be used directly with `asyncio.create_task()`. The correct pattern is to use the private `_run_forever()` coroutine, which is the async method `run()` wraps:
+
+```python
+# In lifespan, alongside other background tasks:
+tasks = [
+    asyncio.create_task(alpaca_feed._run_forever()),
+    asyncio.create_task(broadcaster.run()),
+]
+```
+
+This is confirmed in [alpacahq/alpaca-py issue #476](https://github.com/alpacahq/alpaca-py/issues/476). The `_run_forever` method exists in `alpaca.data.live.websocket.DataStream` (parent class). The leading underscore signals it is not part of the public API — expect it to potentially change in future versions. For this project (single developer, controlled upgrade cadence) it is acceptable. There is no public async coroutine alternative.
+
+**Handler signature:** Async callback receiving a typed `Bar` object:
+
+```python
+from alpaca.data.live import StockDataStream
+
+stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed="iex")
+
+async def on_bar(bar) -> None:
+    # bar.symbol, bar.open, bar.high, bar.low, bar.close, bar.volume, bar.timestamp
+    pass
+
+stream.subscribe_bars(on_bar, "SPY", "AAPL")
+# Then in lifespan: asyncio.create_task(stream._run_forever())
+```
+
+**Bar object fields (from WebSocket message):**
+- `symbol` (str) — ticker symbol
+- `open`, `high`, `low`, `close` (float) — OHLC prices
+- `volume` (float) — trade volume
+- `vwap` (float) — volume-weighted average price
+- `trade_count` (int) — number of trades aggregated
+- `timestamp` (datetime) — bar open time (RFC-3339)
+
+**Free-tier subscription limits:**
+- 1 concurrent WebSocket connection per account
+- Up to 30 symbol subscriptions for trades/quotes combined
+- **No limit on minute bar subscriptions** — unlimited symbols on the bars channel
+- Data available only during regular market hours (9:30–16:00 ET)
+
+**What NOT to use:**
+- `alpaca-trade-api` (deprecated, unmaintained)
+- `StockDataStream.run()` directly in a FastAPI lifespan (blocks event loop)
+- SIP feed on a free account (auth error at connection time)
+
+**Integration with existing BarStore:**
+The Alpaca feed should push `Bar` dataclass objects into the existing `backend/data/bar_store.py` singleton. The `Bar` dataclass already matches the required fields. No changes to `BarStore` are needed — only a new `alpaca_feed.py` module mirroring the structure of `binance_feed.py`.
+
+**Replacing yfinance:**
+`yfinance_feed.py` and `poll_yfinance_loop()` can be removed from the lifespan once `alpaca_feed.py` is wired in. `yfinance` itself can remain in `requirements.txt` for the backtest/historical chart endpoints which may still use it for bulk historical data fetching.
+
+---
+
+### NEW: Multi-Timeframe Bar Aggregation — `pandas.DataFrame.resample()`
+
+**Use:** `pandas>=2.0` (already in requirements — NO new library needed)
+
+**Why pandas resample and not a custom aggregator:**
+pandas `resample()` handles all edge cases of OHLCV aggregation correctly — open is first, high is max, low is min, close is last, volume is sum. Writing this manually is error-prone. pandas is already a hard dependency.
+
+**Pattern for 1m → 5m/15m/1h:**
+
+```python
+import pandas as pd
+
+RESAMPLE_RULES = {
+    "1m":  None,   # raw bars, no resampling needed
+    "5m":  "5min",
+    "15m": "15min",
+    "1h":  "1h",
+}
+
+def resample_bars(bars_1m: list[Bar], timeframe: str) -> list[Bar]:
+    rule = RESAMPLE_RULES.get(timeframe)
+    if rule is None:
+        return bars_1m  # 1m passes through unchanged
+
+    df = pd.DataFrame([b.__dict__ for b in bars_1m])
+    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
+    df = df.set_index("timestamp")
+
+    resampled = df.resample(rule, closed="left", label="left").agg({
+        "open":   "first",
+        "high":   "max",
+        "low":    "min",
+        "close":  "last",
+        "volume": "sum",
+    }).dropna()
+
+    return [
+        Bar(timestamp=ts.to_pydatetime(), **row.to_dict())
+        for ts, row in resampled.iterrows()
+    ]
+```
+
+**`closed="left"` and `label="left"` rationale:**
+For trading bars, a "5-minute bar" starting at 09:30 contains trades from 09:30:00 to 09:34:59. Using `closed="left"` means the left boundary (09:30) is included in the bar, and `label="left"` labels that bar with its open time (09:30). This matches how TradingView and every trading platform labels bars. Using `label="right"` would label the 09:30 bar as 09:35 — technically valid but confusing when cross-referencing with TradingView.
+
+**`.dropna()` is required:**
+`resample()` fills empty intervals (e.g., no trades during lunch) with NaN. Drop them — they are not real bars and will break the strategy engine if passed through.
+
+**Where aggregation lives:**
+In the charts endpoint (`backend/charts/router.py`). The endpoint already fetches 1m bars from `BarStore`, then passes them to the strategy engine. Add a `?timeframe=5m` query parameter. Resample before passing to the strategy recomputation. The strategy engine does not need to change — it just sees a different cadence of bars.
+
+**No new library needed.** pandas `resample()` has been stable and production-ready since pandas 0.18 (2016). The OHLCV aggregation dict pattern is well-established across the quantitative Python ecosystem.
+
+---
+
+### UNCHANGED: Watchlist Management UI
+
+The watchlist management UI (React sidebar) requires no backend stack changes. The `watchlist` router and `WatchlistRepository` already exist and expose `GET/POST/DELETE /watchlist` endpoints. The only addition is a React component in the frontend — no new libraries needed beyond what is already installed.
+
+---
+
+## v1.1 Requirements Changes
+
+| Package | Action | Reason |
+|---------|--------|--------|
+| `alpaca-py>=0.40.0` | **ADD** | Alpaca WebSocket feed |
+| `yfinance>=0.2.50` | **KEEP** | Still used for historical data in charts/backtest endpoints |
+| `pandas>=2.0` | **KEEP** (already present) | Covers `resample()` for multi-timeframe aggregation |
+| `alpaca-trade-api` | **DO NOT ADD** | Deprecated; alpaca-py is the replacement |
+
+**Updated requirements.txt diff:**
+
+```diff
++alpaca-py>=0.40.0
+ fastapi>=0.115
+ uvicorn[standard]>=0.30
+ sqlmodel>=0.0.21
+ PyJWT>=2.12.1
+ bcrypt==4.0.1
+ passlib>=1.7.4
+ pydantic-settings>=2.0
+ python-dotenv>=1.0
+ python-binance==1.0.35
+ yfinance>=0.2.50
+ pandas>=2.0
+ pytest>=8.0
+ httpx>=0.27
+ pytest-asyncio>=0.23
+ python-multipart>=0.0.9
+```
+
+---
+
+## Full v1.0 Stack (Validated — Do Not Re-Research)
+
+### Backend
+
+#### Core Framework: FastAPI 0.115+
 
 **Use:** `fastapi[standard]>=0.115.0`
 
@@ -25,7 +192,7 @@ Key details for this project:
 
 **Do NOT use:** Flask-SocketIO, Django Channels. Both add unnecessary complexity. FastAPI handles WebSockets natively with zero extra config.
 
-### Signal Computation: pandas + pandas-ta
+#### Signal Computation: pandas + pandas-ta
 
 **Use:** `pandas>=2.1.0`, `pandas-ta>=0.3.14b`
 
@@ -37,28 +204,20 @@ Alternatives skipped:
 
 **For IFVG and CISD logic:** These are custom indicators not in any library — implement them directly as Python functions that operate on a pandas DataFrame. Mirror the PineScript logic bar-by-bar.
 
-### Async Runtime: asyncio (built-in)
+#### Async Runtime: asyncio (built-in)
 
 No additional concurrency libraries needed. FastAPI + asyncio handles:
 - Concurrent WebSocket connections
-- Polling yfinance every minute via `asyncio.create_task()` with a scheduled loop
+- Background data feed tasks via `asyncio.create_task()` in the lifespan context manager
 - Receiving Binance WebSocket stream in a background task
-
-Pattern for background data tasks:
-```python
-@app.on_event("startup")
-async def startup():
-    asyncio.create_task(binance_stream_loop())
-    asyncio.create_task(yfinance_poll_loop())
-```
 
 **Do NOT use:** Celery, Redis, background task queues. For a single-user dashboard with 1-minute bars, a plain asyncio task loop is sufficient and avoids infrastructure complexity.
 
 ---
 
-## Frontend
+### Frontend
 
-### Scaffolding: Vite + React 18 + TypeScript
+#### Scaffolding: Vite + React 18 + TypeScript
 
 **Use:** `npm create vite@latest -- --template react-ts`
 
@@ -69,7 +228,7 @@ Create React App (CRA) is effectively unmaintained as of 2023 and removed from t
 
 **React version:** 18.x — use concurrent features (automatic batching) and `useEffect` for WebSocket lifecycle management.
 
-### Charting: TradingView Lightweight Charts v5
+#### Charting: TradingView Lightweight Charts v5
 
 **Use:** `npm install lightweight-charts@^5`
 
@@ -83,207 +242,66 @@ This is the correct library for this project. Reasons:
 Integration pattern: wrap in a React ref-based component (the library is imperative, not declarative). Create the chart in `useEffect`, store the chart instance in a `useRef`, and clean up on unmount.
 
 **Do NOT use:**
-- **Recharts**: SVG-based, performance degrades with dense time-series. Also has no native candlestick — you have to build it with `Bar` + `ErrorBar` composites, which is brittle.
-- **ApexCharts**: Candlestick support exists but it's a general-purpose library, not financial. Heavier bundle, less control over financial primitives.
-- **react-stockcharts**: Abandoned since 2019. Its successor `react-financial-charts` is maintained but adds complexity without benefit over Lightweight Charts.
+- **Recharts**: SVG-based, performance degrades with dense time-series. Also has no native candlestick.
+- **ApexCharts**: Candlestick support exists but it's a general-purpose library, not financial.
+- **react-stockcharts**: Abandoned since 2019.
 
-### State Management: Zustand 4.x
+#### State Management: Zustand 4.x
 
 **Use:** `npm install zustand@^4`
 
-Zustand is the correct choice for a single-developer dashboard. The state shape is simple: current prices, signal states per asset, open paper trade positions, auth token. Zustand handles all of this in ~30 lines with no boilerplate.
+Zustand is the correct choice for a single-developer dashboard. Redux Toolkit is appropriate for large multi-team apps with complex interdependent state. It is overkill here.
 
-Redux Toolkit is appropriate for large multi-team apps with complex interdependent state. It is overkill here.
+#### WebSocket Client: native browser WebSocket
 
-Store slice pattern:
-```typescript
-// stores/signalStore.ts
-const useSignalStore = create<SignalState>((set) => ({
-  signals: {},
-  updateSignal: (symbol, signal) =>
-    set((state) => ({ signals: { ...state.signals, [symbol]: signal } })),
-}))
-```
-
-### WebSocket Client: native browser WebSocket
-
-No library needed. The browser's built-in `WebSocket` API is sufficient. Wrap it in a custom hook `useWebSocket` that handles:
-- Connection on mount, cleanup on unmount
-- Reconnect with exponential backoff (Render free tier spins down — clients WILL need to reconnect)
-- Dispatching incoming messages to Zustand store
+No library needed. The browser's built-in `WebSocket` API is sufficient. Wrap it in a custom hook `useWebSocket` that handles connection on mount, cleanup on unmount, reconnect with exponential backoff, and dispatching incoming messages to Zustand store.
 
 **Do NOT use:** `socket.io-client`. Socket.IO requires a matching Socket.IO server. FastAPI uses plain WebSockets, not the Socket.IO protocol.
 
-### HTTP Client: TanStack Query (React Query) v5
+#### HTTP Client: TanStack Query (React Query) v5
 
 **Use:** `npm install @tanstack/react-query@^5`
 
-For non-streaming data (backtest results, paper trade history, auth), TanStack Query provides caching, loading states, and refetch-on-focus without manual `useEffect` fetch boilerplate. Pair with `axios` or native `fetch`.
+For non-streaming data (backtest results, paper trade history, auth), TanStack Query provides caching, loading states, and refetch-on-focus without manual `useEffect` fetch boilerplate.
 
 ---
 
-## Market Data
+### Market Data
 
-### US Stocks: yfinance 0.2.x (with caveats)
+#### US Stocks (v1.0): yfinance 0.2.x
 
-**Use:** `pip install yfinance>=0.2.40`
+Still used for historical chart data and backtest initialization. NOT the live feed in v1.1+.
 
-yfinance is the only viable free, no-API-key option for Yahoo Finance data. It works for this project's use case, but has hard constraints you must design around:
+Hard constraints remain:
+1. 1-minute bar history: 7-day limit
+2. Rate limiting (429 errors) common in 2025 — add `asyncio.to_thread()` wrapper
+3. No native async support — always wrap in `asyncio.to_thread()`
 
-**Hard constraints:**
-1. **1-minute bar history: 7-day limit.** `yf.Ticker("SPY").history(period="7d", interval="1m")` is the maximum lookback for 1m data. You cannot fetch more than 7 days of 1-minute bars in one call.
-2. **Rate limiting (429 errors) are common in 2025.** Yahoo has tightened limits. For a single-asset dashboard polling one ticker per minute, this is manageable. Do NOT poll multiple tickers in rapid succession without a `time.sleep(1)` delay between calls.
-3. **yfinance has no native async support.** Run `yf.Ticker(...).history(...)` inside `asyncio.to_thread()` to avoid blocking the event loop:
-   ```python
-   data = await asyncio.to_thread(
-       lambda: yf.Ticker("SPY").history(period="2d", interval="1m")
-   )
-   ```
-4. **Use for backtest seed only.** For the live 9:30–10:30 AM signal, poll yfinance every 60 seconds to get the latest closed 1m bar. The 7-day history is sufficient to compute IFVG and CISD states at session open.
+#### Crypto: Binance WebSocket API (direct)
 
-**Operational pattern:** On session start (9:25 AM ET), fetch the last 2 days of 1m bars to initialize indicator state. Then poll every 60s during the session for new bars.
+Uses `python-binance==1.0.35` (existing) via `BinanceFeed` class. Pattern: proactive 23-hour reconnect to avoid Binance's hard 24-hour WebSocket limit.
 
-### Crypto: Binance WebSocket API (direct, no library)
-
-**Use:** `pip install websockets>=12.0`
-
-Connect directly to Binance's public WebSocket stream. No API key required for market data. The kline stream endpoint:
-```
-wss://data-stream.binance.vision/ws/btcusdt@kline_1m
-```
-
-This is the recommended public endpoint (`data-stream.binance.vision`, not `stream.binance.com`) — it is read-only market data with no auth required.
-
-The stream pushes a message every second with the current in-progress 1m candle. The candle is "closed" when the `k.x` field in the JSON payload is `true`. Only process closed candles for signal computation (same as TradingView's `barstate.isconfirmed`).
-
-**Do NOT use:**
-- `python-binance`: Heavyweight, requires API keys even for public streams in some versions. More abstraction than needed.
-- `unicorn-binance-websocket-api`: Adds a paid-tier complexity layer. The raw `websockets` library is 10 lines to connect and handles reconnection fine with a simple while loop.
-
-**Reconnect handling** (required — Binance drops connections after 24h):
-```python
-async def binance_stream_loop(symbol: str):
-    uri = f"wss://data-stream.binance.vision/ws/{symbol.lower()}@kline_1m"
-    while True:
-        try:
-            async with websockets.connect(uri) as ws:
-                async for message in ws:
-                    data = json.loads(message)
-                    if data["k"]["x"]:  # candle closed
-                        await process_closed_candle(data)
-        except Exception:
-            await asyncio.sleep(5)  # backoff before reconnect
-```
+Disabled by default on Render (US geo-block). Enable via `ENABLE_BINANCE_FEED=true` env var.
 
 ---
 
-## Database
+### Database
 
-### ORM + Driver: SQLAlchemy 2.0 async + aiosqlite
+#### SQLModel (wraps SQLAlchemy 2.0)
 
-**Use:** `pip install sqlalchemy>=2.0.0 aiosqlite>=0.19.0`
+**Use:** `sqlmodel>=0.0.21` (already in use)
 
-SQLAlchemy 2.0 (not 1.x) is the correct version — it has a proper async API via `create_async_engine`. The connection string:
-```python
-engine = create_async_engine("sqlite+aiosqlite:///./trading.db")
-```
-
-**Critical Render constraint:** Render's free tier has an **ephemeral filesystem**. SQLite data is wiped on every deploy or service restart/spin-down. This means:
-- Paper trade history survives the current session but is lost on redeploy
-- Do NOT store anything you need long-term in SQLite on Render free tier
-
-**Mitigation options (pick one):**
-1. **Accept the constraint** — paper trading P&L is session-scoped. Document this clearly in the UI.
-2. **Export on demand** — add a `/api/trades/export` endpoint that returns trade history as JSON/CSV for manual backup before redeploy.
-3. **Render Persistent Disk** — $1/month add-on that mounts a real disk. Breaks zero-downtime deploys but preserves SQLite data. Worth it if P&L history matters.
-
-**Do NOT use Alembic for v1.** Schema migrations add complexity. For a single-user app with a simple schema (trades table, backtest_results table), use `Base.metadata.create_all(engine)` on startup. Add Alembic only if schema changes become painful.
-
-### Schema (minimal)
-
-```sql
--- paper_trades
-id, symbol, direction (long/short), entry_price, stop_price,
-target_price, entry_time, exit_time, exit_price, pnl, status (open/closed)
-
--- backtest_results
-id, symbol, run_date, total_trades, win_rate, pnl_curve (JSON blob)
-```
-
-Store the P&L curve as a JSON-serialized list in a TEXT column — no need for a separate time-series table for v1.
+SQLite via `trading.db`. Ephemeral on Render free tier — paper trade history survives sessions but is lost on redeploy.
 
 ---
 
-## Auth
+### Auth
 
-### JWT: PyJWT 2.x + passlib (bcrypt)
+#### PyJWT 2.x + passlib (bcrypt)
 
-**Use:** `pip install pyjwt>=2.8.0 passlib[bcrypt]>=1.7.4`
+**Use:** `pyjwt>=2.12.1`, `passlib>=1.7.4`
 
-**Do NOT use python-jose.** It has not received a release since 2021 and has known security vulnerabilities. FastAPI's own documentation was updated in mid-2024 to replace python-jose with PyJWT (PR #11589). The ecosystem has moved.
-
-PyJWT is actively maintained, focused purely on JWT encode/decode, and is the standard.
-
-For password hashing, `passlib[bcrypt]` remains correct. The FastAPI docs also mention `pwdlib` with Argon2 as an emerging alternative — for a single-user personal dashboard, bcrypt is sufficient and simpler.
-
-**Single-user auth pattern:**
-- Store one hashed password in an environment variable (not a database table) — avoids a whole users table and registration flow for a personal dashboard
-- Issue a JWT with 8-hour expiry on `/auth/login`
-- Protect all API routes with a `get_current_user` dependency
-- Protect WebSocket by validating the token passed as a query parameter on connect
-
-```python
-# Auth dependency
-async def get_current_user(token: str = Depends(oauth2_scheme)):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        return payload["sub"]
-    except jwt.PyJWTError:
-        raise HTTPException(status_code=401)
-```
-
-**Environment variables required:**
-- `SECRET_KEY` — generate with `openssl rand -hex 32`
-- `HASHED_PASSWORD` — generate once with `passlib.hash.bcrypt.hash("your-password")`
-- `JWT_EXPIRY_HOURS` — default 8 (covers a full trading day)
-
----
-
-## Deployment
-
-### Backend: Render Free Tier (Web Service)
-
-**Use:** Render Web Service, free tier
-
-**Critical limitations to design around:**
-
-1. **Spin-down after 15 minutes of inactivity.** Any WebSocket connection or HTTP request resets the timer. During the 9:30–10:30 AM trading session, active connections will keep the service live. Outside market hours, the service will spin down — this is acceptable.
-
-2. **Cold start takes ~60 seconds.** The frontend must handle the reconnect gracefully (show a "connecting..." state, retry WebSocket connection with exponential backoff).
-
-3. **Ephemeral filesystem** — SQLite data lost on restart (see Database section above).
-
-4. **512 MB RAM, 0.1 CPU** — sufficient for a single-user dashboard. The signal computation on 1m bars is lightweight.
-
-**Deployment config required:**
-- `render.yaml` or manual Web Service config
-- Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-- Environment: Python 3.11
-- Set all env vars (`SECRET_KEY`, `HASHED_PASSWORD`, `CORS_ORIGINS`) in Render dashboard
-
-**CORS:** Must explicitly allow the Vercel frontend URL in FastAPI's `CORSMiddleware`.
-
-### Frontend: Vercel (Hobby tier)
-
-**Use:** Vercel Hobby (free)
-
-Vercel is the correct choice for a Vite + React app. It auto-detects Vite projects, sets `npm run build` and `dist/` as defaults, and deploys in ~30 seconds from a GitHub push.
-
-**No meaningful limitations for this project.** 100 GB bandwidth, unlimited deployments, custom domains. The static frontend has no runtime to spin down.
-
-**Required env var:** `VITE_API_URL=https://your-render-service.onrender.com` — set in Vercel dashboard, automatically injected at build time.
-
-**Do NOT server-side render (SSR).** The dashboard is a pure client-side SPA. No Next.js needed. Vite + React deployed as static files is simpler, cheaper, and has no server-side latency.
+**Do NOT use python-jose.** It has not received a release since 2021 and has known security vulnerabilities. FastAPI's own documentation was updated in mid-2024 to replace python-jose with PyJWT (PR #11589).
 
 ---
 
@@ -291,53 +309,50 @@ Vercel is the correct choice for a Vite + React app. It auto-detects Vite projec
 
 | What | Why Not | Use Instead |
 |------|---------|-------------|
-| `python-jose` | No releases since 2021, security vulnerabilities, abandoned | `PyJWT>=2.8.0` |
-| `Create React App` | Unmaintained, removed from React docs, 30s cold starts | `Vite + react-ts template` |
-| `socket.io` / `socket.io-client` | Socket.IO protocol != plain WebSocket; FastAPI doesn't speak Socket.IO | Native browser `WebSocket` API |
-| `Recharts` for candlesticks | SVG, degrades with 390 1m bars (9:30-10:30 session), no native OHLC | `lightweight-charts v5` |
-| `python-binance` | Requires API keys setup for public streams, heavy dependency | Raw `websockets` lib connecting to `data-stream.binance.vision` |
+| `alpaca-trade-api` | Deprecated by Alpaca, unmaintained | `alpaca-py>=0.40.0` |
+| `StockDataStream.run()` in lifespan | Calls `asyncio.run()` internally — blocks event loop | `asyncio.create_task(stream._run_forever())` |
+| SIP feed on free Alpaca account | Auth error at connection time — free tier is IEX only | `StockDataStream(..., feed="iex")` |
+| `pandas resample(label="right")` for bar timestamps | Labels 09:30 bar as 09:35 — contradicts TradingView convention | `resample(..., closed="left", label="left")` |
+| `python-jose` | No releases since 2021, security vulnerabilities | `PyJWT>=2.8.0` |
+| `Create React App` | Unmaintained, removed from React docs | `Vite + react-ts template` |
+| `socket.io-client` | Socket.IO protocol != plain WebSocket | Native browser `WebSocket` API |
+| `Recharts` for candlesticks | SVG, degrades with dense 1m bars, no native OHLC | `lightweight-charts v5` |
 | `TA-Lib` | Requires C binary compilation, unreliable on Render free tier | `pandas-ta` (pure Python) |
-| `Celery + Redis` | Overkill for 1-minute polling with a single user | `asyncio.create_task()` background loop |
-| `Django` / `Flask` | Sync-first frameworks; WebSocket support is an add-on (Channels/Flask-SocketIO) | `FastAPI` (async-native) |
-| `Next.js` | SSR adds complexity with no benefit for a private SPA dashboard | Vite + React (static deployment) |
-| `Alembic` migrations (v1) | Schema churn too early; premature complexity | `Base.metadata.create_all()` on startup |
-| `PostgreSQL on Render` | Render free Postgres expires after 90 days — a time bomb | SQLite with ephemeral-awareness OR $1/mo persistent disk |
+| `Celery + Redis` | Overkill for single-user dashboard | `asyncio.create_task()` background loop |
 
 ---
 
 ## Installation Reference
 
-### Backend (`requirements.txt`)
+### Backend (`requirements.txt`) — v1.1
 
 ```
-fastapi[standard]>=0.115.0
-uvicorn[standard]>=0.30.0
-websockets>=12.0
-sqlalchemy>=2.0.0
-aiosqlite>=0.19.0
-pyjwt>=2.8.0
-passlib[bcrypt]>=1.7.4
-python-multipart>=0.0.9
-pydantic-settings>=2.0.0
-yfinance>=0.2.40
-pandas>=2.1.0
+fastapi>=0.115
+uvicorn[standard]>=0.30
+sqlmodel>=0.0.21
+PyJWT>=2.12.1
+bcrypt==4.0.1
+passlib>=1.7.4
+pydantic-settings>=2.0
+python-dotenv>=1.0
+python-binance==1.0.35
+alpaca-py>=0.40.0
+yfinance>=0.2.50
+pandas>=2.0
 pandas-ta>=0.3.14b
-python-dotenv>=1.0.0
+pytest>=8.0
+httpx>=0.27
+pytest-asyncio>=0.23
+python-multipart>=0.0.9
 ```
 
-### Frontend (`package.json` deps)
+### Frontend (`package.json` deps) — unchanged from v1.0
 
 ```bash
-# Scaffold
-npm create vite@latest trading-dashboard-ui -- --template react-ts
-
-# Install
 npm install lightweight-charts@^5
 npm install zustand@^4
 npm install @tanstack/react-query@^5
 npm install axios@^1.6
-
-# Dev
 npm install -D @types/react@^18 typescript@^5 tailwindcss@^3 autoprefixer postcss
 ```
 
@@ -345,14 +360,17 @@ npm install -D @types/react@^18 typescript@^5 tailwindcss@^3 autoprefixer postcs
 
 ## Sources
 
-- FastAPI WebSocket docs: https://fastapi.tiangolo.com/advanced/websockets/
+- alpaca-py PyPI (version confirmed): https://pypi.org/project/alpaca-py/
+- alpaca-py GitHub (official SDK): https://github.com/alpacahq/alpaca-py
+- Alpaca SDK migration guide: https://docs.alpaca.markets/docs/sdks-and-tools
+- StockDataStream API reference: https://alpaca.markets/sdks/python/api_reference/data/stock/live.html
+- alpaca-py asyncio integration pattern (issue #476): https://github.com/alpacahq/alpaca-py/issues/476
+- Alpaca free tier IEX limitations (community forum): https://forum.alpaca.markets/t/iex-or-sip-with-a-free-account/17141
+- Alpaca real-time stock data (bar message fields): https://docs.alpaca.markets/docs/real-time-stock-pricing-data
+- pandas DataFrame.resample() docs (pandas 3.0.1): https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.resample.html
+- pandas resample OHLCV aggregation pattern: https://atekihcan.com/blog/codeortrading/changing-timeframe-of-ohlc-candlestick-data-in-pandas/
 - FastAPI JWT migration to PyJWT (PR #11589): https://github.com/fastapi/fastapi/pull/11589
-- python-jose abandonment discussion: https://github.com/fastapi/fastapi/discussions/11345
-- yfinance rate limiting issues: https://github.com/ranaroussi/yfinance/issues/2422
-- Binance public WebSocket streams: https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams
-- Lightweight Charts React tutorial: https://tradingview.github.io/lightweight-charts/tutorials/react/simple
-- Render free tier limitations: https://render.com/docs/free
-- Render ephemeral filesystem / persistent disks: https://render.com/docs/disks
-- Vercel Vite deployment: https://vercel.com/docs/frameworks/frontend/vite
-- SQLAlchemy async with aiosqlite: https://medium.com/@mojimich2015/async-sqlalchemy-engine-in-fastapi-the-guide-e5acdba75c99
-- Zustand vs Redux 2025: https://medium.com/@msmt0452/zustand-vs-redux-toolkit-the-complete-guide-to-state-management-in-react-4dce420741b4
+
+---
+*Stack research for: Trading Signal Dashboard v1.1 (Alpaca WebSocket + Multi-Timeframe)*
+*Researched: 2026-03-21*
