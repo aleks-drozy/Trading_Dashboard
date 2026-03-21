@@ -48,8 +48,8 @@ export default function ChartPage() {
   useEffect(() => {
     fetchWithAuth('/watchlist')
       .then(res => res.ok ? res.json() : Promise.reject(res))
-      .then((data: { symbols: string[] }) => {
-        const symbols = data.symbols ?? []
+      .then((data: { symbol: string }[]) => {
+        const symbols = data.map(item => item.symbol)
         setWatchlist(symbols)
         if (symbols.length > 0) {
           setSelectedSymbol(symbols[0])
@@ -67,10 +67,11 @@ export default function ChartPage() {
     setError(null)
     fetchWithAuth(`/chart/bars/${selectedSymbol}`)
       .then(res => {
+        if (res.status === 404) return null
         if (!res.ok) return Promise.reject(res)
         return res.json()
       })
-      .then((data: ChartResponse) => {
+      .then((data: ChartResponse | null) => {
         setChartData(data)
         setLoading(false)
       })
