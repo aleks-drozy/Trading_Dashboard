@@ -85,7 +85,11 @@ Plans:
   1. After backend startup, BarStore contains at least 100 bars per watchlist stock symbol sourced from Alpaca REST backfill — signal state is computed and visible in the dashboard within 2 minutes of cold start without waiting for live bars to accumulate
   2. During market hours, new 1-minute stock bars appear in the dashboard at the close of each bar (within ~2 seconds), replacing the previous 60-second yfinance polling cadence
   3. When the Alpaca WebSocket connection drops, the backend reconnects automatically with exponential backoff and resumes delivering bars — no manual restart required and no alert is shown to the user unless the feed remains stale for more than 3 minutes
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — AlpacaFeed class, backfill_bars function, config settings, alpaca-py dependency, tests 13-20
+- [ ] 04-02-PLAN.md — Lifespan wiring: replace poll_yfinance_loop with backfill_bars + AlpacaFeed.run(), update lifespan tests
 
 ### Phase 5: Multi-Timeframe Chart Aggregation
 **Goal**: The chart page lets the trader switch between 1m, 5m, 15m, and 1h bar resolutions, with IFVG zones, CISD levels, and EMA recomputed for the selected timeframe on every switch, and the chosen timeframe persists when the trader selects a different symbol
@@ -117,6 +121,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Foundation + Strategy Engine | 5/5 | Complete | 2026-03-16 |
 | 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete | 2026-03-20 |
 | 3. Charts, Backtest + Deployment | 4/4 | Complete | 2026-03-21 |
-| 4. Alpaca Real-time Feed | 0/? | Not started | - |
+| 4. Alpaca Real-time Feed | 0/2 | Not started | - |
 | 5. Multi-Timeframe Chart Aggregation | 0/? | Not started | - |
 | 6. Watchlist Management UI + Dynamic Feed Subscription | 0/? | Not started | - |
