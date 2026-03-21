@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation + Strategy Engine** - FastAPI scaffold, JWT auth, data feeds, and a validated Python IFVG/CISD/EMA engine unit-tested against TradingView output (completed 2026-03-16)
 - [x] **Phase 2: Live Signal Dashboard + Paper Trading** - WebSocket signal streaming to a React frontend with signal state display, asset switcher, and automated paper trading engine (completed 2026-03-20)
-- [ ] **Phase 3: Charts, Backtest + Deployment** - Historical candlestick charts with strategy overlays, backtest P&L curve, and public production deployment on Render + Vercel
+- [x] **Phase 3: Charts, Backtest + Deployment** - Historical candlestick charts with strategy overlays, backtest P&L curve, and public production deployment on Render + Vercel (completed 2026-03-21)
 
 ## Phase Details
 
@@ -70,7 +70,7 @@ Plans:
 - [x] 03-01-PLAN.md — Backend chart + backtest endpoints, health check, CORS middleware
 - [x] 03-02-PLAN.md — Deployment configs (render.yaml, vercel.json) + frontend env var setup
 - [x] 03-03-PLAN.md — Frontend candlestick chart page with EMA, IFVG zones, CISD level, entry markers
-- [ ] 03-04-PLAN.md — Frontend backtest page with equity curve and trade statistics
+- [x] 03-04-PLAN.md — Frontend backtest page with equity curve and trade statistics
 
 ## Progress
 
@@ -81,4 +81,4 @@ Phases execute in numeric order: 1 -> 2 -> 3
 |-------|----------------|--------|-----------|
 | 1. Foundation + Strategy Engine | 5/5 | Complete   | 2026-03-16 |
 | 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete   | 2026-03-20 |
-| 3. Charts, Backtest + Deployment | 3/4 | In Progress|  |
+| 3. Charts, Backtest + Deployment | 4/4 | Complete   | 2026-03-21 |

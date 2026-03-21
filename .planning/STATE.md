@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-03-21T01:11:48.762Z"
+stopped_at: Completed 03-04-PLAN.md
+last_updated: "2026-03-21T01:15:47.367Z"
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 13
-  completed_plans: 12
+  completed_plans: 13
 ---
 
 # Project State
@@ -59,6 +59,7 @@ Plan: 4 of 4
 | Phase 03-charts-backtest-deployment P02 | 1min | 2 tasks | 5 files |
 | Phase 03-charts-backtest-deployment P01 | 3 | 2 tasks | 5 files |
 | Phase 03-charts-backtest-deployment P03 | 2min | 2 tasks | 4 files |
+| Phase 03-charts-backtest-deployment P04 | 2min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,8 @@ Recent decisions affecting current work:
 - [Phase 03-charts-backtest-deployment]: CORS configured via FRONTEND_URL env var with http://localhost:5173 default for dev/prod parity
 - [Phase 03-charts-backtest-deployment]: IFVG zones implemented as paired price lines rather than ISeriesPrimitive rectangles — simpler and avoids uncertain v5 canvas renderer signature
 - [Phase 03-charts-backtest-deployment]: ChartPage defaults wsStatus=disconnected and nySessionActive=false — chart page has no WebSocket connection
+- [Phase 03-charts-backtest-deployment]: recharts AreaChart for equity curve — declarative React, no imperative canvas API
+- [Phase 03-charts-backtest-deployment]: Native date inputs with min/max for 7-day constraint enforcement on backtest form
 
 ### Pending Todos
 
@@ -118,6 +121,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-21T01:11:48.756Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-03-21T01:15:47.362Z
+Stopped at: Completed 03-04-PLAN.md
 Resume file: None
