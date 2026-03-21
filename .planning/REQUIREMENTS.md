@@ -68,7 +68,7 @@
 
 ### Charts
 
-- [ ] **CHART-06**: Chart page has a timeframe switcher (1m / 5m / 15m / 1h) that changes the bar resolution displayed
+- [x] **CHART-06**: Chart page has a timeframe switcher (1m / 5m / 15m / 1h) that changes the bar resolution displayed
 - [x] **CHART-07**: Chart overlays (IFVG zones, CISD levels, entry markers) are recomputed for the selected timeframe
 
 ### Asset Management
@@ -143,7 +143,7 @@ Updated during roadmap creation: 2026-03-16; v1.1 phases added: 2026-03-21
 | DATA-05 | Phase 4 | Complete |
 | DATA-06 | Phase 4 | Complete |
 | DATA-07 | Phase 4 | Complete |
-| CHART-06 | Phase 5 | Pending |
+| CHART-06 | Phase 5 | Complete |
 | CHART-07 | Phase 5 | Complete |
 | ASSET-04 | Phase 6 | Pending |
 | ASSET-05 | Phase 6 | Pending |

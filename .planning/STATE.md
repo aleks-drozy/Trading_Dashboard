@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-21T17:48:54.728Z"
+stopped_at: "Completed 05-02-PLAN.md (checkpoint:human-verify pending)"
+last_updated: "2026-03-21T17:51:56.838Z"
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 17
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -63,6 +63,7 @@ Plan: 2 of 2
 | Phase 04-alpaca-real-time-feed P01 | 3min | 2 tasks | 4 files |
 | Phase 04-alpaca-real-time-feed P02 | 2 | 2 tasks | 2 files |
 | Phase 05-multi-timeframe-chart-aggregation P01 | 2min | 1 tasks | 3 files |
+| Phase 05-multi-timeframe-chart-aggregation P02 | 1min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -122,6 +123,8 @@ Recent decisions affecting current work:
 - [Phase 04-alpaca-real-time-feed]: AlpacaFeed task guarded by settings.alpaca_api_key — app starts cleanly without Alpaca credentials configured
 - [Phase 05-multi-timeframe-chart-aggregation]: resample_bars uses df.resample(f'{minutes}min').agg().dropna().iloc[:-1] — dropna removes empty market-gap buckets; iloc[:-1] drops in-progress bar
 - [Phase 05-multi-timeframe-chart-aggregation]: pd.to_datetime(b.timestamp, utc=True) used when building chart DataFrame to ensure timezone-aware DatetimeIndex required by pandas resample
+- [Phase 05-multi-timeframe-chart-aggregation]: Timeframe state uses useState not useRef — component stays mounted across symbol switches so useState already persists
+- [Phase 05-multi-timeframe-chart-aggregation]: Empty state copy uses .replace('1h', label) on a single template string to produce per-timeframe messages without duplication
 
 ### Pending Todos
 
@@ -135,6 +138,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-21T17:48:54.723Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-03-21T17:51:56.832Z
+Stopped at: Completed 05-02-PLAN.md (checkpoint:human-verify pending)
 Resume file: None

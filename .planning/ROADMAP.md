@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Live Signal Dashboard + Paper Trading** - WebSocket signal streaming to a React frontend with signal state display, asset switcher, and automated paper trading engine (completed 2026-03-20)
 - [x] **Phase 3: Charts, Backtest + Deployment** - Historical candlestick charts with strategy overlays, backtest P&L curve, and public production deployment on Render + Vercel (completed 2026-03-21)
 - [x] **Phase 4: Alpaca Real-time Feed** - Replace yfinance 60s polling with Alpaca WebSocket for real-time US stock bars, seed BarStore via REST backfill on startup, and auto-reconnect with exponential backoff (completed 2026-03-21)
-- [ ] **Phase 5: Multi-Timeframe Chart Aggregation** - Add a timeframe switcher (1m / 5m / 15m / 1h) to the chart page with IFVG/CISD overlays recomputed per timeframe using server-side pandas resample
+- [x] **Phase 5: Multi-Timeframe Chart Aggregation** - Add a timeframe switcher (1m / 5m / 15m / 1h) to the chart page with IFVG/CISD overlays recomputed per timeframe using server-side pandas resample (completed 2026-03-21)
 - [ ] **Phase 6: Watchlist Management UI + Dynamic Feed Subscription** - Watchlist sidebar UI for adding and removing symbols, with AlpacaFeed automatically restarting its stream to track watchlist changes
 
 ## Phase Details
@@ -103,7 +103,7 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md — Backend resample_bars helper, timeframe query param on chart endpoint, backfill depth increase to 500, unit tests
-- [ ] 05-02-PLAN.md — Frontend timeframe pill switcher in ChartPage with state persistence and insufficient-data empty state
+- [x] 05-02-PLAN.md — Frontend timeframe pill switcher in ChartPage with state persistence and insufficient-data empty state
 
 ### Phase 6: Watchlist Management UI + Dynamic Feed Subscription
 **Goal**: The trader can add and remove watchlist symbols directly in the dashboard sidebar without touching the API, and AlpacaFeed automatically adjusts which symbols it streams within 30 seconds of any watchlist change — no backend restart required
@@ -126,5 +126,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Live Signal Dashboard + Paper Trading | 4/4 | Complete | 2026-03-20 |
 | 3. Charts, Backtest + Deployment | 4/4 | Complete | 2026-03-21 |
 | 4. Alpaca Real-time Feed | 2/2 | Complete   | 2026-03-21 |
-| 5. Multi-Timeframe Chart Aggregation | 1/2 | In Progress|  |
+| 5. Multi-Timeframe Chart Aggregation | 2/2 | Complete   | 2026-03-21 |
 | 6. Watchlist Management UI + Dynamic Feed Subscription | 0/? | Not started | - |
