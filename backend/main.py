@@ -22,11 +22,11 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 
 def seed_defaults(session: Session) -> None:
-    """Seed SPY + BTCUSDT if watchlist is empty."""
+    """Seed SPY + BTC-USD if watchlist is empty."""
     repo = WatchlistRepository(session)
     if not repo.get_all():
         repo.add("SPY", "stock")
-        repo.add("BTCUSDT", "crypto")
+        repo.add("BTC-USD", "crypto")
 
 
 @asynccontextmanager
@@ -41,17 +41,21 @@ async def lifespan(app: FastAPI):
             return [w.symbol for w in WatchlistRepository(s).get_all()]
 
     # Start data feed background tasks
-    binance_task = asyncio.create_task(binance_feed.run())
-    yfinance_task = asyncio.create_task(poll_yfinance_loop(get_watchlist_symbols))
-    signal_task = asyncio.create_task(broadcaster.run())
+    # Binance feed is opt-in — set ENABLE_BINANCE_FEED=true to activate.
+    # Disabled by default because Binance.com is geo-blocked on US servers (Render).
+    tasks = [
+        asyncio.create_task(poll_yfinance_loop(get_watchlist_symbols)),
+        asyncio.create_task(broadcaster.run()),
+    ]
+    if os.getenv("ENABLE_BINANCE_FEED", "").lower() == "true":
+        tasks.append(asyncio.create_task(binance_feed.run()))
 
     yield
 
     # Graceful shutdown: cancel all background tasks
-    binance_task.cancel()
-    yfinance_task.cancel()
-    signal_task.cancel()
-    await asyncio.gather(binance_task, yfinance_task, signal_task, return_exceptions=True)
+    for task in tasks:
+        task.cancel()
+    await asyncio.gather(*tasks, return_exceptions=True)
 
 
 app = FastAPI(title="Trading Dashboard", lifespan=lifespan)
