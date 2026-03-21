@@ -621,5 +621,6 @@ class TestAlpacaFeed:
             except asyncio.CancelledError:
                 pass
 
-        assert sleep_args[0] == 5
-        assert sleep_args[1] == 10
+        # Sequence: sleep(1) teardown margin, sleep(5) backoff, sleep(1) teardown, sleep(10) backoff
+        assert sleep_args[1] == 5
+        assert sleep_args[3] == 10
