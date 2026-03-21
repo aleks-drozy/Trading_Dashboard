@@ -1,4 +1,6 @@
-export const API_BASE = ''  // Vite proxy handles /auth -> backend
+// In local dev VITE_API_URL is not set so API_BASE = '' and Vite proxy handles routing.
+// In production on Vercel set VITE_API_URL=https://<service>.onrender.com as a Vercel env var.
+export const API_BASE = import.meta.env.VITE_API_URL ?? ''
 
 export async function loginRequest(email: string, password: string): Promise<{ access_token: string }> {
   const body = new URLSearchParams({ username: email, password })
@@ -20,7 +22,8 @@ export function getAuthHeaders(): HeadersInit {
 }
 
 export async function fetchWithAuth(url: string, init?: RequestInit): Promise<Response> {
-  return fetch(url, {
+  const fullUrl = url.startsWith('http') ? url : `${API_BASE}${url}`
+  return fetch(fullUrl, {
     ...init,
     headers: { ...getAuthHeaders(), ...init?.headers },
   })
