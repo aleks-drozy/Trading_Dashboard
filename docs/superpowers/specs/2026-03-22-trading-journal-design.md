@@ -1,7 +1,7 @@
 # Trading Journal App — Design Spec
 
 **Date:** 2026-03-22
-**Status:** Approved
+**Status:** Draft
 
 ---
 
@@ -41,8 +41,10 @@ trade-journal/
 │   ├── (auth)/              # login, register pages
 │   ├── (dashboard)/         # protected pages (require auth)
 │   │   ├── dashboard/       # stats overview
-│   │   ├── trades/          # trade log + add trade
-│   │   └── trades/[id]/     # trade detail + edit
+│   │   ├── trades/          # trade log (list page)
+│   │   ├── trades/new/      # add trade form
+│   │   ├── trades/[id]/     # trade detail view
+│   │   └── trades/[id]/edit/ # edit trade form
 │   └── api/
 │       ├── auth/            # NextAuth handlers
 │       ├── trades/          # GET, POST /api/trades
@@ -61,9 +63,11 @@ trade-journal/
 │       ├── User.ts          # Mongoose User model
 │       └── Trade.ts         # Mongoose Trade model
 ├── schemas/
-│   └── trade.ts             # Zod validation schemas (shared)
-└── types/
-    └── index.ts             # shared TypeScript types
+│   ├── trade.ts             # Zod trade create/update schemas
+│   └── auth.ts              # Zod registration/login schemas
+├── types/
+│   └── index.ts             # shared TypeScript types
+└── middleware.ts            # NextAuth v5 route protection (root level)
 ```
 
 ---
@@ -95,6 +99,12 @@ trade-journal/
   assetClass: 'stock' | 'crypto' | 'forex' | 'options',
   direction: 'long' | 'short',
 
+  // Options-specific fields (only present when assetClass === 'options')
+  strikePrice?: number,
+  expirationDate?: Date,
+  contractType?: 'call' | 'put',
+  premium?: number,          // cost per contract
+
   // Trade data
   entryPrice: number,
   exitPrice?: number,       // null if trade is still open
@@ -103,12 +113,15 @@ trade-journal/
   takeProfit?: number,
   entryDate: Date,
   exitDate?: Date,
+  // Derived on save: 'open' if exitPrice/exitDate are absent, 'closed' if both are present
   status: 'open' | 'closed',
 
   // Calculated on save (not at read time)
   pnl?: number,
   pnlPercent?: number,
-  riskRewardRatio?: number, // (exitPrice - entryPrice) / (entryPrice - stopLoss)
+  riskRewardRatio?: number, // direction-aware: see calculations.ts
+  // Long:  (exitPrice - entryPrice) / (entryPrice - stopLoss)
+  // Short: (entryPrice - exitPrice) / (stopLoss - entryPrice)
 
   // Context
   strategy: string,        // e.g. "breakout", "mean reversion"
@@ -124,7 +137,30 @@ trade-journal/
 **Design decisions:**
 - `pnl`, `pnlPercent`, and `riskRewardRatio` are calculated and stored on save — keeps analytics queries fast, avoids re-computation on every read
 - Notes live on the Trade model (no separate JournalEntry collection) — simplifies the data model
-- Tags are free-form strings on the trade (no separate Tag collection) — aggregated dynamically for filter UI
+- Tags are free-form strings on the trade (no separate Tag collection) — aggregated dynamically for filter UI via MongoDB `$group` on the user's trades
+- `strategy` is also a free-form string — the strategy dropdown in the filter UI is populated by a `GET /api/trades/meta` route that returns `{ strategies: string[], tags: string[] }` aggregated from the user's existing trades
+- `status` is derived on save: `'closed'` requires **both** `exitPrice` and `exitDate` to be present; if only one is provided the Zod schema rejects the input. A trade with neither is `'open'`.
+
+**P&L calculation formulas (implemented in `lib/calculations.ts`):**
+
+For **stocks, crypto, forex:**
+```
+pnl         = direction === 'long'
+                ? (exitPrice - entryPrice) * quantity
+                : (entryPrice - exitPrice) * quantity
+pnlPercent  = (pnl / (entryPrice * quantity)) * 100
+```
+
+For **options** (quantity = number of contracts; standard 100-share multiplier applies):
+```
+pnl         = direction === 'long'
+                ? (exitPremium - premium) * quantity * 100
+                : (premium - exitPremium) * quantity * 100
+pnlPercent  = (pnl / (premium * quantity * 100)) * 100
+```
+> Note: `entryPrice` and `exitPrice` for options represent the **underlying asset price** at entry/exit (informational). `premium` is the **entry cost per share of the contract**; `exitPremium` is the **exit sell price per share of the contract** — stored in the `exitPrice` field for options. Total cost basis = `premium * quantity * 100`. Example: buy 2 AAPL $150 call contracts at $3.00 premium, sell at $5.50 → pnl = (5.50 - 3.00) * 2 * 100 = $500.
+>
+> Forex P&L is quoted in the counter currency and is not converted — the user is responsible for their position sizing units.
 
 ---
 
@@ -183,8 +219,54 @@ Computed from all **closed** trades belonging to the authenticated user:
 | PUT | `/api/trades/[id]` | Update trade |
 | DELETE | `/api/trades/[id]` | Delete trade |
 | POST | `/api/upload` | Upload chart image to Cloudinary, returns URL |
+| GET | `/api/stats` | Aggregated dashboard stats for the authenticated user |
+| GET | `/api/trades/meta` | Returns `{ strategies, tags }` aggregated from user's trades (for filter dropdowns) |
 
 All routes are protected — unauthenticated requests return `401`.
+
+**Route protection mechanism:** A root-level `middleware.ts` file uses NextAuth v5's `auth()` helper to protect all `/api/*` (except `/api/auth/*`) and `/(dashboard)/*` routes. Individual API route handlers do not need to re-check auth — the middleware handles it centrally.
+
+**`GET /api/trades` query params:**
+
+| Param | Type | Description |
+|---|---|---|
+| `page` | number | Page number (default: 1) |
+| `limit` | number | Results per page (default: 20) |
+| `sortBy` | string | Field to sort by: `entryDate`, `pnl`, `symbol` (default: `entryDate`) |
+| `sortDir` | `asc` \| `desc` | Sort direction (default: `desc`) |
+| `assetClass` | string | Filter by asset class |
+| `direction` | `long` \| `short` | Filter by direction |
+| `status` | `open` \| `closed` | Filter by status |
+| `strategy` | string | Filter by strategy name |
+| `tags` | string (comma-separated) | Filter by one or more tags |
+| `from` | ISO date string | Entry date range start |
+| `to` | ISO date string | Entry date range end |
+
+**`GET /api/stats` query params:**
+
+| Param | Type | Description |
+|---|---|---|
+| `granularity` | `daily` \| `weekly` \| `monthly` | Grouping for `pnlByDate` (default: `daily`) |
+| `from` | ISO date string | Optional date range start |
+| `to` | ISO date string | Optional date range end |
+
+**`GET /api/stats` response:**
+```ts
+{
+  totalPnl: number,
+  winRate: number,           // 0–100
+  avgRiskReward: number,
+  profitFactor: number,
+  totalTrades: number,
+  bestTrade: { symbol, pnl },
+  worstTrade: { symbol, pnl },
+  currentWinStreak: number,
+  currentLossStreak: number,
+  bestWinStreak: number,
+  pnlByDate: { date: string, pnl: number }[],
+  pnlByAssetClass: { assetClass: string, pnl: number, count: number }[]
+}
+```
 
 **Response format:**
 ```ts
@@ -199,7 +281,12 @@ All routes are protected — unauthenticated requests return `401`.
 
 ## Validation
 
-Zod schemas in `schemas/trade.ts` are shared between the frontend form and the API route handler. A single source of truth for validation rules.
+Zod schemas are shared between frontend and API — a single source of truth for validation rules:
+
+- `schemas/trade.ts` — trade create/update validation
+- `schemas/auth.ts` — registration and login validation
+
+**Password requirements (enforced in `schemas/auth.ts`):** minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number.
 
 ---
 
@@ -208,6 +295,8 @@ Zod schemas in `schemas/trade.ts` are shared between the frontend form and the A
 - API routes return consistent `{ error, status }` JSON
 - Form validation runs client-side (Zod) before submission
 - Image upload failures are non-blocking — trade saves without image, user sees a toast notification
+- Chart images are uploaded **server-side** through `/api/upload` — the browser POSTs the file to the Next.js API route, which streams it to Cloudinary using the Cloudinary Node SDK. This avoids exposing API credentials to the client.
+- **Orphaned images (v1 known gap):** If a chart image is uploaded successfully but the subsequent trade save fails, the Cloudinary image is orphaned. Cleanup of orphaned images is out of scope for v1 — acceptable given low frequency.
 - NextAuth handles auth errors via its built-in error pages
 - Next.js global error boundary catches unexpected UI crashes
 
@@ -218,7 +307,7 @@ Zod schemas in `schemas/trade.ts` are shared between the frontend form and the A
 | Layer | Tool | What's covered |
 |---|---|---|
 | Unit | Vitest | P&L/R:R calculations, Zod schemas, utility functions |
-| Integration | Vitest + Mongoose | API route handlers against a real MongoDB test DB |
+| Integration | Vitest + `mongodb-memory-server` | API route handlers against an in-memory MongoDB instance (no Atlas required in CI) |
 | E2E | Playwright | Register → log trade → view dashboard stats |
 
 ---
@@ -230,6 +319,7 @@ Zod schemas in `schemas/trade.ts` are shared between the frontend form and the A
 - `.env.local` for all secrets:
   - `MONGODB_URI`
   - `NEXTAUTH_SECRET`
+  - `NEXTAUTH_URL` (required for local dev: `http://localhost:3000`; NextAuth v5 auto-detects on Vercel, so not required in production)
   - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`
   - `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET`
 
