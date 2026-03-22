@@ -22,7 +22,7 @@
 - [x] **TRADE-05**: User can add a strategy label and free-form tags to a trade
 - [x] **TRADE-06**: User can write notes/reflection text on a trade
 - [ ] **TRADE-07**: User can upload a chart screenshot image (server-side Cloudinary upload)
-- [ ] **TRADE-08**: User can edit any field of an existing trade
+- [x] **TRADE-08**: User can edit any field of an existing trade
 - [ ] **TRADE-09**: User can delete a trade
 - [ ] **TRADE-10**: Trade form shows live P&L preview as user types entry/exit price and quantity
 
@@ -107,7 +107,7 @@
 | TRADE-05 | Phase 2 | Complete |
 | TRADE-06 | Phase 2 | Complete |
 | TRADE-07 | Phase 2 | Pending |
-| TRADE-08 | Phase 2 | Pending |
+| TRADE-08 | Phase 2 | Complete |
 | TRADE-09 | Phase 2 | Pending |
 | TRADE-10 | Phase 2 | Pending |
 | LOG-01 | Phase 3 | Pending |

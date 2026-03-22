@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 1
+current_plan: 2
 status: unknown
-last_updated: "2026-03-22T20:46:27.950Z"
+last_updated: "2026-03-22T20:50:53.149Z"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 10
-  completed_plans: 7
+  completed_plans: 9
 ---
 
 # Project State: Trade Journal
@@ -56,6 +56,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - [Phase 02]: Promise-based pre-save hook — Mongoose 8.x next() parameter typed as SaveOptions (not callable); async pattern required
 - [Phase 02]: options P&L uses premium as entry cost and exitPrice as exit premium per spec — entryPrice is informational for options
 - [Phase 02]: riskRewardRatio returns undefined (not throw) when denominator <= 0 or stopLoss absent
+- [Phase 02]: Use new Trade() + .save() instead of Trade.create() to trigger pre-save hook for status derivation and P&L calculation
+- [Phase 02]: Sort field whitelist (entryDate, pnl, symbol) prevents arbitrary MongoDB field injection via sortBy param
 
 ## Performance Metrics
 
@@ -68,6 +70,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 | Phase 01 P04 | 2min | 2 tasks | 6 files |
 | Phase 02 P02 | 9 | 2 tasks | 4 files |
 | Phase 02 P01 | 10min | 2 tasks | 3 files |
+| Phase 02 P03 | 4min | 2 tasks | 1 files |
+| Phase 02 P04 | 2min | 2 tasks | 1 files |
 
 ## Notes
 
