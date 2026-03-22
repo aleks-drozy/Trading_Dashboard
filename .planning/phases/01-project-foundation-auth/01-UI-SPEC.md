@@ -1,7 +1,8 @@
 ---
 phase: 1
 slug: project-foundation-auth
-status: draft
+status: approved
+reviewed_at: 2026-03-22
 shadcn_initialized: false
 preset: none
 created: 2026-03-22
@@ -50,20 +51,17 @@ Exceptions:
 
 ## Typography
 
+Exactly 4 sizes and 2 weights are declared for this phase.
+
 | Role | Size | Weight | Line Height | Font | Usage |
 |------|------|--------|-------------|------|-------|
-| Body | 16px | 400 | 1.5 | Inter | Form labels, input placeholder text, paragraph copy |
-| Label | 14px | 500 | 1.4 | Inter | Input field labels, helper text, nav links |
-| Heading | 24px | 600 | 1.3 | Inter | Auth page titles ("Sign in", "Create account") |
+| Label | 14px | 400 | 1.4 | Inter | Input labels, helper text, nav links, button text, error messages, divider label, eyebrow labels, footer text, "Forgot password?" link, password hints |
+| Body | 16px | 400 | 1.5 | Inter | Form subtext, paragraph copy, feature card body, hero subheading |
+| Heading | 24px | 700 | 1.3 | Inter | Auth page titles, feature card titles, nav logo, features section heading |
 | Display | 48px | 700 | 1.1 | Inter | Landing page hero headline |
 | Monospace | 14px | 400 | 1.5 | JetBrains Mono | Reserved for price/number values in Phase 3+ — not used in auth pages |
 
-Notes:
-- Feature card titles: 18px / weight 600 / line-height 1.3 (Inter)
-- Feature card body: 15px / weight 400 / line-height 1.5 (Inter)
-- Nav logo: 18px / weight 700 / Inter
-- Button text: 15px / weight 500 / Inter, no text transform
-- Error messages under fields: 13px / weight 400 / line-height 1.4 / color `#ef4444`
+Weights in use: **400** (normal — all body, label, and helper text) and **700** (bold — all headings, display, CTAs, logo).
 
 ---
 
@@ -125,7 +123,7 @@ The auth card is the shared wrapper for all auth pages (login, register, forgot-
 
 - Background: `#00ff88`
 - Text color: `#0f0f0f` (dark on light green)
-- Font: 15px Inter weight 500
+- Font: 14px Inter weight 700
 - Border radius: 8px
 - Height: 44px
 - Width: 100% (full-width in auth forms)
@@ -142,7 +140,7 @@ Used for "Back to sign in" links styled as buttons, and any non-primary action.
 - Background: transparent
 - Border: 1px solid `#2a2a2a`
 - Text color: `#6b7280`
-- Font: 15px Inter weight 500
+- Font: 14px Inter weight 400
 - Border radius: 8px
 - Height: 40px
 - Hover: border-color `#4a4a4a`, text color `#9ca3af`
@@ -152,7 +150,7 @@ Used for "Back to sign in" links styled as buttons, and any non-primary action.
 - Background: `#1a1a1a`
 - Border: 1px solid `#2a2a2a`
 - Text color: `#e5e7eb`
-- Font: 15px Inter weight 500
+- Font: 14px Inter weight 400
 - Border radius: 8px
 - Height: 44px
 - Width: 100%
@@ -164,7 +162,7 @@ Used for "Back to sign in" links styled as buttons, and any non-primary action.
 
 - Horizontal rule: 1px solid `#2a2a2a`
 - Label text: "or continue with email"
-- Label font: 13px Inter weight 400
+- Label font: 14px Inter weight 400
 - Label color: `#6b7280`
 - Layout: two hr lines flanking the label, centered
 - Margin: 24px top and bottom
@@ -172,9 +170,9 @@ Used for "Back to sign in" links styled as buttons, and any non-primary action.
 ### Inline Field Error
 
 - Displayed below the input, immediately on blur if invalid (D-03)
-- Font: 13px Inter weight 400, line-height 1.4
+- Font: 14px Inter weight 400, line-height 1.4
 - Color: `#ef4444`
-- Top margin: 6px from input bottom
+- Top margin: 8px from input bottom
 - Prefix: none (no icon) — text only
 
 ### Loading Spinner
@@ -196,7 +194,7 @@ Used inside primary buttons during async operations (form submit, Google OAuth r
 ```
 [Page background: #0f0f0f, full viewport]
   [Auth card: centered, max-w-400]
-    [Heading: "Sign in" — 24px/600]
+    [Heading: "Sign in" — 24px/700]
     [Subtext: "Welcome back. Enter your credentials below." — 16px/400/#6b7280]
     [gap: 24px]
     [Google OAuth button — full width]
@@ -205,11 +203,11 @@ Used inside primary buttons during async operations (form submit, Google OAuth r
     [gap: 16px]
     [Password input — label "Password", full width]
     [gap: 8px]
-    ["Forgot password?" link — right-aligned, 13px, #6b7280, hover #00ff88]
+    ["Forgot password?" link — right-aligned, 14px/400, #6b7280, hover #00ff88]
     [gap: 16px]
     [Primary button: "Sign in" — full width]
     [gap: 24px]
-    [Footer text: "Don't have an account? Sign up" — centered, 14px/#6b7280, "Sign up" is accent link]
+    [Footer text: "Don't have an account? Sign up" — centered, 14px/400/#6b7280, "Sign up" is accent link]
 ```
 
 ### Register Page (`/register`)
@@ -217,7 +215,7 @@ Used inside primary buttons during async operations (form submit, Google OAuth r
 ```
 [Page background: #0f0f0f, full viewport]
   [Auth card: centered, max-w-400]
-    [Heading: "Create account" — 24px/600]
+    [Heading: "Create account" — 24px/700]
     [Subtext: "Start tracking your trades today." — 16px/400/#6b7280]
     [gap: 24px]
     [Google OAuth button — full width]
@@ -227,11 +225,11 @@ Used inside primary buttons during async operations (form submit, Google OAuth r
     [Email input — label "Email", full width]
     [gap: 16px]
     [Password input — label "Password", full width]
-    [Password hint: "Min 8 chars, 1 uppercase, 1 lowercase, 1 number" — 13px/#6b7280]
+    [Password hint: "Min 8 chars, 1 uppercase, 1 lowercase, 1 number" — 14px/400/#6b7280]
     [gap: 16px]
     [Primary button: "Create account" — full width]
     [gap: 24px]
-    [Footer text: "Already have an account? Sign in" — centered, 14px/#6b7280, "Sign in" is accent link]
+    [Footer text: "Already have an account? Sign in" — centered, 14px/400/#6b7280, "Sign in" is accent link]
 ```
 
 ### Forgot Password Page (`/forgot-password`)
@@ -241,14 +239,14 @@ Two states: form state and success state.
 **Form state:**
 ```
 [Auth card: centered, max-w-400]
-  [Heading: "Reset your password" — 24px/600]
+  [Heading: "Reset your password" — 24px/700]
   [Subtext: "Enter your email and we'll send a reset link." — 16px/400/#6b7280]
   [gap: 24px]
   [Email input — label "Email", full width]
   [gap: 16px]
   [Primary button: "Send reset link" — full width]
   [gap: 16px]
-  ["Back to sign in" — centered text link, 14px/#6b7280, hover accent]
+  ["Back to sign in" — centered text link, 14px/400/#6b7280, hover accent]
 ```
 
 **Success state (same card, content swapped):**
@@ -256,7 +254,7 @@ Two states: form state and success state.
 [Auth card: centered, max-w-400]
   [Check circle icon — 32px, #00ff88, centered]
   [gap: 16px]
-  [Heading: "Check your email" — 24px/600, centered]
+  [Heading: "Check your email" — 24px/700, centered]
   [Body: "If that email exists, you'll receive a reset link shortly. Check your spam folder if you don't see it." — 16px/400/#6b7280, centered]
   [gap: 24px]
   ["Back to sign in" — secondary button, full width]
@@ -271,11 +269,11 @@ Two states: form state and success state. If token is missing or invalid, show e
 **Form state:**
 ```
 [Auth card: centered, max-w-400]
-  [Heading: "Set new password" — 24px/600]
+  [Heading: "Set new password" — 24px/700]
   [Subtext: "Choose a strong password for your account." — 16px/400/#6b7280]
   [gap: 24px]
   [Password input — label "New password", full width]
-  [Password hint — 13px/#6b7280]
+  [Password hint — 14px/400/#6b7280]
   [gap: 16px]
   [Password input — label "Confirm password", full width]
   [gap: 16px]
@@ -287,7 +285,7 @@ Two states: form state and success state. If token is missing or invalid, show e
 [Auth card: centered, max-w-400]
   [Check circle icon — 32px, #00ff88, centered]
   [gap: 16px]
-  [Heading: "Password reset" — 24px/600, centered]
+  [Heading: "Password reset" — 24px/700, centered]
   [Body: "Your password has been updated. You can now sign in." — 16px/400/#6b7280, centered]
   [gap: 24px]
   [Primary button: "Sign in" — full width, redirects to /login]
@@ -298,7 +296,7 @@ Two states: form state and success state. If token is missing or invalid, show e
 [Auth card: centered, max-w-400]
   [Alert triangle icon — 32px, #ef4444, centered]
   [gap: 16px]
-  [Heading: "Link expired" — 24px/600, centered]
+  [Heading: "Link expired" — 24px/700, centered]
   [Body: "This reset link is invalid or has expired. Reset links are valid for 1 hour." — 16px/400/#6b7280, centered]
   [gap: 24px]
   [Primary button: "Request a new link" — full width, redirects to /forgot-password]
@@ -312,8 +310,8 @@ Two states: form state and success state. If token is missing or invalid, show e
 - Height: 64px
 - Padding: 0 32px (desktop)
 - Layout: logo left, nav actions right
-- Logo: wordmark "TradeJournal" — 18px Inter weight 700, color `#e5e7eb`, accent dot or slash character in `#00ff88`
-- Nav right: "Login" (secondary text link, 15px/500/#6b7280, hover `#e5e7eb`) + "Get Started" (accent primary button, 15px/500, height 36px, padding 0 20px, border-radius 8px)
+- Logo: wordmark "TradeJournal" — 24px Inter weight 700, color `#e5e7eb`, accent dot or slash character in `#00ff88`
+- Nav right: "Login" (secondary text link, 14px/400/#6b7280, hover `#e5e7eb`) + "Get Started" (accent primary button, 14px/700, height 36px, padding 0 20px, border-radius 8px)
 - Nav is sticky (position: sticky, top: 0, z-index 50)
 
 **Hero section:**
@@ -321,19 +319,19 @@ Two states: form state and success state. If token is missing or invalid, show e
 - Padding: 96px 32px (top/bottom: 96px)
 - Max-content-width: 720px, centered
 - Layout: centered single column
-- Eyebrow label: "Built for active traders" — 13px Inter weight 500, color `#00ff88`, letter-spacing 0.08em, uppercase, margin-bottom 16px
+- Eyebrow label: "Built for active traders" — 14px Inter weight 400, color `#00ff88`, letter-spacing 0.08em, uppercase, margin-bottom 16px
 - Headline: "Track every trade. Improve every week." — 48px Inter weight 700, line-height 1.1, color `#e5e7eb`
   - "every week." may be rendered with a different color word — use plain `#e5e7eb` for the full headline; no gradient
-- Subheading: "Log trades in under a minute. See your win rate, P&L, and R:R — instantly. No spreadsheets." — 20px Inter weight 400, line-height 1.5, color `#6b7280`, margin-top 24px
+- Subheading: "Log trades in under a minute. See your win rate, P&L, and R:R — instantly. No spreadsheets." — 16px Inter weight 400, line-height 1.5, color `#6b7280`, margin-top 24px
 - CTA group: margin-top 40px, flex row centered, gap 16px
-  - Primary CTA: "Get Started — it's free" — accent primary button, height 48px, padding 0 28px, border-radius 8px, font 16px/600
+  - Primary CTA: "Get Started — it's free" — accent primary button, height 48px, padding 0 28px, border-radius 8px, font 16px/700
   - Secondary CTA: "See how it works" — outline secondary button styled as: no border, text color `#6b7280`, underline on hover, height 48px, padding 0 16px, font 16px/400
 
 **Features section:**
 - Background: `#0f0f0f`
 - Padding: 80px 32px
-- Section label (above heading): "What you get" — 13px/500/`#00ff88`/uppercase/letter-spacing 0.08em
-- Section heading: "Everything a serious trader needs" — 32px Inter weight 700, color `#e5e7eb`, margin-bottom 48px
+- Section label (above heading): "What you get" — 14px/400/`#00ff88`/uppercase/letter-spacing 0.08em
+- Section heading: "Everything a serious trader needs" — 24px Inter weight 700, color `#e5e7eb`, margin-bottom 48px
 - Layout: 3-column grid (desktop), 1-column (mobile stacked)
 - Gap: 24px between cards
 - Feature card internal structure (see card spec below)
@@ -362,8 +360,8 @@ Feature card styling:
 - Border radius: 12px
 - Padding: 28px
 - Icon margin-bottom: 16px
-- Title: 18px Inter weight 600, color `#e5e7eb`, margin-bottom 12px
-- Body: 15px Inter weight 400, color `#6b7280`, line-height 1.5
+- Title: 24px Inter weight 700, color `#e5e7eb`, margin-bottom 12px
+- Body: 16px Inter weight 400, color `#6b7280`, line-height 1.5
 - Hover: border-color `#3a3a3a`, transition 150ms ease
 
 ---
