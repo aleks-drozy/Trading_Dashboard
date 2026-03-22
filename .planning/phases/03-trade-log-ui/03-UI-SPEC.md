@@ -56,11 +56,13 @@ Source: Button.tsx heights verified, Card.tsx p-8 = 32px, CONTEXT.md Claude's Di
 | Role | Font | Size | Weight | Line Height | Usage |
 |------|------|------|--------|-------------|-------|
 | Body | Inter | 14px | 400 (regular) | 1.5 | Table cell text, filter labels, form helper text, nav link labels |
-| Label | Inter | 14px | 500 (medium) | 1.4 | Form field labels (matching existing Input.tsx `text-sm`), section headings within cards |
-| Heading | Inter | 20px | 600 (semibold) | 1.3 | Page titles (e.g. "Trade Log", "Add Trade"), card section titles |
+| Label | Inter | 14px | 400 (regular) | 1.4 | Form field labels (matching existing Input.tsx `text-sm`), section headings within cards — differentiated from Body by context and surrounding whitespace, not weight |
+| Heading | Inter | 20px | 700 (bold) | 1.3 | Page titles (e.g. "Trade Log", "Add Trade"), card section titles |
 | Display | Inter | 28px | 700 (bold) | 1.2 | Not used in Phase 3 — reserved for Phase 4 dashboard stats |
 | Mono — value | JetBrains Mono | 14px | 400 (regular) | 1.5 | All P&L amounts, prices, percentages, R:R values in table cells and preview bar (UI-03) |
 | Mono — preview | JetBrains Mono | 16px | 700 (bold) | 1.4 | Live P&L preview bar primary value (P&L dollar amount) — larger for at-a-glance read |
+
+**Weights in use: 400 (regular) and 700 (bold) only. No other weights are permitted.**
 
 Typography constraints from requirements and existing components:
 - Body/Label at 14px matches existing `text-sm` usage in Input.tsx, Button.tsx, and LoginForm.tsx — do not deviate.
@@ -92,6 +94,12 @@ Accent (`#00ff88`) reserved for:
 Accent is NOT used for: general links, headings, body text, sort arrows, pagination controls, or table headers.
 
 Source: globals.css custom properties, UI-01/UI-02 requirements, Input.tsx focus ring pattern, Button.tsx primary variant, D-04 nav active state.
+
+---
+
+## Visuals
+
+**Primary visual anchor on `/trades`:** the TradeTable is the content focus — each row is a trade record the user needs to read and act on; the filter bar above it is secondary chrome that controls what rows appear, not the destination of the user's attention.
 
 ---
 
@@ -257,4 +265,5 @@ These are non-negotiable minimums, not polish items:
 
 *Phase: 03-trade-log-ui*
 *UI-SPEC created: 2026-03-22*
+*UI-SPEC revised: 2026-03-22 — collapsed typography weights from 4 to 2 (400 + 700 only); added primary visual anchor declaration for /trades*
 *Sources: CONTEXT.md (16 decisions), RESEARCH.md (stack + patterns + component inventory), REQUIREMENTS.md (UI-01 through UI-04, LOG-01 through LOG-05, TRADE-10), globals.css (CSS custom properties), Button.tsx/Input.tsx/Card.tsx (existing component contracts), app/layout.tsx (font configuration)*
