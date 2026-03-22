@@ -6,9 +6,8 @@ import PasswordReset from "@/lib/models/PasswordReset"
 import { Resend } from "resend"
 import { forgotPasswordSchema } from "@/schemas/auth"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function POST(req: NextRequest) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
   const body = await req.json()
   const parsed = forgotPasswordSchema.safeParse(body)
 
