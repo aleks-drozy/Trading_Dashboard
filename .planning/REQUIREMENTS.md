@@ -48,7 +48,7 @@
 - [ ] **UI-02**: Positive P&L displayed in green (`#00ff88`), negative P&L in red (`#ef4444`)
 - [ ] **UI-03**: Monospace font for all price and number values
 - [ ] **UI-04**: Application is desktop-first responsive (usable on tablet, not required on mobile)
-- [ ] **UI-05**: Landing page with feature overview and sign-up CTA
+- [x] **UI-05**: Landing page with feature overview and sign-up CTA
 
 ### Infrastructure & Quality
 
@@ -97,7 +97,7 @@
 | AUTH-03 | Phase 1 | Pending |
 | AUTH-04 | Phase 1 | Pending |
 | AUTH-05 | Phase 1 | Pending |
-| UI-05 | Phase 1 | Pending |
+| UI-05 | Phase 1 | Complete |
 | INFRA-04 | Phase 1 | Complete |
 | INFRA-05 | Phase 1 | Complete |
 | TRADE-01 | Phase 2 | Pending |
