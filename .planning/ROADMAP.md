@@ -31,14 +31,14 @@ Plans:
 
 **Requirements covered:** TRADE-01 through TRADE-09, INFRA-05 (env vars for Cloudinary)
 
-**Plans:**
-1. Define Trade Mongoose model with all fields (including options-specific fields)
-2. Write Zod schemas for trade create/update and auth (schemas/trade.ts, schemas/auth.ts)
-3. Implement P&L, pnlPercent, and R:R calculation functions in lib/calculations.ts (direction-aware, asset-class-aware)
-4. Build GET /api/trades and POST /api/trades route handlers
-5. Build GET, PUT, DELETE /api/trades/[id] route handlers
-6. Build POST /api/upload route (server-side Cloudinary upload)
-7. Build GET /api/trades/meta route (strategies + tags aggregation)
+**Plans:** 5 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Upgrade db.ts connection cache, create Trade model with pre-save hook, P&L calculation module
+- [ ] 02-02-PLAN.md — Zod trade create/update schemas with conditional validation, Wave 0 test scaffolds
+- [ ] 02-03-PLAN.md — POST and GET /api/trades route handlers (create + list with filtering/sorting/pagination)
+- [ ] 02-04-PLAN.md — GET, PUT, DELETE /api/trades/[id] route handlers (view, update with recalc, delete)
+- [ ] 02-05-PLAN.md — Cloudinary upload endpoint, trades meta aggregation endpoint, .env.example update
 
 **Done when:** All trade CRUD endpoints work, P&L is correctly calculated and stored, images upload successfully to Cloudinary, and all routes return 401 for unauthenticated requests.
 
@@ -122,14 +122,14 @@ Plans:
 | Phase | Name | Plans | Requirements |
 |-------|------|-------|--------------|
 | 1 | 5/5 | Complete   | 2026-03-22 |
-| 2 | Trade Data Layer & CRUD API | 7 | 9 |
+| 2 | Trade Data Layer & CRUD API | 5 | 10 |
 | 3 | Trade Log UI | 7 | 6 |
 | 4 | Dashboard & Analytics | 6 | 5 |
 | 5 | UI Polish & Dark Theme | 6 | 4 |
 | 6 | Testing & Production | 6 | 3 |
 
-**Total:** 6 phases · 37 plans · 35 requirements
+**Total:** 6 phases · 35 plans · 35 requirements
 
 ---
 *Roadmap created: 2026-03-22*
-*Last updated: 2026-03-22 after Phase 1 planning*
+*Last updated: 2026-03-22 after Phase 2 planning*
