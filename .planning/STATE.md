@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 2
 status: unknown
-last_updated: "2026-03-22T20:50:53.149Z"
+last_updated: "2026-03-22T20:50:58.497Z"
 progress:
   total_phases: 2
   completed_phases: 1
@@ -58,6 +58,7 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - [Phase 02]: riskRewardRatio returns undefined (not throw) when denominator <= 0 or stopLoss absent
 - [Phase 02]: Use new Trade() + .save() instead of Trade.create() to trigger pre-save hook for status derivation and P&L calculation
 - [Phase 02]: Sort field whitelist (entryDate, pnl, symbol) prevents arbitrary MongoDB field injection via sortBy param
+- [Phase 02]: Used findOne + set + save (not findOneAndUpdate) to ensure pre-save hook fires for P&L recalculation on PUT
 
 ## Performance Metrics
 
