@@ -12,14 +12,14 @@
 
 **Requirements covered:** AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, UI-05, INFRA-04, INFRA-05
 
-**Plans:**
-1. Scaffold Next.js 14 project with TypeScript, Tailwind CSS, ESLint, Prettier, Husky
-2. Configure MongoDB connection, Mongoose, and environment variables
-3. Implement NextAuth v5 with credentials provider (email/password)
-4. Implement NextAuth v5 Google OAuth provider
-5. Build login, register, and forgot-password pages (dark terminal theme)
-6. Implement root middleware.ts for route protection
-7. Build landing page with feature overview and sign-up CTA
+**Plans:** 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Scaffold Next.js 16, install deps, configure dev tooling (Husky, Prettier, Vitest, .env.example)
+- [ ] 01-02-PLAN.md — MongoDB connection, User + PasswordReset models, Zod schemas, NextAuth v5 config
+- [ ] 01-03-PLAN.md — Shared UI components, login + register pages, registration API, proxy.ts route protection
+- [ ] 01-04-PLAN.md — Password reset flow (forgot-password + reset-password pages and APIs, Resend email)
+- [ ] 01-05-PLAN.md — Landing page (Navbar, Hero, Features section)
 
 **Done when:** User can register, sign in (email or Google), stay logged in after refresh, request a password reset, and is blocked from dashboard routes when not authenticated.
 
@@ -121,15 +121,15 @@
 
 | Phase | Name | Plans | Requirements |
 |-------|------|-------|--------------|
-| 1 | Foundation & Auth | 7 | 8 |
+| 1 | Foundation & Auth | 5 | 8 |
 | 2 | Trade Data Layer & CRUD API | 7 | 9 |
 | 3 | Trade Log UI | 7 | 6 |
 | 4 | Dashboard & Analytics | 6 | 5 |
 | 5 | UI Polish & Dark Theme | 6 | 4 |
 | 6 | Testing & Production | 6 | 3 |
 
-**Total:** 6 phases · 39 plans · 35 requirements
+**Total:** 6 phases · 37 plans · 35 requirements
 
 ---
 *Roadmap created: 2026-03-22*
-*Last updated: 2026-03-22 after initial creation*
+*Last updated: 2026-03-22 after Phase 1 planning*
