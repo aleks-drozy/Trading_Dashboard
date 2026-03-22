@@ -31,11 +31,11 @@ Plans:
 
 **Requirements covered:** TRADE-01 through TRADE-09, INFRA-05 (env vars for Cloudinary)
 
-**Plans:** 5 plans
+**Plans:** 2/5 plans executed
 
 Plans:
-- [ ] 02-01-PLAN.md — Upgrade db.ts connection cache, create Trade model with pre-save hook, P&L calculation module
-- [ ] 02-02-PLAN.md — Zod trade create/update schemas with conditional validation, Wave 0 test scaffolds
+- [x] 02-01-PLAN.md — Upgrade db.ts connection cache, create Trade model with pre-save hook, P&L calculation module
+- [x] 02-02-PLAN.md — Zod trade create/update schemas with conditional validation, Wave 0 test scaffolds
 - [ ] 02-03-PLAN.md — POST and GET /api/trades route handlers (create + list with filtering/sorting/pagination)
 - [ ] 02-04-PLAN.md — GET, PUT, DELETE /api/trades/[id] route handlers (view, update with recalc, delete)
 - [ ] 02-05-PLAN.md — Cloudinary upload endpoint, trades meta aggregation endpoint, .env.example update
@@ -122,7 +122,7 @@ Plans:
 | Phase | Name | Plans | Requirements |
 |-------|------|-------|--------------|
 | 1 | 5/5 | Complete   | 2026-03-22 |
-| 2 | Trade Data Layer & CRUD API | 5 | 10 |
+| 2 | 2/5 | In Progress|  |
 | 3 | Trade Log UI | 7 | 6 |
 | 4 | Dashboard & Analytics | 6 | 5 |
 | 5 | UI Polish & Dark Theme | 6 | 4 |

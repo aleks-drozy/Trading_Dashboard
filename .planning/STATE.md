@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 5 of 5
-status: complete
-last_updated: "2026-03-22T16:48:25.993Z"
+current_plan: 1
+status: unknown
+last_updated: "2026-03-22T20:46:22.749Z"
 progress:
-  total_phases: 1
+  total_phases: 2
   completed_phases: 1
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 10
+  completed_plans: 7
 ---
 
 # Project State: Trade Journal
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** A trader can log a trade in under a minute and immediately see how it affects their overall performance.
-**Current focus:** Phase 01 — project-foundation-auth
+**Current focus:** Phase 02 — trade-data-layer-crud-api
 
 ## Current Status
 
 - **Active phase:** Phase 01 — project-foundation-auth
-- **Current Plan:** 5 of 5 (Phase 01 complete)
+- **Current Plan:** 1
 - **Last completed:** Plan 01-04 (Password reset flow — forgot-password/reset-password pages and API routes with Resend email)
 - **Next action:** Begin Phase 02 — Trade Data Layer & CRUD API
 
@@ -51,6 +51,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - [Phase 01]: Resend client moved inside POST handler — module-level instantiation throws during build when RESEND_API_KEY is absent
 - [Phase 01]: forgot-password always returns HTTP 200 with identical message — no account enumeration per D-08
 - [Phase 01]: PasswordReset token lookup requires both used:false and expiresAt.:now — prevents replay of used and expired tokens
+- [Phase 02]: Zod v4 superRefine on ZodObject returns ZodObject not ZodEffects — .innerType() removed; use separate base object + .partial().superRefine() for update schema
+- [Phase 02]: Zod v4 issue paths use PropertyKey[] including symbol — do not explicitly annotate path type in test callbacks
 
 ## Performance Metrics
 
@@ -61,6 +63,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 | Phase 01 P02 | 15 | 2 tasks | 7 files |
 | 01 | 03 | 18min | 2 | 14 |
 | Phase 01 P04 | 2min | 2 tasks | 6 files |
+| Phase 02 P02 | 9 | 2 tasks | 4 files |
+| Phase 02 P01 | 10min | 2 tasks | 3 files |
 
 ## Notes
 
