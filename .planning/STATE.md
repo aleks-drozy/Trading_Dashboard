@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 4 of 5
-status: in_progress
-last_updated: "2026-03-22T18:00:00.000Z"
+current_plan: 5 of 5
+status: complete
+last_updated: "2026-03-22T16:48:25.993Z"
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Project State: Trade Journal
@@ -24,15 +24,15 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 ## Current Status
 
 - **Active phase:** Phase 01 — project-foundation-auth
-- **Current Plan:** 4 of 5
-- **Last completed:** Plan 01-03 (Auth UI — shared components, login/register pages, registration API, proxy.ts)
-- **Next action:** Execute plan 01-04
+- **Current Plan:** 5 of 5 (Phase 01 complete)
+- **Last completed:** Plan 01-04 (Password reset flow — forgot-password/reset-password pages and API routes with Resend email)
+- **Next action:** Begin Phase 02 — Trade Data Layer & CRUD API
 
 ## Phase Progress
 
 | Phase | Status | Plans | Notes |
 |-------|--------|-------|-------|
-| 1 | ◑ In Progress | 4/5 | Foundation & Auth |
+| 1 | ● Complete | 5/5 | Foundation & Auth |
 | 2 | ○ Pending | 0/7 | Trade Data Layer & CRUD API |
 | 3 | ○ Pending | 0/7 | Trade Log UI |
 | 4 | ○ Pending | 0/6 | Dashboard & Analytics |
@@ -48,6 +48,9 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - [Phase 01]: JWT session strategy required for Credentials provider — database sessions incompatible with NextAuth Credentials (by design)
 - [Phase 01]: Zod v4 uses .issues (not .errors) on ZodError — affects all safeParse error access in forms and API routes
 - [Phase 01]: proxy.ts req typed as NextRequest & { auth: any } to satisfy noImplicitAny when auth is cast to any
+- [Phase 01]: Resend client moved inside POST handler — module-level instantiation throws during build when RESEND_API_KEY is absent
+- [Phase 01]: forgot-password always returns HTTP 200 with identical message — no account enumeration per D-08
+- [Phase 01]: PasswordReset token lookup requires both used:false and expiresAt.:now — prevents replay of used and expired tokens
 
 ## Performance Metrics
 
@@ -57,6 +60,7 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 | Phase 01 P05 | 13min | 2 tasks | 6 files |
 | Phase 01 P02 | 15 | 2 tasks | 7 files |
 | 01 | 03 | 18min | 2 | 14 |
+| Phase 01 P04 | 2min | 2 tasks | 6 files |
 
 ## Notes
 
@@ -66,4 +70,4 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - Node.js version is 21.7.1 (non-LTS) — watch for compatibility issues with newer packages
 
 ---
-*Last updated: 2026-03-22 — completed plan 01-03 (auth UI — shared components, login/register pages, registration API, proxy.ts route protection)*
+*Last updated: 2026-03-22 — completed plan 01-04 (password reset flow — forgot-password/reset-password pages and API routes, Resend email, anti-enumeration, one-time token validation)*

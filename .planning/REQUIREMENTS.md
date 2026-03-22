@@ -10,7 +10,7 @@
 - [x] **AUTH-01**: User can register with email and password (min 8 chars, 1 uppercase, 1 lowercase, 1 number)
 - [x] **AUTH-02**: User can sign in with Google OAuth
 - [x] **AUTH-03**: User session persists across browser refresh
-- [ ] **AUTH-04**: User can request a password reset via email link
+- [x] **AUTH-04**: User can request a password reset via email link
 - [ ] **AUTH-05**: All dashboard and API routes are protected via NextAuth v5 middleware
 
 ### Trades
@@ -95,7 +95,7 @@
 | AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Complete |
-| AUTH-04 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Complete |
 | AUTH-05 | Phase 1 | Pending |
 | UI-05 | Phase 1 | Complete |
 | INFRA-04 | Phase 1 | Complete |
