@@ -17,11 +17,12 @@ interface FieldErrors {
 
 interface ResetPasswordFormProps {
   token: string
+  initialState?: FormState
 }
 
-export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
+export function ResetPasswordForm({ token, initialState = "form" }: ResetPasswordFormProps) {
   const router = useRouter()
-  const [formState, setFormState] = useState<FormState>("form")
+  const [formState, setFormState] = useState<FormState>(initialState)
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
@@ -116,9 +117,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="mb-2">
         <h1 className="text-2xl font-bold text-[#e5e7eb]">Set new password</h1>
-        <p className="text-base text-[#6b7280] mt-1">
-          Choose a strong password for your account.
-        </p>
+        <p className="text-base text-[#6b7280] mt-1">Choose a strong password for your account.</p>
       </div>
 
       <div className="flex flex-col gap-1">

@@ -79,9 +79,16 @@ blocked: 0
   artifacts: []
   missing: []
 - truth: "Navigating to /reset-password?token=invalidtoken123 shows an invalid token error state immediately, not the password form"
-  status: failed
+  status: resolved
   reason: "User reported: shows the Set new password form instead of an invalid token error state"
   severity: major
   test: 11
-  artifacts: []
-  missing: []
+  root_cause: "page.tsx passed token directly to client form without server-side validation. ResetPasswordForm always initialized with formState='form'. Fix: page.tsx now queries PasswordReset collection and passes initialState prop to form."
+  artifacts:
+    - path: "app/(auth)/reset-password/page.tsx"
+      issue: "no server-side token validation before rendering form"
+    - path: "components/auth/ResetPasswordForm.tsx"
+      issue: "formState always initialized to 'form', no initialState prop"
+  missing:
+    - "Server-side token lookup in page.tsx before rendering"
+    - "initialState prop on ResetPasswordForm"
