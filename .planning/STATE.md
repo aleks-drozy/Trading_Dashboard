@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 2
 status: unknown
-last_updated: "2026-03-22T20:50:58.497Z"
+last_updated: "2026-03-22T20:51:27.743Z"
 progress:
   total_phases: 2
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 10
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # Project State: Trade Journal
@@ -59,6 +59,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - [Phase 02]: Use new Trade() + .save() instead of Trade.create() to trigger pre-save hook for status derivation and P&L calculation
 - [Phase 02]: Sort field whitelist (entryDate, pnl, symbol) prevents arbitrary MongoDB field injection via sortBy param
 - [Phase 02]: Used findOne + set + save (not findOneAndUpdate) to ensure pre-save hook fires for P&L recalculation on PUT
+- [Phase 02]: Cloudinary config is lazy (ensureConfig guard) to prevent build-time failures when env vars are absent
+- [Phase 02]: Types.ObjectId required for userId in aggregate pipeline — Mongoose does not auto-cast in aggregation context
 
 ## Performance Metrics
 
@@ -73,6 +75,7 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 | Phase 02 P01 | 10min | 2 tasks | 3 files |
 | Phase 02 P03 | 4min | 2 tasks | 1 files |
 | Phase 02 P04 | 2min | 2 tasks | 1 files |
+| Phase 02 P05 | 2min | 2 tasks | 6 files |
 
 ## Notes
 
