@@ -55,8 +55,8 @@
 - [ ] **INFRA-01**: Unit tests cover P&L/R:R calculation functions and Zod schemas (Vitest)
 - [ ] **INFRA-02**: Integration tests cover API route handlers against mongodb-memory-server (Vitest)
 - [ ] **INFRA-03**: E2E test covers register → log trade → view dashboard (Playwright)
-- [ ] **INFRA-04**: ESLint + Prettier configured with Husky pre-commit hooks
-- [ ] **INFRA-05**: Environment variables documented in .env.example
+- [x] **INFRA-04**: ESLint + Prettier configured with Husky pre-commit hooks
+- [x] **INFRA-05**: Environment variables documented in .env.example
 
 ## v2 Requirements
 
@@ -98,8 +98,8 @@
 | AUTH-04 | Phase 1 | Pending |
 | AUTH-05 | Phase 1 | Pending |
 | UI-05 | Phase 1 | Pending |
-| INFRA-04 | Phase 1 | Pending |
-| INFRA-05 | Phase 1 | Pending |
+| INFRA-04 | Phase 1 | Complete |
+| INFRA-05 | Phase 1 | Complete |
 | TRADE-01 | Phase 2 | Pending |
 | TRADE-02 | Phase 2 | Pending |
 | TRADE-03 | Phase 2 | Pending |
