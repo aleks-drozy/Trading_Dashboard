@@ -14,7 +14,22 @@ A trader can log a trade in under a minute and immediately see how it affects th
 
 <!-- Shipped and confirmed valuable. -->
 
-(None yet — ship to validate)
+**Auth** (Validated in Phase 01: Project Foundation & Auth)
+- [x] User can sign up with email and password
+- [x] User can sign in with Google OAuth
+- [x] User session persists across browser refresh
+- [x] User can reset password via email
+
+**Trade Data Layer** (Validated in Phase 02: Trade Data Layer & CRUD API)
+- [x] P&L, pnlPercent, and R:R are auto-calculated on save
+- [x] Options trades support strike price, expiration, contract type, premium
+- [x] User can log a trade (symbol, asset class, direction, entry/exit, quantity, dates)
+- [x] User can attach a chart screenshot to a trade
+- [x] User can edit and delete their trades
+- [x] User can view paginated list of their trades (20 per page)
+- [x] User can filter trades by asset class, direction, status, strategy, tags, date range
+- [x] User can sort trades by date, P&L, symbol
+- [x] Filter dropdowns are populated from user's existing strategies and tags
 
 ### Active
 
@@ -82,12 +97,14 @@ A trader can log a trade in under a minute and immediately see how it affects th
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Next.js monolith (no separate API) | Fastest to ship, one deployment, no CORS | — Pending |
-| MongoDB over PostgreSQL | Flexible schema for multi-asset-class trades | — Pending |
-| P&L stored on save (not computed on read) | Fast analytics queries, no re-computation | — Pending |
-| Notes on Trade model (no JournalEntry table) | Simplifies data model for v1 | — Pending |
-| Server-side Cloudinary upload | Keeps API keys off the client | — Pending |
-| Status derived from exitPrice+exitDate presence | Single source of truth, enforced by Zod | — Pending |
+| Next.js monolith (no separate API) | Fastest to ship, one deployment, no CORS | ✓ Confirmed |
+| MongoDB over PostgreSQL | Flexible schema for multi-asset-class trades | ✓ Confirmed |
+| P&L stored on save (not computed on read) | Fast analytics queries, no re-computation | ✓ Confirmed — pre-save hook in Trade model |
+| Notes on Trade model (no JournalEntry table) | Simplifies data model for v1 | ✓ Confirmed |
+| Server-side Cloudinary upload | Keeps API keys off the client | ✓ Confirmed — /api/upload with ensureConfig() |
+| Status derived from exitPrice+exitDate presence | Single source of truth, enforced by Zod | ✓ Confirmed — D-12/D-13 superRefine rules |
+| Promise-based pre-save hook (no next param) | Mongoose 8+ next is SaveOptions, not callable | ✓ Confirmed — Phase 02 deviation |
+| PUT uses findOne + .save() not findOneAndUpdate | Ensures pre-save hook fires on update | ✓ Confirmed — Phase 02 decision |
 
 ---
-*Last updated: 2026-03-22 after initial brainstorming and spec review*
+*Last updated: 2026-03-22 — Phase 02 complete: trade data layer and CRUD API shipped*
