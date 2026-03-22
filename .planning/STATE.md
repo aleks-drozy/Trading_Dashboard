@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 2 of 5
-status: unknown
-last_updated: "2026-03-22T16:34:39.642Z"
+current_plan: 4 of 5
+status: in_progress
+last_updated: "2026-03-22T18:00:00.000Z"
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State: Trade Journal
@@ -24,15 +24,15 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 ## Current Status
 
 - **Active phase:** Phase 01 — project-foundation-auth
-- **Current Plan:** 3 of 5
-- **Last completed:** Plan 01-02 (Auth Backend Foundation — MongoDB, NextAuth, Zod schemas)
-- **Next action:** Execute plan 01-03
+- **Current Plan:** 4 of 5
+- **Last completed:** Plan 01-03 (Auth UI — shared components, login/register pages, registration API, proxy.ts)
+- **Next action:** Execute plan 01-04
 
 ## Phase Progress
 
 | Phase | Status | Plans | Notes |
 |-------|--------|-------|-------|
-| 1 | ◑ In Progress | 3/5 | Foundation & Auth |
+| 1 | ◑ In Progress | 4/5 | Foundation & Auth |
 | 2 | ○ Pending | 0/7 | Trade Data Layer & CRUD API |
 | 3 | ○ Pending | 0/7 | Trade Log UI |
 | 4 | ○ Pending | 0/6 | Dashboard & Analytics |
@@ -46,6 +46,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - .env.example committed via !.env.example exception in .gitignore; .env.local gitignored
 - [Phase 01]: next-auth@5 beta.30 requires 'as any' cast for NextAuth() call in moduleResolution:bundler + Next.js TS plugin context — type-only workaround, runtime unaffected
 - [Phase 01]: JWT session strategy required for Credentials provider — database sessions incompatible with NextAuth Credentials (by design)
+- [Phase 01]: Zod v4 uses .issues (not .errors) on ZodError — affects all safeParse error access in forms and API routes
+- [Phase 01]: proxy.ts req typed as NextRequest & { auth: any } to satisfy noImplicitAny when auth is cast to any
 
 ## Performance Metrics
 
@@ -54,6 +56,7 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 | 01 | 01 | 7min | 2 | 13 |
 | Phase 01 P05 | 13min | 2 tasks | 6 files |
 | Phase 01 P02 | 15 | 2 tasks | 7 files |
+| 01 | 03 | 18min | 2 | 14 |
 
 ## Notes
 
@@ -63,4 +66,4 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - Node.js version is 21.7.1 (non-LTS) — watch for compatibility issues with newer packages
 
 ---
-*Last updated: 2026-03-22 — completed plan 01-02 (auth backend foundation — MongoDB, NextAuth v5, Zod schemas)*
+*Last updated: 2026-03-22 — completed plan 01-03 (auth UI — shared components, login/register pages, registration API, proxy.ts route protection)*
