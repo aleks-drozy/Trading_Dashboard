@@ -15,9 +15,9 @@
 
 ### Trades
 
-- [ ] **TRADE-01**: User can create a trade with symbol, asset class, direction, entry price, quantity, and entry date
+- [x] **TRADE-01**: User can create a trade with symbol, asset class, direction, entry price, quantity, and entry date
 - [x] **TRADE-02**: User can close a trade by providing exit price and exit date (both required together)
-- [ ] **TRADE-03**: P&L, pnlPercent, and riskRewardRatio are calculated and stored on save (direction-aware formulas)
+- [x] **TRADE-03**: P&L, pnlPercent, and riskRewardRatio are calculated and stored on save (direction-aware formulas)
 - [x] **TRADE-04**: Options trades include strike price, expiration date, contract type (call/put), and premium
 - [x] **TRADE-05**: User can add a strategy label and free-form tags to a trade
 - [x] **TRADE-06**: User can write notes/reflection text on a trade
@@ -100,9 +100,9 @@
 | UI-05 | Phase 1 | Complete |
 | INFRA-04 | Phase 1 | Complete |
 | INFRA-05 | Phase 1 | Complete |
-| TRADE-01 | Phase 2 | Pending |
+| TRADE-01 | Phase 2 | Complete |
 | TRADE-02 | Phase 2 | Complete |
-| TRADE-03 | Phase 2 | Pending |
+| TRADE-03 | Phase 2 | Complete |
 | TRADE-04 | Phase 2 | Complete |
 | TRADE-05 | Phase 2 | Complete |
 | TRADE-06 | Phase 2 | Complete |

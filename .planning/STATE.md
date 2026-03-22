@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: unknown
-last_updated: "2026-03-22T20:46:22.749Z"
+last_updated: "2026-03-22T20:46:27.950Z"
 progress:
   total_phases: 2
   completed_phases: 1
@@ -23,17 +23,17 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 
 ## Current Status
 
-- **Active phase:** Phase 01 — project-foundation-auth
-- **Current Plan:** 1
-- **Last completed:** Plan 01-04 (Password reset flow — forgot-password/reset-password pages and API routes with Resend email)
-- **Next action:** Begin Phase 02 — Trade Data Layer & CRUD API
+- **Active phase:** Phase 02 — trade-data-layer-crud-api
+- **Current Plan:** 2
+- **Last completed:** Plan 02-01 (Trade data foundation — db.ts global cache, Trade Mongoose model, calculations.ts)
+- **Next action:** Continue Phase 02 — Plan 02-02 (Zod schemas and validation)
 
 ## Phase Progress
 
 | Phase | Status | Plans | Notes |
 |-------|--------|-------|-------|
 | 1 | ● Complete | 5/5 | Foundation & Auth |
-| 2 | ○ Pending | 0/7 | Trade Data Layer & CRUD API |
+| 2 | ◑ In Progress | 1/7 | Trade Data Layer & CRUD API |
 | 3 | ○ Pending | 0/7 | Trade Log UI |
 | 4 | ○ Pending | 0/6 | Dashboard & Analytics |
 | 5 | ○ Pending | 0/6 | UI Polish & Dark Theme |
@@ -53,6 +53,9 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - [Phase 01]: PasswordReset token lookup requires both used:false and expiresAt.:now — prevents replay of used and expired tokens
 - [Phase 02]: Zod v4 superRefine on ZodObject returns ZodObject not ZodEffects — .innerType() removed; use separate base object + .partial().superRefine() for update schema
 - [Phase 02]: Zod v4 issue paths use PropertyKey[] including symbol — do not explicitly annotate path type in test callbacks
+- [Phase 02]: Promise-based pre-save hook — Mongoose 8.x next() parameter typed as SaveOptions (not callable); async pattern required
+- [Phase 02]: options P&L uses premium as entry cost and exitPrice as exit premium per spec — entryPrice is informational for options
+- [Phase 02]: riskRewardRatio returns undefined (not throw) when denominator <= 0 or stopLoss absent
 
 ## Performance Metrics
 
@@ -74,4 +77,4 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - Node.js version is 21.7.1 (non-LTS) — watch for compatibility issues with newer packages
 
 ---
-*Last updated: 2026-03-22 — completed plan 01-04 (password reset flow — forgot-password/reset-password pages and API routes, Resend email, anti-enumeration, one-time token validation)*
+*Last updated: 2026-03-22 — completed plan 02-01 (trade data foundation — db.ts global connection cache, Trade Mongoose model with pre-save hook, calculations.ts with P&L/R:R functions)*
