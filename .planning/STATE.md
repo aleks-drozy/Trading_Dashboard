@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: unknown
-last_updated: "2026-03-23T00:46:53.671Z"
+last_updated: "2026-03-23T01:22:51.934Z"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -69,6 +69,7 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - [Phase 03]: Live P&L preview uses useMemo with NaN guards — returns null if any required value is missing or NaN; avoids useEffect stale closure issues
 - [Phase 03]: Image upload failure is non-blocking: toast shown, trade saves without chart URL
 - [Phase 03]: TradeDetail is client component for useRouter back navigation; plain img used for chart (not next/image) per UI-SPEC — Phase 5 concern
+- [Phase 03]: TradeDetail is client component for useRouter back navigation; plain img used for chart (not next/image) per UI-SPEC — Phase 5 concern
 
 ## Performance Metrics
 
@@ -88,6 +89,7 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 | Phase 03 P02 | 4min | 2 tasks | 3 files |
 | Phase 03 P03 | 3 | 2 tasks | 4 files |
 | Phase 03 P04 | 2min | 2 tasks | 2 files |
+| Phase 03 P04 | 2 | 2 tasks | 2 files |
 
 ## Notes
 
