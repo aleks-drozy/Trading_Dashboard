@@ -50,10 +50,10 @@ export function TradeFilterBar({ strategies, availableTags }: TradeFilterBarProp
   )
 
   const selectStyle =
-    "bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg px-3 py-2 text-sm text-[#e5e7eb] h-[36px] outline-none focus:border-[#00ff88] transition-colors appearance-none"
+    "bg-[#0f0f0f] border border-[#1e1e1e] rounded-lg px-3 py-2 text-xs text-[#e5e7eb] h-[34px] outline-none focus:border-[#00ff88]/50 transition-colors appearance-none cursor-pointer"
 
   return (
-    <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 mb-4">
+    <div className="bg-[#141414] border border-[#1e1e1e] rounded-2xl p-4 mb-4">
       <div className="flex flex-wrap gap-3 items-center">
         {/* Asset Class */}
         <select
@@ -170,7 +170,7 @@ export function TradeFilterBar({ strategies, availableTags }: TradeFilterBarProp
         {/* Sort Direction */}
         <button
           onClick={() => updateFilter("sortDir", sortDir === "asc" ? "desc" : "asc")}
-          className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg px-2 h-[36px] text-[#6b7280] hover:text-[#e5e7eb] transition-colors"
+          className="bg-[#0f0f0f] border border-[#1e1e1e] rounded-lg px-2 h-[34px] text-[#6b7280] hover:text-[#e5e7eb] transition-colors"
           aria-label={sortDir === "asc" ? "Sort ascending" : "Sort descending"}
         >
           {sortDir === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
@@ -180,7 +180,7 @@ export function TradeFilterBar({ strategies, availableTags }: TradeFilterBarProp
         {hasActiveFilters && (
           <button
             onClick={() => router.push("/trades")}
-            className="text-xs text-[#6b7280] hover:text-[#e5e7eb] underline transition-colors ml-1"
+            className="text-xs text-[#4b5563] hover:text-[#e5e7eb] underline transition-colors ml-1"
           >
             Clear filters
           </button>
@@ -193,7 +193,7 @@ export function TradeFilterBar({ strategies, availableTags }: TradeFilterBarProp
           {activeTags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1 bg-[#0f0f0f] border border-[#2a2a2a] rounded-full px-3 py-1 text-xs text-[#e5e7eb]"
+              className="inline-flex items-center gap-1 bg-[#0f0f0f] border border-[#1e1e1e] rounded-full px-3 py-1 text-xs text-[#e5e7eb]"
             >
               {tag}
               <button

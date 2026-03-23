@@ -78,14 +78,19 @@ export default async function TradesPage({
   }))
 
   return (
-    <div>
+    <div className="max-w-[1100px]">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-[#e5e7eb]">Trade Log</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-[#e5e7eb]">Trade Log</h1>
+          <p className="text-sm text-[#4b5563] mt-1">
+            {total > 0 ? `${total} trade${total !== 1 ? "s" : ""} total` : "No trades yet"}
+          </p>
+        </div>
         <Link
           href="/trades/new"
-          className="inline-flex items-center gap-2 bg-[#00ff88] text-[#0f0f0f] font-bold text-sm rounded-lg px-4 h-[44px] hover:bg-[#00e67a] transition-colors"
+          className="inline-flex items-center gap-2 bg-[#00ff88] text-[#0f0f0f] font-bold text-sm rounded-lg px-4 h-10 hover:bg-[#00e67a] transition-colors"
         >
-          <Plus size={16} />
+          <Plus size={15} />
           Log Trade
         </Link>
       </div>

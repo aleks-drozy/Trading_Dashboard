@@ -17,50 +17,58 @@ const navLinks = [
 export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname()
 
-  const initial = user.name?.[0] ?? user.email?.[0] ?? "?"
+  const initial = (user.name?.[0] ?? user.email?.[0] ?? "?").toUpperCase()
+  const displayName = user.name ?? user.email ?? "User"
 
   return (
-    <aside className="w-[216px] min-h-screen bg-[#1a1a1a] border-r border-[#2a2a2a] flex flex-col">
-      {/* Top — logo/app name */}
-      <div className="h-16 flex items-center px-6">
-        <span className="text-lg font-bold text-[#e5e7eb]">TradeJournal</span>
+    <aside className="w-[220px] min-h-screen bg-[#111111] border-r border-[#1e1e1e] flex flex-col">
+      {/* Logo */}
+      <div className="h-16 flex items-center px-5 border-b border-[#1e1e1e]">
+        <Link href="/" className="text-base font-bold text-[#e5e7eb] tracking-tight">
+          Trade<span className="text-[#00ff88]">Journal</span>
+        </Link>
       </div>
 
-      {/* Middle — nav links */}
-      <nav className="flex-1 flex flex-col gap-1 px-3">
+      {/* Nav */}
+      <nav className="flex-1 flex flex-col gap-0.5 p-3 pt-4">
         {navLinks.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(href + "/")
           return (
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                 isActive
-                  ? "text-[#00ff88] border-l-2 border-[#00ff88] pl-[14px]"
-                  : "text-[#6b7280] hover:text-[#e5e7eb]"
+                  ? "bg-[#00ff88]/10 text-[#00ff88]"
+                  : "text-[#6b7280] hover:text-[#e5e7eb] hover:bg-[#1a1a1a]"
               }`}
             >
-              <Icon size={18} />
+              <Icon size={17} strokeWidth={isActive ? 2.5 : 1.75} />
               {label}
             </Link>
           )
         })}
       </nav>
 
-      {/* Bottom — user info + sign out */}
-      <div className="border-t border-[#2a2a2a] p-4">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#2a2a2a] rounded-full flex items-center justify-center text-xs text-[#e5e7eb] flex-shrink-0">
-            {initial.toUpperCase()}
+      {/* User */}
+      <div className="border-t border-[#1e1e1e] p-3">
+        <div className="flex items-center gap-3 px-2 py-2">
+          <div className="w-7 h-7 bg-[#00ff88]/15 rounded-full flex items-center justify-center text-[11px] font-bold text-[#00ff88] flex-shrink-0">
+            {initial}
           </div>
-          <span className="text-xs text-[#6b7280] truncate max-w-[130px]">{user.email}</span>
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs font-medium text-[#e5e7eb] truncate">{displayName}</span>
+            {user.name && (
+              <span className="text-[11px] text-[#4b5563] truncate">{user.email}</span>
+            )}
+          </div>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="mt-3 flex items-center gap-1.5 text-xs text-[#6b7280] hover:text-[#ef4444] transition-colors"
+          className="mt-1 w-full flex items-center gap-2 px-2 py-2 rounded-lg text-xs text-[#6b7280] hover:text-[#ef4444] hover:bg-[#1a1a1a] transition-all duration-150"
           aria-label="Sign out"
         >
-          <LogOut size={14} />
+          <LogOut size={13} />
           Sign out
         </button>
       </div>
