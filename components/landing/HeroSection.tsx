@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 const stats = [
-  { value: "60 sec", label: "to log a trade" },
+  { value: "Seconds", label: "to log a trade" },
   { value: "P&L", label: "calculated instantly" },
   { value: "Free", label: "no credit card needed" },
 ]
