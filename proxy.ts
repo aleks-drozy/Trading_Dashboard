@@ -14,8 +14,8 @@ export const proxy = auth((req: NextRequest & { auth: any }) => {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  // Protect dashboard routes
-  if (pathname.startsWith("/dashboard") && !isAuthenticated) {
+  // Protect dashboard and trades routes
+  if ((pathname.startsWith("/dashboard") || pathname.startsWith("/trades")) && !isAuthenticated) {
     return NextResponse.redirect(new URL("/login", req.url))
   }
 
