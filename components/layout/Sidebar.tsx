@@ -24,7 +24,7 @@ export function Sidebar({ user }: SidebarProps) {
     <aside className="w-[220px] min-h-screen bg-[#111111] border-r border-[#1e1e1e] flex flex-col">
       {/* Logo */}
       <div className="h-16 flex items-center px-5 border-b border-[#1e1e1e]">
-        <Link href="/" className="text-base font-bold text-[#e5e7eb] tracking-tight">
+        <Link href="/dashboard" className="text-base font-bold text-[#e5e7eb] tracking-tight">
           Trade<span className="text-[#00ff88]">Journal</span>
         </Link>
       </div>
