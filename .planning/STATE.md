@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: unknown
-last_updated: "2026-03-23T00:42:48.883Z"
+last_updated: "2026-03-23T00:42:55.630Z"
 progress:
   total_phases: 3
   completed_phases: 2
@@ -65,6 +65,9 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - [Phase 03]: Active link uses pathname.startsWith(href + '/') to match nested routes like /trades/new
 - [Phase 03]: Server component fetches MongoDB directly (not via HTTP /api/trades) — same process, faster, avoids serialization round-trip
 - [Phase 03]: TradeFilterBar uses native select elements at h-[36px] to fit filter bar context vs form-oriented Select at h-[44px]
+- [Phase 03]: PnlPreviewBar has no use client directive — it is a presentational child of TradeForm (already a client component); no extra boundary needed
+- [Phase 03]: Live P&L preview uses useMemo with NaN guards — returns null if any required value is missing or NaN; avoids useEffect stale closure issues
+- [Phase 03]: Image upload failure is non-blocking: toast shown, trade saves without chart URL
 
 ## Performance Metrics
 

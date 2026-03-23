@@ -24,7 +24,7 @@
 - [x] **TRADE-07**: User can upload a chart screenshot image (server-side Cloudinary upload)
 - [x] **TRADE-08**: User can edit any field of an existing trade
 - [x] **TRADE-09**: User can delete a trade
-- [ ] **TRADE-10**: Trade form shows live P&L preview as user types entry/exit price and quantity
+- [x] **TRADE-10**: Trade form shows live P&L preview as user types entry/exit price and quantity
 
 ### Trade Log
 
@@ -109,7 +109,7 @@
 | TRADE-07 | Phase 2 | Complete |
 | TRADE-08 | Phase 2 | Complete |
 | TRADE-09 | Phase 2 | Complete |
-| TRADE-10 | Phase 2 | Pending |
+| TRADE-10 | Phase 2 | Complete |
 | LOG-01 | Phase 3 | Complete |
 | LOG-02 | Phase 3 | Complete |
 | LOG-03 | Phase 3 | Complete |
