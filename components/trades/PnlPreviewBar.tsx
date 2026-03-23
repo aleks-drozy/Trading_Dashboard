@@ -5,22 +5,34 @@ interface PnlPreviewBarProps {
 }
 
 export function PnlPreviewBar({ pnl, pnlPercent, riskRewardRatio }: PnlPreviewBarProps) {
+  const isPositive = pnl >= 0
+  const color = isPositive ? "text-[#00ff88]" : "text-[#ef4444]"
+  const bg = isPositive ? "bg-[#00ff88]/5 border-[#00ff88]/15" : "bg-[#ef4444]/5 border-[#ef4444]/15"
+
+  const pnlFormatted =
+    (isPositive ? "+" : "") +
+    pnl.toLocaleString("en-US", { style: "currency", currency: "USD" })
+
   return (
-    <div className="sticky bottom-0 bg-[#1a1a1a] border-t border-[#2a2a2a] px-6 py-3 flex items-center gap-6 text-sm">
-      <span>
-        P&amp;L:{" "}
-        <span className={`font-mono text-base font-bold ${pnl >= 0 ? "text-[#00ff88]" : "text-[#ef4444]"}`}>
-          {pnl >= 0 ? "+" : ""}
-          {pnl.toLocaleString("en-US", { style: "currency", currency: "USD" })}
+    <div className={`sticky bottom-0 border-t ${bg} backdrop-blur-sm px-6 py-3 flex items-center gap-6`}>
+      <div className="flex items-baseline gap-2">
+        <span className="text-xs text-[#4b5563] font-medium">P&amp;L</span>
+        <span className={`font-mono text-xl font-bold ${color}`}>{pnlFormatted}</span>
+        <span className={`font-mono text-sm ${color} opacity-70`}>
+          {isPositive ? "+" : ""}{pnlPercent.toFixed(2)}%
         </span>
-      </span>
-      <span className="font-mono text-[#e5e7eb]">
-        {pnlPercent >= 0 ? "+" : ""}{pnlPercent.toFixed(2)}%
-      </span>
+      </div>
+
       {riskRewardRatio !== undefined && (
-        <span className="font-mono text-[#e5e7eb]">
-          R:R {riskRewardRatio.toFixed(2)}
-        </span>
+        <>
+          <div className="w-px h-4 bg-[#2a2a2a]" />
+          <div className="flex items-baseline gap-2">
+            <span className="text-xs text-[#4b5563] font-medium">R:R</span>
+            <span className="font-mono text-sm text-[#e5e7eb] font-semibold">
+              {riskRewardRatio.toFixed(2)}
+            </span>
+          </div>
+        </>
       )}
     </div>
   )

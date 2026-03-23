@@ -2,14 +2,13 @@
 
 import { useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { X } from "lucide-react"
+import { X, ImagePlus } from "lucide-react"
 import { calculateTradeMetrics } from "@/lib/calculations"
 import { tradeCreateSchema, tradeUpdateSchema } from "@/schemas/trade"
 import { Input } from "@/components/ui/Input"
 import { Select } from "@/components/ui/Select"
 import { Textarea } from "@/components/ui/Textarea"
 import { Button } from "@/components/ui/Button"
-import { Card } from "@/components/ui/Card"
 import { Toast } from "@/components/ui/Toast"
 import { PnlPreviewBar } from "@/components/trades/PnlPreviewBar"
 
@@ -38,10 +37,21 @@ interface TradeFormProps {
   }
 }
 
+function SectionCard({ number, title, children }: { number: string; title: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-[#141414] border border-[#1e1e1e] rounded-2xl p-6">
+      <div className="flex items-center gap-3 mb-5">
+        <span className="text-xs font-mono text-[#4b5563]">{number}</span>
+        <h2 className="text-sm font-semibold text-[#e5e7eb]">{title}</h2>
+      </div>
+      {children}
+    </div>
+  )
+}
+
 export function TradeForm({ mode, initialData }: TradeFormProps) {
   const router = useRouter()
 
-  // Core trade fields (all stored as strings per Pitfall 5)
   const [symbol, setSymbol] = useState(initialData?.symbol ?? "")
   const [assetClass, setAssetClass] = useState(initialData?.assetClass ?? "stock")
   const [direction, setDirection] = useState(initialData?.direction ?? "long")
@@ -57,7 +67,6 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
     initialData?.exitDate ? initialData.exitDate.split("T")[0] : ""
   )
 
-  // Options-specific fields
   const [strikePrice, setStrikePrice] = useState(initialData?.strikePrice?.toString() ?? "")
   const [expirationDate, setExpirationDate] = useState(
     initialData?.expirationDate ? initialData.expirationDate.split("T")[0] : ""
@@ -65,24 +74,20 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
   const [contractType, setContractType] = useState(initialData?.contractType ?? "")
   const [premium, setPremium] = useState(initialData?.premium?.toString() ?? "")
 
-  // Context fields
   const [strategy, setStrategy] = useState(initialData?.strategy ?? "")
   const [tags, setTags] = useState<string[]>(initialData?.tags ?? [])
   const [tagInput, setTagInput] = useState("")
   const [notes, setNotes] = useState(initialData?.notes ?? "")
 
-  // Image upload
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(initialData?.chartImageUrl ?? null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Form state
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [serverError, setServerError] = useState("")
   const [loading, setLoading] = useState(false)
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null)
 
-  // Handle asset class change — clear options fields when switching away (Pitfall 7)
   function handleAssetClassChange(value: string) {
     setAssetClass(value)
     if (value !== "options") {
@@ -93,7 +98,6 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
     }
   }
 
-  // Live P&L preview via useMemo (Pattern 3 — no useEffect needed)
   const livePreview = useMemo(() => {
     if (!exitPrice || !entryPrice || !quantity) return null
     const ep = parseFloat(entryPrice)
@@ -111,7 +115,6 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
     })
   }, [exitPrice, entryPrice, quantity, assetClass, direction, premium, stopLoss])
 
-  // Tags: Enter or comma to add
   function handleTagKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault()
@@ -127,7 +130,6 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
     setTags(tags.filter((t) => t !== tag))
   }
 
-  // Image file selection
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
@@ -135,16 +137,13 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
     setImagePreview(URL.createObjectURL(file))
   }
 
-  // Form submission
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setServerError("")
     setFieldErrors({})
 
-    // Convert date strings to ISO datetime (Pitfall 6)
     const toISO = (d: string) => (d ? new Date(d).toISOString() : undefined)
 
-    // Parse numbers from strings (Pitfall 5)
     const payload = {
       symbol,
       assetClass,
@@ -166,7 +165,6 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
       chartImageUrl: initialData?.chartImageUrl,
     }
 
-    // Validate with Zod
     const schema = mode === "create" ? tradeCreateSchema : tradeUpdateSchema
     const result = schema.safeParse(payload)
     if (!result.success) {
@@ -181,7 +179,6 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
 
     setLoading(true)
 
-    // Upload image first if a new file was selected (D-11)
     let chartImageUrl = payload.chartImageUrl
     if (imageFile) {
       const formData = new FormData()
@@ -191,11 +188,10 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
         const uploadData = await uploadRes.json()
         chartImageUrl = uploadData.data?.url
       } catch {
-        setToast({ message: "Image upload failed — trade saved without chart.", type: "error" })
+        setToast({ message: "Image upload failed. Trade saved without chart.", type: "error" })
       }
     }
 
-    // Save or update trade
     const url = mode === "create" ? "/api/trades" : `/api/trades/${initialData?._id}`
     const method = mode === "create" ? "POST" : "PUT"
     try {
@@ -223,31 +219,28 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 pb-20">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 pb-24">
         {serverError && (
-          <div className="border border-[#ef4444] bg-[#ef4444]/10 rounded-lg p-3 text-sm text-[#ef4444]">
+          <div className="border border-[#ef4444] bg-[#ef4444]/10 rounded-xl p-4 text-sm text-[#ef4444]">
             {serverError}
           </div>
         )}
 
-        {/* Section 1: Trade Info */}
-        <Card className="max-w-none w-full">
-          <p className="text-base font-bold text-[#e5e7eb] mb-4">Trade Info</p>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* 01 — Trade Info */}
+        <SectionCard number="01" title="Trade info">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Input
               id="symbol"
               label="Symbol"
               value={symbol}
               onChange={(e) => setSymbol(e.target.value)}
-              onBlur={() => {
-                if (symbol) setSymbol(symbol.toUpperCase().trim())
-              }}
+              onBlur={() => { if (symbol) setSymbol(symbol.toUpperCase().trim()) }}
               error={fieldErrors.symbol}
-              placeholder="e.g. AAPL"
+              placeholder="AAPL"
             />
             <Select
               id="assetClass"
-              label="Asset Class"
+              label="Asset class"
               value={assetClass}
               onChange={(e) => handleAssetClassChange(e.target.value)}
               error={fieldErrors.assetClass}
@@ -268,15 +261,14 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
               <option value="short">Short</option>
             </Select>
           </div>
-        </Card>
+        </SectionCard>
 
-        {/* Section 2: Entry / Exit */}
-        <Card className="max-w-none w-full">
-          <p className="text-base font-bold text-[#e5e7eb] mb-4">Entry / Exit</p>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* 02 — Entry / Exit */}
+        <SectionCard number="02" title="Entry and exit">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Input
               id="entryPrice"
-              label="Entry Price"
+              label="Entry price"
               type="number"
               step="any"
               value={entryPrice}
@@ -286,13 +278,13 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
             />
             <Input
               id="exitPrice"
-              label="Exit Price (optional)"
+              label="Exit price"
               type="number"
               step="any"
               value={exitPrice}
               onChange={(e) => setExitPrice(e.target.value)}
               error={fieldErrors.exitPrice}
-              placeholder="0.00"
+              placeholder="0.00 (optional)"
             />
             <Input
               id="quantity"
@@ -306,27 +298,28 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
             />
             <Input
               id="stopLoss"
-              label="Stop Loss (optional)"
+              label="Stop loss"
               type="number"
               step="any"
               value={stopLoss}
               onChange={(e) => setStopLoss(e.target.value)}
               error={fieldErrors.stopLoss}
-              placeholder="0.00"
+              placeholder="0.00 (optional)"
             />
             <Input
               id="takeProfit"
-              label="Take Profit (optional)"
+              label="Take profit"
               type="number"
               step="any"
               value={takeProfit}
               onChange={(e) => setTakeProfit(e.target.value)}
               error={fieldErrors.takeProfit}
-              placeholder="0.00"
+              placeholder="0.00 (optional)"
             />
+            <div />
             <Input
               id="entryDate"
-              label="Entry Date"
+              label="Entry date"
               type="date"
               value={entryDate}
               onChange={(e) => setEntryDate(e.target.value)}
@@ -334,23 +327,22 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
             />
             <Input
               id="exitDate"
-              label="Exit Date (optional)"
+              label="Exit date"
               type="date"
               value={exitDate}
               onChange={(e) => setExitDate(e.target.value)}
               error={fieldErrors.exitDate}
             />
           </div>
-        </Card>
+        </SectionCard>
 
-        {/* Section 3: Options Details (conditional) */}
+        {/* 03 — Options (conditional) */}
         {assetClass === "options" && (
-          <Card className="max-w-none w-full">
-            <p className="text-base font-bold text-[#e5e7eb] mb-4">Options Details</p>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <SectionCard number="03" title="Options details">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 id="strikePrice"
-                label="Strike Price"
+                label="Strike price"
                 type="number"
                 step="any"
                 value={strikePrice}
@@ -360,7 +352,7 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
               />
               <Input
                 id="expirationDate"
-                label="Expiration Date"
+                label="Expiration date"
                 type="date"
                 value={expirationDate}
                 onChange={(e) => setExpirationDate(e.target.value)}
@@ -368,7 +360,7 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
               />
               <Select
                 id="contractType"
-                label="Contract Type"
+                label="Contract type"
                 value={contractType}
                 onChange={(e) => setContractType(e.target.value)}
                 error={fieldErrors.contractType}
@@ -388,26 +380,25 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
                 placeholder="0.00"
               />
             </div>
-          </Card>
+          </SectionCard>
         )}
 
-        {/* Section 4: Context */}
-        <Card className="max-w-none w-full">
-          <p className="text-base font-bold text-[#e5e7eb] mb-4">Context</p>
+        {/* 04 — Context */}
+        <SectionCard number={assetClass === "options" ? "04" : "03"} title="Context">
           <div className="flex flex-col gap-4">
             <Input
               id="strategy"
-              label="Strategy (optional)"
+              label="Strategy"
               value={strategy}
               onChange={(e) => setStrategy(e.target.value)}
               error={fieldErrors.strategy}
-              placeholder="e.g. Breakout, VWAP bounce"
+              placeholder="e.g. Breakout, VWAP bounce (optional)"
             />
 
             {/* Tags */}
-            <div className="flex flex-col">
-              <label htmlFor="tagInput" className="text-sm text-[#e5e7eb] mb-1.5 block">
-                Tags (optional)
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="tagInput" className="text-sm text-[#6b7280]">
+                Tags <span className="text-[#4b5563]">(optional)</span>
               </label>
               <input
                 id="tagInput"
@@ -416,23 +407,23 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagKeyDown}
                 placeholder="Type a tag and press Enter"
-                className="bg-[#0f0f0f] border border-[#2a2a2a] focus:border-[#00ff88] focus:ring-2 focus:ring-[#00ff88]/15 rounded-lg px-4 py-3 h-[44px] text-base text-[#e5e7eb] placeholder-[#6b7280] outline-none transition-colors duration-150"
+                className="bg-[#0f0f0f] border border-[#1e1e1e] focus:border-[#00ff88]/50 focus:ring-2 focus:ring-[#00ff88]/10 rounded-lg px-4 py-3 h-[44px] text-sm text-[#e5e7eb] placeholder-[#4b5563] outline-none transition-colors duration-150"
               />
               {tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
+                <div className="flex flex-wrap gap-2 mt-1">
                   {tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full bg-[#2a2a2a] text-[#e5e7eb] text-xs px-2 py-1 flex items-center gap-1"
+                      className="inline-flex items-center gap-1.5 bg-[#1a1a1a] border border-[#2a2a2a] rounded-full px-3 py-1 text-xs text-[#e5e7eb]"
                     >
                       {tag}
                       <button
                         type="button"
                         onClick={() => removeTag(tag)}
-                        className="text-[#6b7280] hover:text-[#ef4444] transition-colors"
+                        className="text-[#4b5563] hover:text-[#ef4444] transition-colors"
                         aria-label={`Remove tag ${tag}`}
                       >
-                        <X size={12} />
+                        <X size={11} />
                       </button>
                     </span>
                   ))}
@@ -442,16 +433,18 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
 
             <Textarea
               id="notes"
-              label="Notes (optional)"
+              label="Notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               error={fieldErrors.notes}
-              placeholder="Post-trade reflection, lessons learned..."
+              placeholder="What went well? What would you do differently? (optional)"
             />
 
-            {/* Chart Screenshot upload */}
-            <div className="flex flex-col">
-              <span className="text-sm text-[#e5e7eb] mb-1.5 block">Chart Screenshot (optional)</span>
+            {/* Chart upload */}
+            <div className="flex flex-col gap-1.5">
+              <span className="text-sm text-[#6b7280]">
+                Chart screenshot <span className="text-[#4b5563]">(optional)</span>
+              </span>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -460,33 +453,48 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
                 className="hidden"
                 aria-label="Upload chart image"
               />
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => fileInputRef.current?.click()}
-                className="max-w-[160px]"
-              >
-                Upload Chart
-              </Button>
-              {imagePreview && (
-                <img
-                  src={imagePreview}
-                  alt="Chart preview"
-                  className="w-20 h-20 object-cover rounded mt-2"
-                />
+              {imagePreview ? (
+                <div className="relative w-fit">
+                  <img
+                    src={imagePreview}
+                    alt="Chart preview"
+                    className="w-32 h-20 object-cover rounded-xl border border-[#1e1e1e]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => { setImagePreview(null); setImageFile(null) }}
+                    className="absolute -top-2 -right-2 w-5 h-5 bg-[#1a1a1a] border border-[#2a2a2a] rounded-full flex items-center justify-center text-[#6b7280] hover:text-[#ef4444] transition-colors"
+                    aria-label="Remove image"
+                  >
+                    <X size={10} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-3 w-full border border-dashed border-[#2a2a2a] hover:border-[#3a3a3a] rounded-xl px-4 py-4 text-sm text-[#4b5563] hover:text-[#6b7280] transition-colors"
+                >
+                  <ImagePlus size={16} />
+                  Click to upload a chart image
+                </button>
               )}
             </div>
           </div>
-        </Card>
+        </SectionCard>
 
-        <Button
-          type="submit"
-          variant="primary"
-          loading={loading}
-          className="max-w-[200px]"
-        >
-          {mode === "create" ? "Save Trade" : "Update Trade"}
-        </Button>
+        <div className="flex items-center gap-3 pt-2">
+          <Button type="submit" variant="primary" loading={loading}>
+            {mode === "create" ? "Save trade" : "Update trade"}
+          </Button>
+          <button
+            type="button"
+            onClick={() => router.push("/trades")}
+            className="text-sm text-[#4b5563] hover:text-[#6b7280] transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
       </form>
 
       {livePreview && (
