@@ -50,14 +50,13 @@ Plans:
 
 **Requirements covered:** LOG-01, LOG-02, LOG-03, LOG-04, LOG-05, TRADE-10
 
-**Plans:**
-1. Build reusable UI component library (Button, Input, Card, Badge, Select, DatePicker — dark theme)
-2. Build trade list page (/trades) with paginated table and status/P&L display
-3. Build add trade form (/trades/new) with all fields, asset-class conditional fields, and live P&L preview
-4. Build edit trade form (/trades/[id]/edit) with pre-populated fields
-5. Build trade detail view (/trades/[id]) with chart image display and notes
-6. Implement filter bar (asset class, direction, status, strategy, tags, date range) wired to GET /api/trades params
-7. Implement sort controls and pagination UI
+**Plans:** 4 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Dashboard layout, sidebar, proxy.ts protection, new UI primitives (Select, Badge, Textarea, Toast)
+- [ ] 03-02-PLAN.md — Trade list page with filter bar, sort controls, paginated table, inline delete
+- [ ] 03-03-PLAN.md — Trade form (add/edit) with live P&L preview, Zod validation, image upload
+- [ ] 03-04-PLAN.md — Trade detail view and end-to-end visual verification
 
 **Done when:** User can add, view, edit, delete trades; filter and sort the trade log; and see live P&L calculated as they type.
 
@@ -108,7 +107,7 @@ Plans:
 **Plans:**
 1. Write unit tests for calculations.ts and Zod schemas (Vitest)
 2. Write integration tests for API routes using mongodb-memory-server (Vitest)
-3. Write E2E test: register → log trade → view dashboard (Playwright)
+3. Write E2E test: register -> log trade -> view dashboard (Playwright)
 4. Configure Vercel deployment (env vars, build settings, domain)
 5. Configure MongoDB Atlas (production cluster, network access, connection string)
 6. Final production smoke test and bug fixes
@@ -123,13 +122,13 @@ Plans:
 |-------|------|-------|--------------|
 | 1 | 5/5 | Complete   | 2026-03-22 |
 | 2 | 5/5 | Complete   | 2026-03-22 |
-| 3 | Trade Log UI | 7 | 6 |
+| 3 | Trade Log UI | 4 | 6 |
 | 4 | Dashboard & Analytics | 6 | 5 |
 | 5 | UI Polish & Dark Theme | 6 | 4 |
 | 6 | Testing & Production | 6 | 3 |
 
-**Total:** 6 phases · 35 plans · 35 requirements
+**Total:** 6 phases · 32 plans · 35 requirements
 
 ---
 *Roadmap created: 2026-03-22*
-*Last updated: 2026-03-22 after Phase 2 planning*
+*Last updated: 2026-03-23 after Phase 3 planning*
