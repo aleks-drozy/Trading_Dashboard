@@ -44,7 +44,7 @@ const TradeSchema = new Schema<ITrade>(
     takeProfit: { type: Number },
     entryDate: { type: Date, required: true },
     exitDate: { type: Date },
-    status: { type: String, enum: ["open", "closed"], required: true },
+    status: { type: String, enum: ["open", "closed"], required: true, default: "open" },
     pnl: { type: Number },
     pnlPercent: { type: Number },
     riskRewardRatio: { type: Number },
@@ -88,4 +88,8 @@ TradeSchema.pre("save", function () {
   }
 })
 
-export default mongoose.models.Trade || mongoose.model<ITrade>("Trade", TradeSchema)
+// Delete cached model so schema changes take effect on Next.js hot-reload
+// Without this, mongoose.models.Trade holds the old compiled schema and
+// any field-level changes (defaults, validators) are silently ignored.
+delete mongoose.models["Trade"]
+export default mongoose.model<ITrade>("Trade", TradeSchema)
