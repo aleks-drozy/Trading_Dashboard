@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: Not started
+current_plan: 1
 status: unknown
-last_updated: "2026-03-22T20:55:22.537Z"
+last_updated: "2026-03-23T00:37:12.643Z"
 progress:
-  total_phases: 2
+  total_phases: 3
   completed_phases: 2
-  total_plans: 10
-  completed_plans: 10
+  total_plans: 14
+  completed_plans: 11
 ---
 
 # Project State: Trade Journal
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** A trader can log a trade in under a minute and immediately see how it affects their overall performance.
-**Current focus:** Phase 02 — trade-data-layer-crud-api
+**Current focus:** Phase 03 — trade-log-ui
 
 ## Current Status
 
 - **Active phase:** Phase 02 — trade-data-layer-crud-api
-- **Current Plan:** Not started
+- **Current Plan:** 1
 - **Last completed:** Plan 02-01 (Trade data foundation — db.ts global cache, Trade Mongoose model, calculations.ts)
 - **Next action:** Continue Phase 02 — Plan 02-02 (Zod schemas and validation)
 
@@ -61,6 +61,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - [Phase 02]: Used findOne + set + save (not findOneAndUpdate) to ensure pre-save hook fires for P&L recalculation on PUT
 - [Phase 02]: Cloudinary config is lazy (ensureConfig guard) to prevent build-time failures when env vars are absent
 - [Phase 02]: Types.ObjectId required for userId in aggregate pipeline — Mongoose does not auto-cast in aggregation context
+- [Phase 03]: Sidebar is client component (usePathname + signOut); layout.tsx is server component (auth())
+- [Phase 03]: Active link uses pathname.startsWith(href + '/') to match nested routes like /trades/new
 
 ## Performance Metrics
 
@@ -76,6 +78,7 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 | Phase 02 P03 | 4min | 2 tasks | 1 files |
 | Phase 02 P04 | 2min | 2 tasks | 1 files |
 | Phase 02 P05 | 2min | 2 tasks | 6 files |
+| Phase 03 P01 | 3min | 2 tasks | 8 files |
 
 ## Notes
 
