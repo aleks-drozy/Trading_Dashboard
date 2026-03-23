@@ -5,7 +5,7 @@ const features = [
   {
     icon: ClipboardList,
     title: "Log it before you forget it",
-    body: "Fill in symbol, direction, entry, exit, and notes — done. Attach a chart screenshot if you want. The whole thing takes less time than opening a spreadsheet.",
+    body: "Fill in symbol, direction, entry, exit, and notes. Done. Attach a chart screenshot if you want. The whole thing takes less time than opening a spreadsheet.",
   },
   {
     icon: TrendingUp,

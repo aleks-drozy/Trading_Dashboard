@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 const stats = [
-  { value: "< 1 min", label: "to log a trade" },
+  { value: "60 sec", label: "to log a trade" },
   { value: "P&L", label: "calculated instantly" },
   { value: "Free", label: "no credit card needed" },
 ]
@@ -28,7 +28,7 @@ export function HeroSection() {
         {/* Subheading */}
         <p className="text-lg text-[#6b7280] leading-relaxed mt-6 max-w-[560px] mx-auto">
           Log a trade in under a minute. See your win rate, P&amp;L, and R:R the moment you close it.
-          No spreadsheets, no manual math — just your data, clean and instant.
+          No spreadsheets, no manual math. Just your data, clean and instant.
         </p>
 
         {/* CTA group */}
