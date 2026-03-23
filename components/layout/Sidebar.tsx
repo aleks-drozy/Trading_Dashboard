@@ -56,7 +56,7 @@ export function Sidebar({ user }: SidebarProps) {
           <span className="text-xs text-[#6b7280] truncate max-w-[130px]">{user.email}</span>
         </div>
         <button
-          onClick={() => signOut()}
+          onClick={() => signOut({ callbackUrl: "/" })}
           className="mt-3 flex items-center gap-1.5 text-xs text-[#6b7280] hover:text-[#ef4444] transition-colors"
           aria-label="Sign out"
         >
