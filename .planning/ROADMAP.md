@@ -50,12 +50,12 @@ Plans:
 
 **Requirements covered:** LOG-01, LOG-02, LOG-03, LOG-04, LOG-05, TRADE-10
 
-**Plans:** 1/4 plans executed
+**Plans:** 3/4 plans executed
 
 Plans:
 - [x] 03-01-PLAN.md — Dashboard layout, sidebar, proxy.ts protection, new UI primitives (Select, Badge, Textarea, Toast)
-- [ ] 03-02-PLAN.md — Trade list page with filter bar, sort controls, paginated table, inline delete
-- [ ] 03-03-PLAN.md — Trade form (add/edit) with live P&L preview, Zod validation, image upload
+- [x] 03-02-PLAN.md — Trade list page with filter bar, sort controls, paginated table, inline delete
+- [x] 03-03-PLAN.md — Trade form (add/edit) with live P&L preview, Zod validation, image upload
 - [ ] 03-04-PLAN.md — Trade detail view and end-to-end visual verification
 
 **Done when:** User can add, view, edit, delete trades; filter and sort the trade log; and see live P&L calculated as they type.
@@ -122,7 +122,7 @@ Plans:
 |-------|------|-------|--------------|
 | 1 | 5/5 | Complete   | 2026-03-22 |
 | 2 | 5/5 | Complete   | 2026-03-22 |
-| 3 | 1/4 | In Progress|  |
+| 3 | 3/4 | In Progress|  |
 | 4 | Dashboard & Analytics | 6 | 5 |
 | 5 | UI Polish & Dark Theme | 6 | 4 |
 | 6 | Testing & Production | 6 | 3 |

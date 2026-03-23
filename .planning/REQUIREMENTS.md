@@ -28,11 +28,11 @@
 
 ### Trade Log
 
-- [ ] **LOG-01**: User can view a paginated list of their trades (20 per page)
-- [ ] **LOG-02**: User can filter trades by asset class, direction, status, strategy, tags, and date range
-- [ ] **LOG-03**: User can sort trades by entry date, P&L, or symbol (asc/desc)
-- [ ] **LOG-04**: Strategy and tag filter dropdowns are populated from the user's existing trade data (GET /api/trades/meta)
-- [ ] **LOG-05**: Trade list shows symbol, asset class, direction, entry date, P&L, and status at a glance
+- [x] **LOG-01**: User can view a paginated list of their trades (20 per page)
+- [x] **LOG-02**: User can filter trades by asset class, direction, status, strategy, tags, and date range
+- [x] **LOG-03**: User can sort trades by entry date, P&L, or symbol (asc/desc)
+- [x] **LOG-04**: Strategy and tag filter dropdowns are populated from the user's existing trade data (GET /api/trades/meta)
+- [x] **LOG-05**: Trade list shows symbol, asset class, direction, entry date, P&L, and status at a glance
 
 ### Dashboard & Analytics
 
@@ -110,11 +110,11 @@
 | TRADE-08 | Phase 2 | Complete |
 | TRADE-09 | Phase 2 | Complete |
 | TRADE-10 | Phase 2 | Pending |
-| LOG-01 | Phase 3 | Pending |
-| LOG-02 | Phase 3 | Pending |
-| LOG-03 | Phase 3 | Pending |
-| LOG-04 | Phase 3 | Pending |
-| LOG-05 | Phase 3 | Pending |
+| LOG-01 | Phase 3 | Complete |
+| LOG-02 | Phase 3 | Complete |
+| LOG-03 | Phase 3 | Complete |
+| LOG-04 | Phase 3 | Complete |
+| LOG-05 | Phase 3 | Complete |
 | DASH-01 | Phase 4 | Pending |
 | DASH-02 | Phase 4 | Pending |
 | DASH-03 | Phase 4 | Pending |

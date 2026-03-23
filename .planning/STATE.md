@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: unknown
-last_updated: "2026-03-23T00:37:12.643Z"
+last_updated: "2026-03-23T00:42:48.883Z"
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 14
-  completed_plans: 11
+  completed_plans: 13
 ---
 
 # Project State: Trade Journal
@@ -63,6 +63,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 - [Phase 02]: Types.ObjectId required for userId in aggregate pipeline — Mongoose does not auto-cast in aggregation context
 - [Phase 03]: Sidebar is client component (usePathname + signOut); layout.tsx is server component (auth())
 - [Phase 03]: Active link uses pathname.startsWith(href + '/') to match nested routes like /trades/new
+- [Phase 03]: Server component fetches MongoDB directly (not via HTTP /api/trades) — same process, faster, avoids serialization round-trip
+- [Phase 03]: TradeFilterBar uses native select elements at h-[36px] to fit filter bar context vs form-oriented Select at h-[44px]
 
 ## Performance Metrics
 
@@ -79,6 +81,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 | Phase 02 P04 | 2min | 2 tasks | 1 files |
 | Phase 02 P05 | 2min | 2 tasks | 6 files |
 | Phase 03 P01 | 3min | 2 tasks | 8 files |
+| Phase 03 P02 | 4min | 2 tasks | 3 files |
+| Phase 03 P03 | 3 | 2 tasks | 4 files |
 
 ## Notes
 
