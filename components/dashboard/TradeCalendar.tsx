@@ -133,7 +133,7 @@ export function TradeCalendar({ initialData, initialMonth }: Props) {
                     ? "bg-[rgba(239,68,68,0.15)] text-[#ef4444]"
                     : "bg-[#141c2e] text-[#475569]",
                 isToday ? "ring-2 ring-[#00ff88] ring-offset-1 ring-offset-[#0e1223]" : "",
-                isWeekend && !hasTrades ? "opacity-40" : "",
+                isWeekend ? "opacity-60" : "",
               ]
                 .filter(Boolean)
                 .join(" ")}
@@ -152,11 +152,11 @@ export function TradeCalendar({ initialData, initialMonth }: Props) {
       {/* Legend */}
       <div className="flex gap-3 mt-3">
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-sm bg-[rgba(0,255,136,0.2)] border border-[rgba(0,255,136,0.4)]" />
+          <div className="w-2 h-2 rounded-full bg-[#00ff88]" />
           <span className="text-[9px] text-[#475569]">Green day</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-sm bg-[rgba(239,68,68,0.2)] border border-[rgba(239,68,68,0.4)]" />
+          <div className="w-2 h-2 rounded-full bg-[#ef4444]" />
           <span className="text-[9px] text-[#475569]">Red day</span>
         </div>
       </div>
