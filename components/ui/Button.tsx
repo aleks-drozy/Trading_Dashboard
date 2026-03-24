@@ -23,8 +23,8 @@ export function Button({
 
   const variantClasses =
     variant === "primary"
-      ? "bg-[#00ff88] text-[#0f0f0f] font-bold h-[44px] hover:bg-[#00e67a] active:bg-[#00cc6a] disabled:bg-[#1a3d2b] disabled:text-[#2a5a3a] disabled:cursor-not-allowed"
-      : "bg-transparent border border-[#2a2a2a] text-[#6b7280] font-normal h-[40px] hover:border-[#4a4a4a] hover:text-[#9ca3af]"
+      ? "bg-[#00ff88] text-[#020617] font-bold h-[44px] hover:bg-[#00e67a] active:bg-[#00cc6a] disabled:bg-[#1a3d2b] disabled:text-[#2a5a3a] disabled:cursor-not-allowed"
+      : "bg-transparent border border-[#1e293b] text-[#94a3b8] font-normal h-[40px] hover:border-[#4a4a4a] hover:text-[#9ca3af]"
 
   return (
     <button

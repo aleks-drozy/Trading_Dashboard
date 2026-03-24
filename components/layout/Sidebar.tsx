@@ -21,10 +21,10 @@ export function Sidebar({ user }: SidebarProps) {
   const displayName = user.name ?? user.email ?? "User"
 
   return (
-    <aside className="w-[220px] min-h-screen bg-[#111111] border-r border-[#1e1e1e] flex flex-col">
+    <aside className="w-[220px] min-h-screen bg-[#030812] border-r border-[#1e293b] flex flex-col">
       {/* Logo */}
-      <div className="h-16 flex items-center px-5 border-b border-[#1e1e1e]">
-        <Link href="/dashboard" className="text-base font-bold text-[#e5e7eb] tracking-tight">
+      <div className="h-16 flex items-center px-5 border-b border-[#1e293b]">
+        <Link href="/dashboard" className="text-base font-bold tracking-tight text-[#f8fafc]">
           Trade<span className="text-[#00ff88]">Journal</span>
         </Link>
       </div>
@@ -40,7 +40,7 @@ export function Sidebar({ user }: SidebarProps) {
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                 isActive
                   ? "bg-[#00ff88]/10 text-[#00ff88]"
-                  : "text-[#6b7280] hover:text-[#e5e7eb] hover:bg-[#1a1a1a]"
+                  : "text-[#64748b] hover:text-[#f8fafc] hover:bg-[#0e1223]"
               }`}
             >
               <Icon size={17} strokeWidth={isActive ? 2.5 : 1.75} />
@@ -51,21 +51,19 @@ export function Sidebar({ user }: SidebarProps) {
       </nav>
 
       {/* User */}
-      <div className="border-t border-[#1e1e1e] p-3">
+      <div className="border-t border-[#1e293b] p-3">
         <div className="flex items-center gap-3 px-2 py-2">
-          <div className="w-7 h-7 bg-[#00ff88]/15 rounded-full flex items-center justify-center text-[11px] font-bold text-[#00ff88] flex-shrink-0">
+          <div className="w-7 h-7 bg-[#00ff88]/12 border border-[#00ff88]/20 rounded-full flex items-center justify-center text-[11px] font-bold text-[#00ff88] flex-shrink-0">
             {initial}
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-xs font-medium text-[#e5e7eb] truncate">{displayName}</span>
-            {user.name && (
-              <span className="text-[11px] text-[#4b5563] truncate">{user.email}</span>
-            )}
+            <span className="text-xs font-medium text-[#f8fafc] truncate">{displayName}</span>
+            {user.name && <span className="text-[11px] text-[#64748b] truncate">{user.email}</span>}
           </div>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="mt-1 w-full flex items-center gap-2 px-2 py-2 rounded-lg text-xs text-[#6b7280] hover:text-[#ef4444] hover:bg-[#1a1a1a] transition-all duration-150"
+          className="mt-1 w-full flex items-center gap-2 px-2 py-2 rounded-lg text-xs text-[#64748b] hover:text-[#ef4444] hover:bg-[#0e1223] transition-all duration-150 cursor-pointer"
           aria-label="Sign out"
         >
           <LogOut size={13} />

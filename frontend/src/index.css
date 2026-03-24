@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 96%;
+    --card: 225 24% 13%;
+    --card-foreground: 210 40% 96%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --muted: 220 14% 20%;
+    --muted-foreground: 220 9% 46%;
+    --border: 228 25% 23%;
+    --input: 228 25% 23%;
+    --ring: 217 91% 60%;
+    --radius: 0.5rem;
+  }
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #0F1117;
+  color: #F1F5F9;
+}

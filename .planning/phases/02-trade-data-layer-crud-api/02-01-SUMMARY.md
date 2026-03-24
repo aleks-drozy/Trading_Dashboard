@@ -70,7 +70,7 @@ Each task was committed atomically:
 1. **Task 1: Upgrade db.ts and create calculations.ts** - `1544a0c` (feat)
 2. **Task 2: Create Trade Mongoose model with pre-save hook** - `014cbcf` (feat)
 
-**Plan metadata:** (final commit hash recorded after state update)
+**Plan metadata:** `d7660ec` (docs: complete plan)
 
 ## Files Created/Modified
 
@@ -112,5 +112,17 @@ Each task was committed atomically:
 - 26 existing tests pass; calculations.ts test suite (14 tests) fully validates P&L and R:R formulas
 
 ---
+## Self-Check: PASSED
+
+- lib/db.ts: FOUND
+- lib/calculations.ts: FOUND
+- lib/models/Trade.ts: FOUND
+- 02-01-SUMMARY.md: FOUND
+- Commit 1544a0c: FOUND
+- Commit 014cbcf: FOUND
+- Commit d7660ec: FOUND
+- TypeScript: no errors
+- Tests: 26 passed
+
 *Phase: 02-trade-data-layer-crud-api*
 *Completed: 2026-03-22*

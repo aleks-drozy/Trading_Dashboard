@@ -5,11 +5,7 @@ import Trade from "@/lib/models/Trade"
 import { isValidObjectId } from "mongoose"
 import { TradeForm } from "@/components/trades/TradeForm"
 
-export default async function EditTradePage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
+export default async function EditTradePage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
   if (!session?.user?.id) redirect("/login")
 
@@ -34,11 +30,10 @@ export default async function EditTradePage({
     entryDate: trade.entryDate ? new Date(trade.entryDate).toISOString() : undefined,
     exitDate: trade.exitDate ? new Date(trade.exitDate).toISOString() : undefined,
     strikePrice: trade.strikePrice,
-    expirationDate: trade.expirationDate
-      ? new Date(trade.expirationDate).toISOString()
-      : undefined,
+    expirationDate: trade.expirationDate ? new Date(trade.expirationDate).toISOString() : undefined,
     contractType: trade.contractType,
     premium: trade.premium,
+    pointValue: trade.pointValue,
     strategy: trade.strategy,
     tags: trade.tags,
     notes: trade.notes,

@@ -10,7 +10,7 @@ interface TradeDetailProps {
   trade: {
     _id: string
     symbol: string
-    assetClass: "stock" | "crypto" | "forex" | "options"
+    assetClass: "stock" | "crypto" | "forex" | "futures" | "options"
     direction: "long" | "short"
     entryPrice: number
     exitPrice?: number | null
@@ -51,8 +51,8 @@ function formatPnlPercent(value: number): string {
 function DetailRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <p className="text-sm text-[#6b7280]">{label}</p>
-      <p className="font-mono text-[#e5e7eb]">{value}</p>
+      <p className="text-sm text-[#94a3b8]">{label}</p>
+      <p className="font-mono text-[#f8fafc]">{value}</p>
     </div>
   )
 }
@@ -67,13 +67,13 @@ export function TradeDetail({ trade }: TradeDetailProps) {
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.push("/trades")}
-            className="flex items-center gap-1 text-sm text-[#6b7280] hover:text-[#e5e7eb] transition-colors"
+            className="flex items-center gap-1 text-sm text-[#94a3b8] hover:text-[#f8fafc] transition-colors"
           >
             <ArrowLeft size={16} />
             Back
           </button>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-[#e5e7eb]">{trade.symbol}</h1>
+            <h1 className="text-xl font-bold text-[#f8fafc]">{trade.symbol}</h1>
             <Badge variant={trade.status}>{trade.status}</Badge>
             <Badge variant={trade.direction}>{trade.direction}</Badge>
             <Badge variant={trade.assetClass}>{trade.assetClass}</Badge>
@@ -81,7 +81,7 @@ export function TradeDetail({ trade }: TradeDetailProps) {
         </div>
         <Link
           href={`/trades/${trade._id}/edit`}
-          className="flex items-center gap-2 bg-transparent border border-[#2a2a2a] text-[#6b7280] text-sm font-normal h-[40px] px-4 rounded-lg hover:border-[#4a4a4a] hover:text-[#9ca3af] transition-colors"
+          className="flex items-center gap-2 bg-transparent border border-[#1e293b] text-[#94a3b8] text-sm font-normal h-[40px] px-4 rounded-lg hover:border-[#4a4a4a] hover:text-[#9ca3af] transition-colors"
         >
           <Edit2 size={14} />
           Edit
@@ -90,7 +90,7 @@ export function TradeDetail({ trade }: TradeDetailProps) {
 
       {/* Trade Info */}
       <Card className="max-w-none w-full">
-        <h2 className="text-base font-bold text-[#e5e7eb] mb-4">Trade Info</h2>
+        <h2 className="text-base font-bold text-[#f8fafc] mb-4">Trade Info</h2>
         <div className="grid grid-cols-2 lg:grid-cols-2 gap-4">
           <DetailRow label="Entry Price" value={formatCurrency(trade.entryPrice)} />
           <DetailRow
@@ -106,10 +106,17 @@ export function TradeDetail({ trade }: TradeDetailProps) {
             label="Take Profit"
             value={trade.takeProfit != null ? formatCurrency(trade.takeProfit) : "--"}
           />
-          <DetailRow label="Entry Date" value={new Date(trade.entryDate).toLocaleDateString()} />
+          <DetailRow
+            label="Entry Date"
+            value={new Date(trade.entryDate).toLocaleDateString("en-US", { timeZone: "UTC" })}
+          />
           <DetailRow
             label="Exit Date"
-            value={trade.exitDate ? new Date(trade.exitDate).toLocaleDateString() : "--"}
+            value={
+              trade.exitDate
+                ? new Date(trade.exitDate).toLocaleDateString("en-US", { timeZone: "UTC" })
+                : "--"
+            }
           />
         </div>
       </Card>
@@ -117,10 +124,10 @@ export function TradeDetail({ trade }: TradeDetailProps) {
       {/* P&L Section — only for closed trades */}
       {trade.status === "closed" && (
         <Card className="max-w-none w-full">
-          <h2 className="text-base font-bold text-[#e5e7eb] mb-4">P&L</h2>
+          <h2 className="text-base font-bold text-[#f8fafc] mb-4">P&L</h2>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
-              <p className="text-sm text-[#6b7280]">P&L</p>
+              <p className="text-sm text-[#94a3b8]">P&L</p>
               <p
                 className={`font-mono text-base font-bold ${
                   trade.pnl != null && trade.pnl >= 0 ? "text-[#00ff88]" : "text-[#ef4444]"
@@ -130,7 +137,7 @@ export function TradeDetail({ trade }: TradeDetailProps) {
               </p>
             </div>
             <div>
-              <p className="text-sm text-[#6b7280]">P&L %</p>
+              <p className="text-sm text-[#94a3b8]">P&L %</p>
               <p
                 className={`font-mono ${
                   trade.pnlPercent != null && trade.pnlPercent >= 0
@@ -142,8 +149,8 @@ export function TradeDetail({ trade }: TradeDetailProps) {
               </p>
             </div>
             <div>
-              <p className="text-sm text-[#6b7280]">R:R</p>
-              <p className="font-mono text-[#e5e7eb]">
+              <p className="text-sm text-[#94a3b8]">R:R</p>
+              <p className="font-mono text-[#f8fafc]">
                 {trade.riskRewardRatio != null ? trade.riskRewardRatio.toFixed(2) : "--"}
               </p>
             </div>
@@ -154,7 +161,7 @@ export function TradeDetail({ trade }: TradeDetailProps) {
       {/* Options Section — only for options trades */}
       {trade.assetClass === "options" && (
         <Card className="max-w-none w-full">
-          <h2 className="text-base font-bold text-[#e5e7eb] mb-4">Options Details</h2>
+          <h2 className="text-base font-bold text-[#f8fafc] mb-4">Options Details</h2>
           <div className="grid grid-cols-2 gap-4">
             <DetailRow
               label="Strike Price"
@@ -163,7 +170,9 @@ export function TradeDetail({ trade }: TradeDetailProps) {
             <DetailRow
               label="Expiration Date"
               value={
-                trade.expirationDate ? new Date(trade.expirationDate).toLocaleDateString() : "--"
+                trade.expirationDate
+                  ? new Date(trade.expirationDate).toLocaleDateString("en-US", { timeZone: "UTC" })
+                  : "--"
               }
             />
             <DetailRow label="Contract Type" value={trade.contractType ?? "--"} />
@@ -177,37 +186,37 @@ export function TradeDetail({ trade }: TradeDetailProps) {
 
       {/* Context Section */}
       <Card className="max-w-none w-full">
-        <h2 className="text-base font-bold text-[#e5e7eb] mb-4">Context</h2>
+        <h2 className="text-base font-bold text-[#f8fafc] mb-4">Context</h2>
         <div className="space-y-4">
           <div>
-            <p className="text-sm text-[#6b7280]">Strategy</p>
-            <p className="text-[#e5e7eb]">
-              {trade.strategy || <span className="text-[#6b7280]">--</span>}
+            <p className="text-sm text-[#94a3b8]">Strategy</p>
+            <p className="text-[#f8fafc]">
+              {trade.strategy || <span className="text-[#94a3b8]">--</span>}
             </p>
           </div>
           <div>
-            <p className="text-sm text-[#6b7280] mb-1">Tags</p>
+            <p className="text-sm text-[#94a3b8] mb-1">Tags</p>
             {trade.tags.length > 0 ? (
               <div className="flex flex-wrap gap-1">
                 {trade.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-[#2a2a2a] text-[#6b7280]"
+                    className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-[#1e293b] text-[#94a3b8]"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
             ) : (
-              <p className="text-[#6b7280]">--</p>
+              <p className="text-[#94a3b8]">--</p>
             )}
           </div>
           <div>
-            <p className="text-sm text-[#6b7280] mb-1">Notes</p>
+            <p className="text-sm text-[#94a3b8] mb-1">Notes</p>
             {trade.notes ? (
-              <p className="text-[#e5e7eb]">{trade.notes}</p>
+              <p className="text-[#f8fafc]">{trade.notes}</p>
             ) : (
-              <p className="text-[#6b7280] italic">No notes.</p>
+              <p className="text-[#94a3b8] italic">No notes.</p>
             )}
           </div>
         </div>
@@ -215,15 +224,15 @@ export function TradeDetail({ trade }: TradeDetailProps) {
 
       {/* Chart Image Section */}
       <Card className="max-w-none w-full">
-        <h2 className="text-base font-bold text-[#e5e7eb] mb-4">Chart</h2>
+        <h2 className="text-base font-bold text-[#f8fafc] mb-4">Chart</h2>
         {trade.chartImageUrl ? (
           <img
             src={trade.chartImageUrl}
             alt="Trade chart"
-            className="max-w-full rounded-lg border border-[#2a2a2a]"
+            className="max-w-full rounded-lg border border-[#1e293b]"
           />
         ) : (
-          <p className="text-[#6b7280] italic">No chart uploaded.</p>
+          <p className="text-[#94a3b8] italic">No chart uploaded.</p>
         )}
       </Card>
     </div>

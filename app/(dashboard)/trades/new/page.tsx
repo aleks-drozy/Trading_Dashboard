@@ -8,13 +8,18 @@ export default function NewTradePage() {
       <div className="mb-8">
         <Link
           href="/trades"
-          className="inline-flex items-center gap-1.5 text-sm text-[#4b5563] hover:text-[#e5e7eb] transition-colors mb-4"
+          className="inline-flex items-center gap-1.5 text-sm text-[#64748b] hover:text-[#f8fafc] transition-colors duration-150 mb-4"
         >
           <ChevronLeft size={15} />
           Back to trades
         </Link>
-        <h1 className="text-2xl font-bold text-[#e5e7eb]">Log a trade</h1>
-        <p className="text-sm text-[#4b5563] mt-1">Fill in what you know. Exit price and date are optional for open trades.</p>
+        <p className="text-xs font-medium text-[#64748b] uppercase tracking-widest mb-1">
+          New Trade
+        </p>
+        <h1 className="text-2xl font-bold text-[#f8fafc] tracking-tight">Log a trade</h1>
+        <p className="text-sm text-[#64748b] mt-1">
+          Fill in what you know. Exit price and date are optional for open trades.
+        </p>
       </div>
       <TradeForm mode="create" />
     </div>

@@ -10,6 +10,7 @@ import { Select } from "@/components/ui/Select"
 import { Textarea } from "@/components/ui/Textarea"
 import { Button } from "@/components/ui/Button"
 import { Toast } from "@/components/ui/Toast"
+import { DatePicker } from "@/components/ui/DatePicker"
 import { PnlPreviewBar } from "@/components/trades/PnlPreviewBar"
 
 interface TradeFormProps {
@@ -33,16 +34,25 @@ interface TradeFormProps {
     strategy?: string
     tags?: string[]
     notes?: string
-    chartImageUrl?: string
+    chartImageUrl?: string | null
+    pointValue?: number
   }
 }
 
-function SectionCard({ number, title, children }: { number: string; title: string; children: React.ReactNode }) {
+function SectionCard({
+  number,
+  title,
+  children,
+}: {
+  number: string
+  title: string
+  children: React.ReactNode
+}) {
   return (
-    <div className="bg-[#141414] border border-[#1e1e1e] rounded-2xl p-6">
+    <div className="bg-[#0e1223] border border-[#1e293b] rounded-2xl p-6">
       <div className="flex items-center gap-3 mb-5">
-        <span className="text-xs font-mono text-[#4b5563]">{number}</span>
-        <h2 className="text-sm font-semibold text-[#e5e7eb]">{title}</h2>
+        <span className="text-xs font-mono text-[#64748b]">{number}</span>
+        <h2 className="text-sm font-semibold text-[#f8fafc]">{title}</h2>
       </div>
       {children}
     </div>
@@ -67,6 +77,8 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
     initialData?.exitDate ? initialData.exitDate.split("T")[0] : ""
   )
 
+  const [pointValue, setPointValue] = useState(initialData?.pointValue?.toString() ?? "")
+
   const [strikePrice, setStrikePrice] = useState(initialData?.strikePrice?.toString() ?? "")
   const [expirationDate, setExpirationDate] = useState(
     initialData?.expirationDate ? initialData.expirationDate.split("T")[0] : ""
@@ -80,7 +92,9 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
   const [notes, setNotes] = useState(initialData?.notes ?? "")
 
   const [imageFile, setImageFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(initialData?.chartImageUrl ?? null)
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    initialData?.chartImageUrl ?? null
+  )
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -96,6 +110,9 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
       setContractType("")
       setPremium("")
     }
+    if (value !== "futures") {
+      setPointValue("")
+    }
   }
 
   const livePreview = useMemo(() => {
@@ -105,15 +122,16 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
     const q = parseFloat(quantity)
     if (isNaN(ep) || isNaN(xp) || isNaN(q)) return null
     return calculateTradeMetrics({
-      assetClass: assetClass as "stock" | "crypto" | "forex" | "options",
+      assetClass: assetClass as "stock" | "crypto" | "forex" | "futures" | "options",
       direction: direction as "long" | "short",
       entryPrice: ep,
       exitPrice: xp,
       quantity: q,
       premium: premium ? parseFloat(premium) : undefined,
+      pointValue: pointValue ? parseFloat(pointValue) : undefined,
       stopLoss: stopLoss ? parseFloat(stopLoss) : undefined,
     })
-  }, [exitPrice, entryPrice, quantity, assetClass, direction, premium, stopLoss])
+  }, [exitPrice, entryPrice, quantity, assetClass, direction, premium, pointValue, stopLoss])
 
   function handleTagKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" || e.key === ",") {
@@ -133,6 +151,7 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    if (imagePreview?.startsWith("blob:")) URL.revokeObjectURL(imagePreview)
     setImageFile(file)
     setImagePreview(URL.createObjectURL(file))
   }
@@ -159,10 +178,11 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
       expirationDate: toISO(expirationDate),
       contractType: contractType || undefined,
       premium: premium ? parseFloat(premium) : undefined,
+      pointValue: pointValue ? parseFloat(pointValue) : undefined,
       strategy,
-      tags,
+      tags: tagInput.trim() && !tags.includes(tagInput.trim()) ? [...tags, tagInput.trim()] : tags,
       notes,
-      chartImageUrl: initialData?.chartImageUrl,
+      chartImageUrl: imagePreview && !imagePreview.startsWith("blob:") ? imagePreview : null,
     }
 
     const schema = mode === "create" ? tradeCreateSchema : tradeUpdateSchema
@@ -186,9 +206,16 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
       try {
         const uploadRes = await fetch("/api/upload", { method: "POST", body: formData })
         const uploadData = await uploadRes.json()
-        chartImageUrl = uploadData.data?.url
+        if (!uploadRes.ok || !uploadData.data?.url) {
+          setToast({ message: uploadData.error ?? "Image upload failed.", type: "error" })
+          setLoading(false)
+          return
+        }
+        chartImageUrl = uploadData.data.url
       } catch {
-        setToast({ message: "Image upload failed. Trade saved without chart.", type: "error" })
+        setToast({ message: "Image upload failed.", type: "error" })
+        setLoading(false)
+        return
       }
     }
 
@@ -211,6 +238,7 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
         type: "success",
       })
       setTimeout(() => router.push("/trades"), 500)
+      return
     } catch {
       setServerError("Something went wrong. Please try again.")
     }
@@ -234,7 +262,9 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
               label="Symbol"
               value={symbol}
               onChange={(e) => setSymbol(e.target.value)}
-              onBlur={() => { if (symbol) setSymbol(symbol.toUpperCase().trim()) }}
+              onBlur={() => {
+                if (symbol) setSymbol(symbol.toUpperCase().trim())
+              }}
               error={fieldErrors.symbol}
               placeholder="AAPL"
             />
@@ -248,6 +278,7 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
               <option value="stock">Stock</option>
               <option value="crypto">Crypto</option>
               <option value="forex">Forex</option>
+              <option value="futures">Futures</option>
               <option value="options">Options</option>
             </Select>
             <Select
@@ -317,28 +348,45 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
               placeholder="0.00 (optional)"
             />
             <div />
-            <Input
+            <DatePicker
               id="entryDate"
               label="Entry date"
-              type="date"
               value={entryDate}
-              onChange={(e) => setEntryDate(e.target.value)}
+              onChange={setEntryDate}
               error={fieldErrors.entryDate}
             />
-            <Input
+            <DatePicker
               id="exitDate"
               label="Exit date"
-              type="date"
               value={exitDate}
-              onChange={(e) => setExitDate(e.target.value)}
+              onChange={setExitDate}
               error={fieldErrors.exitDate}
+              optional
             />
           </div>
         </SectionCard>
 
-        {/* 03 — Options (conditional) */}
+        {/* 03 — Futures (conditional) */}
+        {assetClass === "futures" && (
+          <SectionCard number="03" title="Futures details">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                id="pointValue"
+                label="Point value"
+                type="number"
+                step="any"
+                value={pointValue}
+                onChange={(e) => setPointValue(e.target.value)}
+                error={fieldErrors.pointValue}
+                placeholder="e.g. 2 for MNQ, 20 for NQ, 50 for ES"
+              />
+            </div>
+          </SectionCard>
+        )}
+
+        {/* 03/04 — Options (conditional) */}
         {assetClass === "options" && (
-          <SectionCard number="03" title="Options details">
+          <SectionCard number="04" title="Options details">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 id="strikePrice"
@@ -350,12 +398,11 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
                 error={fieldErrors.strikePrice}
                 placeholder="0.00"
               />
-              <Input
+              <DatePicker
                 id="expirationDate"
                 label="Expiration date"
-                type="date"
                 value={expirationDate}
-                onChange={(e) => setExpirationDate(e.target.value)}
+                onChange={setExpirationDate}
                 error={fieldErrors.expirationDate}
               />
               <Select
@@ -384,7 +431,10 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
         )}
 
         {/* 04 — Context */}
-        <SectionCard number={assetClass === "options" ? "04" : "03"} title="Context">
+        <SectionCard
+          number={assetClass === "options" || assetClass === "futures" ? "04" : "03"}
+          title="Context"
+        >
           <div className="flex flex-col gap-4">
             <Input
               id="strategy"
@@ -397,8 +447,8 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
 
             {/* Tags */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="tagInput" className="text-sm text-[#6b7280]">
-                Tags <span className="text-[#4b5563]">(optional)</span>
+              <label htmlFor="tagInput" className="text-sm text-[#94a3b8]">
+                Tags <span className="text-[#64748b]">(optional)</span>
               </label>
               <input
                 id="tagInput"
@@ -407,20 +457,20 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagKeyDown}
                 placeholder="Type a tag and press Enter"
-                className="bg-[#0f0f0f] border border-[#1e1e1e] focus:border-[#00ff88]/50 focus:ring-2 focus:ring-[#00ff88]/10 rounded-lg px-4 py-3 h-[44px] text-sm text-[#e5e7eb] placeholder-[#4b5563] outline-none transition-colors duration-150"
+                className="bg-[#020617] border border-[#1e293b] focus:border-[#00ff88]/50 focus:ring-2 focus:ring-[#00ff88]/10 rounded-lg px-4 py-3 h-[44px] text-sm text-[#f8fafc] placeholder-[#64748b] outline-none transition-colors duration-150"
               />
               {tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-1">
                   {tags.map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center gap-1.5 bg-[#1a1a1a] border border-[#2a2a2a] rounded-full px-3 py-1 text-xs text-[#e5e7eb]"
+                      className="inline-flex items-center gap-1.5 bg-[#141c2e] border border-[#1e293b] rounded-full px-3 py-1 text-xs text-[#f8fafc]"
                     >
                       {tag}
                       <button
                         type="button"
                         onClick={() => removeTag(tag)}
-                        className="text-[#4b5563] hover:text-[#ef4444] transition-colors"
+                        className="text-[#64748b] hover:text-[#ef4444] transition-colors"
                         aria-label={`Remove tag ${tag}`}
                       >
                         <X size={11} />
@@ -442,8 +492,8 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
 
             {/* Chart upload */}
             <div className="flex flex-col gap-1.5">
-              <span className="text-sm text-[#6b7280]">
-                Chart screenshot <span className="text-[#4b5563]">(optional)</span>
+              <span className="text-sm text-[#94a3b8]">
+                Chart screenshot <span className="text-[#64748b]">(optional)</span>
               </span>
               <input
                 ref={fileInputRef}
@@ -458,12 +508,16 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
                   <img
                     src={imagePreview}
                     alt="Chart preview"
-                    className="w-32 h-20 object-cover rounded-xl border border-[#1e1e1e]"
+                    className="w-32 h-20 object-cover rounded-xl border border-[#1e293b]"
                   />
                   <button
                     type="button"
-                    onClick={() => { setImagePreview(null); setImageFile(null) }}
-                    className="absolute -top-2 -right-2 w-5 h-5 bg-[#1a1a1a] border border-[#2a2a2a] rounded-full flex items-center justify-center text-[#6b7280] hover:text-[#ef4444] transition-colors"
+                    onClick={() => {
+                      if (imagePreview?.startsWith("blob:")) URL.revokeObjectURL(imagePreview)
+                      setImagePreview(null)
+                      setImageFile(null)
+                    }}
+                    className="absolute -top-2 -right-2 w-5 h-5 bg-[#141c2e] border border-[#1e293b] rounded-full flex items-center justify-center text-[#94a3b8] hover:text-[#ef4444] transition-colors"
                     aria-label="Remove image"
                   >
                     <X size={10} />
@@ -473,7 +527,7 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-3 w-full border border-dashed border-[#2a2a2a] hover:border-[#3a3a3a] rounded-xl px-4 py-4 text-sm text-[#4b5563] hover:text-[#6b7280] transition-colors"
+                  className="flex items-center gap-3 w-full border border-dashed border-[#1e293b] hover:border-[#334155] rounded-xl px-4 py-4 text-sm text-[#64748b] hover:text-[#94a3b8] transition-colors"
                 >
                   <ImagePlus size={16} />
                   Click to upload a chart image
@@ -490,7 +544,7 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
           <button
             type="button"
             onClick={() => router.push("/trades")}
-            className="text-sm text-[#4b5563] hover:text-[#6b7280] transition-colors"
+            className="text-sm text-[#64748b] hover:text-[#94a3b8] transition-colors"
           >
             Cancel
           </button>
@@ -506,11 +560,7 @@ export function TradeForm({ mode, initialData }: TradeFormProps) {
       )}
 
       {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onDismiss={() => setToast(null)}
-        />
+        <Toast message={toast.message} type={toast.type} onDismiss={() => setToast(null)} />
       )}
     </>
   )

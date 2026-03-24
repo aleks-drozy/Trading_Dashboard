@@ -81,14 +81,17 @@ export default async function TradesPage({
     <div className="max-w-[1100px]">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#e5e7eb]">Trade Log</h1>
-          <p className="text-sm text-[#4b5563] mt-1">
+          <p className="text-xs font-medium text-[#64748b] uppercase tracking-widest mb-1">
+            Trade Log
+          </p>
+          <h1 className="text-2xl font-bold text-[#f8fafc] tracking-tight">All Trades</h1>
+          <p className="text-sm text-[#64748b] mt-1">
             {total > 0 ? `${total} trade${total !== 1 ? "s" : ""} total` : "No trades yet"}
           </p>
         </div>
         <Link
           href="/trades/new"
-          className="inline-flex items-center gap-2 bg-[#00ff88] text-[#0f0f0f] font-bold text-sm rounded-lg px-4 h-10 hover:bg-[#00e67a] transition-colors"
+          className="inline-flex items-center gap-2 bg-[#00ff88] text-[#020617] font-bold text-sm rounded-lg px-4 h-10 hover:bg-[#00e67a] transition-colors duration-150"
         >
           <Plus size={15} />
           Log Trade
@@ -96,15 +99,12 @@ export default async function TradesPage({
       </div>
       <Suspense
         fallback={
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 mb-4 h-[60px]" />
+          <div className="bg-[#0e1223] border border-[#1e293b] rounded-xl p-4 mb-4 h-[60px]" />
         }
       >
         <TradeFilterBar strategies={metaStrategies} availableTags={metaTags} />
       </Suspense>
-      <TradeTable
-        trades={serializedTrades}
-        pagination={{ page, totalPages, total }}
-      />
+      <TradeTable trades={serializedTrades} pagination={{ page, totalPages, total }} />
     </div>
   )
 }

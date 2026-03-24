@@ -1,8 +1,11 @@
 import { z } from "zod"
 
 const tradeBaseObject = z.object({
-  symbol: z.string().min(1, "Symbol is required").transform((s) => s.toUpperCase().trim()),
-  assetClass: z.enum(["stock", "crypto", "forex", "options"]),
+  symbol: z
+    .string()
+    .min(1, "Symbol is required")
+    .transform((s) => s.toUpperCase().trim()),
+  assetClass: z.enum(["stock", "crypto", "forex", "futures", "options"]),
   direction: z.enum(["long", "short"]),
   entryPrice: z.number().positive("Entry price must be positive"),
   exitPrice: z.number().positive("Exit price must be positive").optional(),
@@ -15,10 +18,11 @@ const tradeBaseObject = z.object({
   expirationDate: z.string().datetime("Invalid expiration date").optional(),
   contractType: z.enum(["call", "put"]).optional(),
   premium: z.number().positive("Premium must be positive").optional(),
+  pointValue: z.number().positive("Point value must be positive").optional(),
   strategy: z.string().default(""),
   tags: z.array(z.string()).default([]),
   notes: z.string().default(""),
-  chartImageUrl: z.string().url("Invalid chart image URL").optional(),
+  chartImageUrl: z.string().url("Invalid chart image URL").nullable().optional(),
 })
 
 type TradeBaseOutput = z.output<typeof tradeBaseObject>
@@ -39,13 +43,38 @@ function applyCreateRefinements(data: TradeBaseOutput, ctx: z.RefinementCtx): vo
   // D-13 — options fields required when assetClass === "options"
   if (data.assetClass === "options") {
     if (data.strikePrice === undefined)
-      ctx.addIssue({ code: "custom", message: "strikePrice is required for options trades", path: ["strikePrice"] })
+      ctx.addIssue({
+        code: "custom",
+        message: "strikePrice is required for options trades",
+        path: ["strikePrice"],
+      })
     if (data.expirationDate === undefined)
-      ctx.addIssue({ code: "custom", message: "expirationDate is required for options trades", path: ["expirationDate"] })
+      ctx.addIssue({
+        code: "custom",
+        message: "expirationDate is required for options trades",
+        path: ["expirationDate"],
+      })
     if (data.contractType === undefined)
-      ctx.addIssue({ code: "custom", message: "contractType is required for options trades", path: ["contractType"] })
+      ctx.addIssue({
+        code: "custom",
+        message: "contractType is required for options trades",
+        path: ["contractType"],
+      })
     if (data.premium === undefined)
-      ctx.addIssue({ code: "custom", message: "premium is required for options trades", path: ["premium"] })
+      ctx.addIssue({
+        code: "custom",
+        message: "premium is required for options trades",
+        path: ["premium"],
+      })
+  }
+
+  // D-14 — pointValue required when assetClass === "futures"
+  if (data.assetClass === "futures" && data.pointValue === undefined) {
+    ctx.addIssue({
+      code: "custom",
+      message: "pointValue is required for futures trades",
+      path: ["pointValue"],
+    })
   }
 }
 
@@ -64,13 +93,38 @@ function applyUpdateRefinements(data: TradeBasePartialOutput, ctx: z.RefinementC
   // D-13 — only check when assetClass is present in the update payload and equals "options"
   if (data.assetClass === "options") {
     if (data.strikePrice === undefined)
-      ctx.addIssue({ code: "custom", message: "strikePrice is required for options trades", path: ["strikePrice"] })
+      ctx.addIssue({
+        code: "custom",
+        message: "strikePrice is required for options trades",
+        path: ["strikePrice"],
+      })
     if (data.expirationDate === undefined)
-      ctx.addIssue({ code: "custom", message: "expirationDate is required for options trades", path: ["expirationDate"] })
+      ctx.addIssue({
+        code: "custom",
+        message: "expirationDate is required for options trades",
+        path: ["expirationDate"],
+      })
     if (data.contractType === undefined)
-      ctx.addIssue({ code: "custom", message: "contractType is required for options trades", path: ["contractType"] })
+      ctx.addIssue({
+        code: "custom",
+        message: "contractType is required for options trades",
+        path: ["contractType"],
+      })
     if (data.premium === undefined)
-      ctx.addIssue({ code: "custom", message: "premium is required for options trades", path: ["premium"] })
+      ctx.addIssue({
+        code: "custom",
+        message: "premium is required for options trades",
+        path: ["premium"],
+      })
+  }
+
+  // D-14 — only check when assetClass is present in the update payload and equals "futures"
+  if (data.assetClass === "futures" && data.pointValue === undefined) {
+    ctx.addIssue({
+      code: "custom",
+      message: "pointValue is required for futures trades",
+      path: ["pointValue"],
+    })
   }
 }
 

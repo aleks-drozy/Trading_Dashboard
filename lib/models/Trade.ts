@@ -4,7 +4,7 @@ import { calculateTradeMetrics } from "@/lib/calculations"
 export interface ITrade extends Document {
   userId: Types.ObjectId
   symbol: string
-  assetClass: "stock" | "crypto" | "forex" | "options"
+  assetClass: "stock" | "crypto" | "forex" | "futures" | "options"
   direction: "long" | "short"
   entryPrice: number
   exitPrice?: number
@@ -22,11 +22,13 @@ export interface ITrade extends Document {
   expirationDate?: Date
   contractType?: "call" | "put"
   premium?: number
+  // Futures-specific
+  pointValue?: number
   // Context
   strategy: string
   tags: string[]
   notes: string
-  chartImageUrl?: string
+  chartImageUrl?: string | null
   createdAt: Date
   updatedAt: Date
 }
@@ -35,7 +37,11 @@ const TradeSchema = new Schema<ITrade>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     symbol: { type: String, required: true, uppercase: true, trim: true },
-    assetClass: { type: String, enum: ["stock", "crypto", "forex", "options"], required: true },
+    assetClass: {
+      type: String,
+      enum: ["stock", "crypto", "forex", "futures", "options"],
+      required: true,
+    },
     direction: { type: String, enum: ["long", "short"], required: true },
     entryPrice: { type: Number, required: true },
     exitPrice: { type: Number },
@@ -52,6 +58,7 @@ const TradeSchema = new Schema<ITrade>(
     expirationDate: { type: Date },
     contractType: { type: String, enum: ["call", "put"] },
     premium: { type: Number },
+    pointValue: { type: Number },
     strategy: { type: String, default: "" },
     tags: { type: [String], default: [] },
     notes: { type: String, default: "" },
@@ -76,6 +83,7 @@ TradeSchema.pre("save", function () {
       exitPrice: this.exitPrice!,
       quantity: this.quantity,
       premium: this.premium,
+      pointValue: this.pointValue,
       stopLoss: this.stopLoss,
     })
     this.pnl = metrics.pnl

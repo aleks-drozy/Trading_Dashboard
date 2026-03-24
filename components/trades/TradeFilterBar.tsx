@@ -2,6 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation"
 import { ArrowUp, ArrowDown, X } from "lucide-react"
+import { DatePicker } from "@/components/ui/DatePicker"
 
 interface TradeFilterBarProps {
   strategies: string[]
@@ -41,19 +42,19 @@ export function TradeFilterBar({ strategies, availableTags }: TradeFilterBarProp
   // Check if any filter (not page/sortBy/sortDir) is active
   const hasActiveFilters = Boolean(
     searchParams.get("assetClass") ||
-      searchParams.get("direction") ||
-      searchParams.get("status") ||
-      searchParams.get("strategy") ||
-      searchParams.get("tags") ||
-      searchParams.get("from") ||
-      searchParams.get("to")
+    searchParams.get("direction") ||
+    searchParams.get("status") ||
+    searchParams.get("strategy") ||
+    searchParams.get("tags") ||
+    searchParams.get("from") ||
+    searchParams.get("to")
   )
 
   const selectStyle =
-    "bg-[#0f0f0f] border border-[#1e1e1e] rounded-lg px-3 py-2 text-xs text-[#e5e7eb] h-[34px] outline-none focus:border-[#00ff88]/50 transition-colors appearance-none cursor-pointer"
+    "bg-[#020617] border border-[#1e293b] rounded-lg px-3 py-2 text-xs text-[#f8fafc] h-[34px] outline-none focus:border-[#00ff88]/50 transition-colors appearance-none cursor-pointer"
 
   return (
-    <div className="bg-[#141414] border border-[#1e1e1e] rounded-2xl p-4 mb-4">
+    <div className="bg-[#0e1223] border border-[#1e293b] rounded-2xl p-4 mb-4">
       <div className="flex flex-wrap gap-3 items-center">
         {/* Asset Class */}
         <select
@@ -67,6 +68,7 @@ export function TradeFilterBar({ strategies, availableTags }: TradeFilterBarProp
           <option value="stock">Stock</option>
           <option value="crypto">Crypto</option>
           <option value="forex">Forex</option>
+          <option value="futures">Futures</option>
           <option value="options">Options</option>
         </select>
 
@@ -135,23 +137,21 @@ export function TradeFilterBar({ strategies, availableTags }: TradeFilterBarProp
         )}
 
         {/* From date */}
-        <input
-          type="date"
+        <DatePicker
           id="filter-from"
-          className={selectStyle}
           value={searchParams.get("from") ?? ""}
-          onChange={(e) => updateFilter("from", e.target.value)}
-          aria-label="Filter from date"
+          onChange={(v) => updateFilter("from", v)}
+          placeholder="From"
+          compact
         />
 
         {/* To date */}
-        <input
-          type="date"
+        <DatePicker
           id="filter-to"
-          className={selectStyle}
           value={searchParams.get("to") ?? ""}
-          onChange={(e) => updateFilter("to", e.target.value)}
-          aria-label="Filter to date"
+          onChange={(v) => updateFilter("to", v)}
+          placeholder="To"
+          compact
         />
 
         {/* Sort By */}
@@ -170,7 +170,7 @@ export function TradeFilterBar({ strategies, availableTags }: TradeFilterBarProp
         {/* Sort Direction */}
         <button
           onClick={() => updateFilter("sortDir", sortDir === "asc" ? "desc" : "asc")}
-          className="bg-[#0f0f0f] border border-[#1e1e1e] rounded-lg px-2 h-[34px] text-[#6b7280] hover:text-[#e5e7eb] transition-colors"
+          className="bg-[#020617] border border-[#1e293b] rounded-lg px-2 h-[34px] text-[#94a3b8] hover:text-[#f8fafc] transition-colors"
           aria-label={sortDir === "asc" ? "Sort ascending" : "Sort descending"}
         >
           {sortDir === "asc" ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
@@ -180,7 +180,7 @@ export function TradeFilterBar({ strategies, availableTags }: TradeFilterBarProp
         {hasActiveFilters && (
           <button
             onClick={() => router.push("/trades")}
-            className="text-xs text-[#4b5563] hover:text-[#e5e7eb] underline transition-colors ml-1"
+            className="text-xs text-[#64748b] hover:text-[#f8fafc] underline transition-colors ml-1"
           >
             Clear filters
           </button>
@@ -193,12 +193,12 @@ export function TradeFilterBar({ strategies, availableTags }: TradeFilterBarProp
           {activeTags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1 bg-[#0f0f0f] border border-[#1e1e1e] rounded-full px-3 py-1 text-xs text-[#e5e7eb]"
+              className="inline-flex items-center gap-1 bg-[#020617] border border-[#1e293b] rounded-full px-3 py-1 text-xs text-[#f8fafc]"
             >
               {tag}
               <button
                 onClick={() => removeTag(tag)}
-                className="text-[#6b7280] hover:text-[#ef4444] transition-colors"
+                className="text-[#94a3b8] hover:text-[#ef4444] transition-colors"
                 aria-label={`Remove tag ${tag}`}
               >
                 <X size={10} />

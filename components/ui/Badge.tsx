@@ -1,12 +1,22 @@
 import { ReactNode } from "react"
 
 interface BadgeProps {
-  variant: "open" | "closed" | "long" | "short" | "stock" | "etf" | "crypto" | "forex" | "options"
+  variant:
+    | "open"
+    | "closed"
+    | "long"
+    | "short"
+    | "stock"
+    | "etf"
+    | "crypto"
+    | "forex"
+    | "futures"
+    | "options"
   children: ReactNode
 }
 
 const variantClasses: Record<BadgeProps["variant"], string> = {
-  open: "bg-[#2a2a2a] text-[#6b7280]",
+  open: "bg-[#1e293b] text-[#94a3b8]",
   closed: "bg-[#0d2b1d] text-[#00ff88]",
   long: "bg-[#0d2b1d] text-[#00ff88]",
   short: "bg-[#2b0d0d] text-[#ef4444]",
@@ -14,6 +24,7 @@ const variantClasses: Record<BadgeProps["variant"], string> = {
   etf: "bg-[#1a1a2e] text-[#6b9fff]",
   crypto: "bg-[#1a1a2e] text-[#6b9fff]",
   forex: "bg-[#1a1a2e] text-[#6b9fff]",
+  futures: "bg-[#1a1a2e] text-[#6b9fff]",
   options: "bg-[#1a1a2e] text-[#6b9fff]",
 }
 

@@ -21,7 +21,7 @@ export function Toast({ message, type, onDismiss }: ToastProps) {
   return (
     <div
       role="alert"
-      className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg text-sm shadow-lg border flex items-center gap-2 bg-[#1a1a1a] ${colorClasses}`}
+      className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg text-sm shadow-lg border flex items-center gap-2 bg-[#141c2e] ${colorClasses}`}
     >
       <span>{message}</span>
       <button

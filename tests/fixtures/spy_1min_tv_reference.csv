@@ -1,0 +1,5 @@
+# PLACEHOLDER — Real TradingView export required before strategy validation tests run.
+# Required columns: timestamp,open,high,low,close,volume,ifvg_state,cisd_state,ema_20
+# Export: SPY 1-minute bars, minimum 2 weeks (~500+ rows), 100 warmup bars before comparison window.
+# See .planning/phases/01-foundation-strategy-engine/01-04-PLAN.md Task 2 for export instructions.
+timestamp,open,high,low,close,volume,ifvg_state,cisd_state,ema_20

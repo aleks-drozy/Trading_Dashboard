@@ -21,6 +21,26 @@ describe("calculatePnl", () => {
       expect(calculatePnl("stock", "short", 100, 110, 10)).toBe(-100)
     })
   })
+  describe("futures", () => {
+    it("calculates long futures P&L using point value", () => {
+      // 3 MNQ contracts, entry 24580.25, exit 24610.50, point value $2
+      // (24610.50 - 24580.25) * 3 * 2 = 30.25 * 3 * 2 = 181.50
+      expect(calculatePnl("futures", "long", 24580.25, 24610.5, 3, undefined, 2)).toBeCloseTo(
+        181.5,
+        2
+      )
+    })
+    it("calculates short futures P&L using point value", () => {
+      // (24580.25 - 24610.50) * 3 * 2 = -181.50
+      expect(calculatePnl("futures", "short", 24610.5, 24580.25, 3, undefined, 2)).toBeCloseTo(
+        181.5,
+        2
+      )
+    })
+    it("defaults point value to 1 when omitted", () => {
+      expect(calculatePnl("futures", "long", 100, 110, 5)).toBe(50)
+    })
+  })
   describe("options", () => {
     it("calculates long options P&L with 100-share multiplier", () => {
       // buy 2 contracts at $3 premium, sell at $5.50 => (5.50-3)*2*100 = 500
@@ -60,8 +80,12 @@ describe("calculateRiskReward", () => {
 describe("calculateTradeMetrics", () => {
   it("returns pnl, pnlPercent, and riskRewardRatio for a closed stock trade", () => {
     const result = calculateTradeMetrics({
-      assetClass: "stock", direction: "long",
-      entryPrice: 100, exitPrice: 110, quantity: 10, stopLoss: 90,
+      assetClass: "stock",
+      direction: "long",
+      entryPrice: 100,
+      exitPrice: 110,
+      quantity: 10,
+      stopLoss: 90,
     })
     expect(result.pnl).toBe(100)
     expect(result.pnlPercent).toBe(10)
@@ -69,8 +93,11 @@ describe("calculateTradeMetrics", () => {
   })
   it("returns undefined riskRewardRatio when stopLoss is not provided", () => {
     const result = calculateTradeMetrics({
-      assetClass: "stock", direction: "long",
-      entryPrice: 100, exitPrice: 110, quantity: 10,
+      assetClass: "stock",
+      direction: "long",
+      entryPrice: 100,
+      exitPrice: 110,
+      quantity: 10,
     })
     expect(result.riskRewardRatio).toBeUndefined()
   })

@@ -5,22 +5,24 @@ export interface TradeMetrics {
 }
 
 export interface TradeForCalculation {
-  assetClass: "stock" | "crypto" | "forex" | "options"
+  assetClass: "stock" | "crypto" | "forex" | "futures" | "options"
   direction: "long" | "short"
   entryPrice: number
   exitPrice: number
   quantity: number
   premium?: number
+  pointValue?: number
   stopLoss?: number
 }
 
 export function calculatePnl(
-  assetClass: "stock" | "crypto" | "forex" | "options",
+  assetClass: "stock" | "crypto" | "forex" | "futures" | "options",
   direction: "long" | "short",
   entryPrice: number,
   exitPrice: number,
   quantity: number,
-  premium?: number
+  premium?: number,
+  pointValue?: number
 ): number {
   if (assetClass === "options") {
     // For options, exitPrice represents the exit premium per share
@@ -29,6 +31,16 @@ export function calculatePnl(
       return (exitPrice - entryPremium) * quantity * 100
     } else {
       return (entryPremium - exitPrice) * quantity * 100
+    }
+  }
+
+  if (assetClass === "futures") {
+    // P&L = price difference * quantity * point value (dollar value per point)
+    const pv = pointValue ?? 1
+    if (direction === "long") {
+      return (exitPrice - entryPrice) * quantity * pv
+    } else {
+      return (entryPrice - exitPrice) * quantity * pv
     }
   }
 
@@ -41,15 +53,21 @@ export function calculatePnl(
 }
 
 export function calculatePnlPercent(
-  assetClass: "stock" | "crypto" | "forex" | "options",
+  assetClass: "stock" | "crypto" | "forex" | "futures" | "options",
   pnl: number,
   entryPrice: number,
   quantity: number,
-  premium?: number
+  premium?: number,
+  pointValue?: number
 ): number {
   if (assetClass === "options") {
     const entryPremium = premium ?? entryPrice
     return (pnl / (entryPremium * quantity * 100)) * 100
+  }
+
+  if (assetClass === "futures") {
+    const pv = pointValue ?? 1
+    return (pnl / (entryPrice * quantity * pv)) * 100
   }
 
   // stocks, crypto, forex
@@ -80,7 +98,8 @@ export function calculateTradeMetrics(trade: TradeForCalculation): TradeMetrics 
     trade.entryPrice,
     trade.exitPrice,
     trade.quantity,
-    trade.premium
+    trade.premium,
+    trade.pointValue
   )
 
   const pnlPercent = calculatePnlPercent(
@@ -88,7 +107,8 @@ export function calculateTradeMetrics(trade: TradeForCalculation): TradeMetrics 
     pnl,
     trade.entryPrice,
     trade.quantity,
-    trade.premium
+    trade.premium,
+    trade.pointValue
   )
 
   const riskRewardRatio =
