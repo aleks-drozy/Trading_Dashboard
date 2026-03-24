@@ -87,8 +87,8 @@ export function ForexNews({ initialEvents }: Props) {
                 <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88]" />
                 <span className="text-[10px] font-semibold text-[#f8fafc]">Today</span>
               </div>
-              {events.today.map((e, i) => (
-                <EventRow key={i} event={e} />
+              {events.today.map((e) => (
+                <EventRow key={`${e.date}-${e.time}-${e.title}`} event={e} />
               ))}
             </div>
           )}
@@ -96,8 +96,8 @@ export function ForexNews({ initialEvents }: Props) {
           {events.upcoming.length > 0 && (
             <div className="flex flex-col gap-1.5">
               <span className="text-[10px] font-semibold text-[#475569]">This Week</span>
-              {events.upcoming.map((e, i) => (
-                <EventRow key={i} event={e} dim />
+              {events.upcoming.map((e) => (
+                <EventRow key={`${e.date}-${e.time}-${e.title}`} event={e} dim />
               ))}
             </div>
           )}
