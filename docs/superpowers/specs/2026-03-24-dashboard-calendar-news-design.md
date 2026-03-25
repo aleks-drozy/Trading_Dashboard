@@ -37,7 +37,7 @@ The dashboard page becomes a two-column grid:
   - Net P&L > 0 → green background (`rgba(0,255,136,0.15)`) + green border + green text
   - Net P&L < 0 → red background (`rgba(239,68,68,0.15)`) + red border + red text
   - No trades → neutral (`#141c2e`), muted text
-  - Today → accent ring border (bright `#00ff88`) regardless of P&L color
+  - Today → accent ring border (bright `#00ff88`) regardless of P&L color. P&L color takes precedence for background and text; the ring is additive. If today has no trades, neutral background + accent ring.
 - Weekends are rendered but slightly dimmed.
 - Month/year label displayed between prev/next nav arrows.
 - Legend below the grid: green dot = "Green day", red dot = "Red day".
@@ -72,7 +72,8 @@ The dashboard page becomes a two-column grid:
   - Medium impact → orange (`#f59e0b`)
   - Low impact → yellow (`#eab308`)
 - Today's events are full-brightness; upcoming events are slightly dimmed (`text-[#94a3b8]`).
-- Auto-refreshes every 30 minutes via `setInterval` re-fetching `/api/forex-news`.
+- Auto-refreshes every 30 minutes via `setInterval` re-fetching `/api/forex-news`. Note: the server caches the FF response for 1 hour, so client refreshes within that window return the same cached data — this is intentional (avoids hammering FF) and the 30-min interval is a best-effort freshness hint.
+- The news list is scrollable inside the widget (fixed height with `overflow-y: auto`) rather than growing the aside column unboundedly.
 - Impact levels 0 (holidays/grey folder) are excluded — only High, Medium, Low shown.
 - Legend at the bottom: red = High, orange = Medium, yellow = Low.
 
