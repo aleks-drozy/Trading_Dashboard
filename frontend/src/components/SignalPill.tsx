@@ -17,7 +17,7 @@ interface SignalPillProps {
   type?: "ifvg" | "cisd" | "ema"
 }
 
-export function SignalPill({ state, type: _type }: SignalPillProps) {
+export function SignalPill({ state }: SignalPillProps) {
   const colors = COLOR_MAP[state] || COLOR_MAP["None"]
   const display = DISPLAY_MAP[state] || state
 
