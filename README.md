@@ -2,20 +2,13 @@
 
 A full-stack trading application in two parts: a **trade journal** for logging and reviewing your own
 trades, and a **real-time market dashboard** with live data feeds, streaming signals, and a
-paper-trading engine. ~228 commits.
+paper-trading engine. The dashboard's signal engine is a Python port of a 542-line PineScript
+strategy (`docs/reference/FYP_BOT_1_3.pine`), served by FastAPI and streamed to the browser over a
+WebSocket.
 
 **Live app:** [tradingdashboard-one.vercel.app](https://tradingdashboard-one.vercel.app) — the trade
-journal, behind Google sign-in (so the dashboard views below are only visible once authenticated).
-
-## Screenshots
-
-<!-- You're logged in; recruiters aren't — add real screenshots of the authenticated views:
-     docs/journal-dashboard.png  the trade-journal metrics dashboard
-     docs/journal-calendar.png   the calendar view
-     docs/live-dashboard.png     the live-signal dashboard (Vite app)
-     then reference them here, e.g.  ![Trade journal](docs/journal-dashboard.png)
--->
-_Add authenticated-view screenshots here (journal dashboard, calendar, live signals)._
+journal. It sits behind Google sign-in, so the journal and dashboard views are only reachable once
+authenticated.
 
 ## Two surfaces
 
@@ -65,6 +58,7 @@ schemas/      Shared data schemas
 lib/          Shared utilities
 backend/      FastAPI service: auth, data feeds, signals, paper trading, backtest, strategy
 frontend/     Vite + React live-signal dashboard (talks to backend/)
+docs/         Design specs (docs/specs/) and the PineScript strategy source it was ported from
 tests/        Test suites
 ```
 

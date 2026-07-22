@@ -1,5 +1,9 @@
 # PLACEHOLDER — Real TradingView export required before strategy validation tests run.
 # Required columns: timestamp,open,high,low,close,volume,ifvg_state,cisd_state,ema_20
 # Export: BTCUSDT 1-minute bars, minimum 2 weeks (~500+ rows), 100 warmup bars before comparison window.
-# See .planning/phases/01-foundation-strategy-engine/01-04-PLAN.md Task 2 for export instructions.
+# To produce it: load docs/reference/FYP_BOT_1_3.pine on a BTCUSDT 1-minute TradingView chart, set
+# the date range to cover that window, then use "Export chart data" (bottom of the chart area) to
+# write a CSV. ifvg_state is Bullish/Bearish/None/Expired, cisd_state is Bullish/Bearish, ema_20 is
+# the numeric 20-period EMA. Save the export over this file; tests/test_strategy/ skips its parity
+# tests while this is a header-only placeholder.
 timestamp,open,high,low,close,volume,ifvg_state,cisd_state,ema_20
